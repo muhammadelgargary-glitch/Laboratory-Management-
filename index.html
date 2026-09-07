@@ -1789,6 +1789,144 @@ if(window.MutationObserver) {
   });
   observer.observe(document.body, { childList: true, subtree: true });
 }
-  </script>
+  // ===== إصلاح مشكلة Drive في الموبايل =====
+
+// 1. حفظ التوكن في localStorage
+function saveDriveToken(token) {
+  if(token) {
+    localStorage.setItem('drive_token', token);
+  }
+}
+
+function getDriveToken() {
+  return localStorage.getItem('drive_token');
+}
+
+function clearDriveToken() {
+  localStorage.removeItem('drive_token');
+}
+
+// 2. استعادة التوكن عند تحميل الصفحة
+function restoreDriveSession() {
+  var token = getDriveToken();
+  if(token) {
+    driveToken = token;
+    // تحديث الواجهة
+    var signInBtn = document.getElementById('driveSignInBtn');
+    var signOutBtn = document.getElementById('driveSignOutBtn');
+    var backupBtn = document.getElementById('driveBackupBtn');
+    var restoreBtn = document.getElementById('driveRestoreBtn');
+    var statusText = document.getElementById('driveStatusText');
+    
+    if(signInBtn) signInBtn.style.display = 'none';
+    if(signOutBtn) signOutBtn.style.display = '';
+    if(backupBtn) { backupBtn.disabled = false; backupBtn.style.opacity = '1'; backupBtn.style.cursor = 'pointer'; }
+    if(restoreBtn) { restoreBtn.disabled = false; restoreBtn.style.opacity = '1'; restoreBtn.style.cursor = 'pointer'; }
+    if(statusText) statusText.innerHTML = '✅ متصل بحساب Google';
+    
+    // جلب معلومات المستخدم
+    fetch('https://www.googleapis.com/oauth2/v1/userinfo', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    }).then(function(res) {
+      return res.json();
+    }).then(function(data) {
+      if(data.email) {
+        if(statusText) statusText.innerHTML = '✅ متصل: ' + data.email;
+        driveUser = data;
+        // تحديث زر تسجيل الخروج
+        var userInfo = document.getElementById('driveUserInfo');
+        if(userInfo) {
+          userInfo.innerHTML = '<img src="' + data.picture + '" alt="" style="width:28px;height:28px;border-radius:50%;"><span>' + data.name + ' (' + data.email + ')</span> <span class="drive-status-connected">✓ متصل</span>';
+        }
+        checkLastBackup();
+      }
+    }).catch(function() {
+      // التوكن غير صالح
+      clearDriveToken();
+      driveToken = null;
+    });
+  }
+}
+
+// 3. تعديل دالة تسجيل الدخول لحفظ التوكن
+var originalDriveSignIn = driveSignIn;
+driveSignIn = function() {
+  var authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' +
+    'client_id=' + encodeURIComponent(CLIENT_ID) +
+    '&redirect_uri=' + encodeURIComponent('https://muhammadelgargary-glitch.github.io') +
+    '&response_type=token' +
+    '&scope=' + encodeURIComponent('https://www.googleapis.com/auth/drive.file') +
+    '&include_granted_scopes=true' +
+    '&prompt=consent';
+  
+  var win = window.open(authUrl, '_blank', 'width=500,height=600');
+  if(!win) {
+    window.location.href = authUrl;
+  }
+  
+  window.addEventListener('message', function(event) {
+    if(event.data && event.data.type === 'drive_auth') {
+      driveToken = event.data.token;
+      saveDriveToken(event.data.token);
+      fetchDriveUserInfo();
+    }
+  });
+};
+
+// 4. تعديل دالة معالجة إعادة التوجيه
+var originalHandleRedirect = handleDriveRedirect;
+handleDriveRedirect = function() {
+  var hash = window.location.hash;
+  if(hash && hash.indexOf('access_token=') > -1) {
+    var params = new URLSearchParams(hash.substring(1));
+    var token = params.get('access_token');
+    if(token) {
+      driveToken = token;
+      saveDriveToken(token);
+      fetchDriveUserInfo();
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }
+};
+
+// 5. تعديل دالة تسجيل الخروج
+var originalDriveSignOut = driveSignOut;
+driveSignOut = function() {
+  clearDriveToken();
+  driveToken = null;
+  driveUser = null;
+  
+  var signInBtn = document.getElementById('driveSignInBtn');
+  var signOutBtn = document.getElementById('driveSignOutBtn');
+  var backupBtn = document.getElementById('driveBackupBtn');
+  var restoreBtn = document.getElementById('driveRestoreBtn');
+  var statusText = document.getElementById('driveStatusText');
+  var userInfo = document.getElementById('driveUserInfo');
+  
+  if(signInBtn) signInBtn.style.display = '';
+  if(signOutBtn) signOutBtn.style.display = 'none';
+  if(backupBtn) { backupBtn.disabled = true; backupBtn.style.opacity = '0.5'; backupBtn.style.cursor = 'not-allowed'; }
+  if(restoreBtn) { restoreBtn.disabled = true; restoreBtn.style.opacity = '0.5'; restoreBtn.style.cursor = 'not-allowed'; }
+  if(statusText) statusText.innerHTML = '🔴 غير متصل';
+  if(userInfo) userInfo.innerHTML = '<span style="color:var(--ink-sub);">غير متصل بحساب Google</span>';
+  
+  showDriveStatus('تم تسجيل الخروج');
+};
+
+// 6. تشغيل استعادة الجلسة عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(restoreDriveSession, 500);
+  // فحص الرابط للتأكد من وجود توكن
+  handleDriveRedirect();
+});
+
+// 7. إضافة زر تسجيل الخروج في الواجهة إذا لم يكن موجوداً
+setTimeout(function() {
+  var signOutBtn = document.getElementById('driveSignOutBtn');
+  if(signOutBtn) {
+    signOutBtn.style.display = 'none';
+  }
+}, 1000);
+</script>
 </body>
 </html>
