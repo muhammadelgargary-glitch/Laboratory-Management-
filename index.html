@@ -1759,6 +1759,36 @@ document.addEventListener('DOMContentLoaded', function(){
         }
       });
     })();
+// ===== إصلاح Drive للموبايل =====
+function fixDriveButtons() {
+  var signInBtn = document.getElementById('driveSignInBtn');
+  var backupBtn = document.getElementById('driveBackupBtn');
+  var restoreBtn = document.getElementById('driveRestoreBtn');
+  
+  try {
+    if(gapi && gapi.client && gapi.client.getToken) {
+      var token = gapi.client.getToken();
+      if(token) {
+        if(backupBtn) { backupBtn.disabled = false; backupBtn.style.opacity = '1'; backupBtn.style.cursor = 'pointer'; }
+        if(restoreBtn) { restoreBtn.disabled = false; restoreBtn.style.opacity = '1'; restoreBtn.style.cursor = 'pointer'; }
+        if(signInBtn) signInBtn.style.display = 'none';
+        if(typeof fetchUserInfo === 'function') fetchUserInfo();
+      }
+    }
+  } catch(e) {
+    console.log('Drive fix error:', e);
+  }
+}
+
+setTimeout(fixDriveButtons, 2000);
+setTimeout(fixDriveButtons, 5000);
+
+if(window.MutationObserver) {
+  var observer = new MutationObserver(function() {
+    fixDriveButtons();
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+}
   </script>
 </body>
 </html>
