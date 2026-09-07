@@ -1391,7 +1391,37 @@ var gapiInited = false;
 var gisInited = false;
 var driveUser = null;
 var driveStatusEl = document.getElementById('driveStatus');
+async function initNativeGoogleSignIn() {
+  try {
+    if (
+      !window.Capacitor ||
+      typeof window.Capacitor.isNativePlatform !== 'function' ||
+      !window.Capacitor.isNativePlatform()
+    ) {
+      return;
+    }
 
+    const GoogleSignIn = window.Capacitor.Plugins.GoogleSignIn;
+
+    if (!GoogleSignIn) {
+      console.error('GoogleSignIn plugin is not available');
+      return;
+    }
+
+    await GoogleSignIn.initialize({
+      clientId: '302676179340-4e6res67d3sbf7ftg1mr7fqi3i409kt4.apps.googleusercontent.com',
+      scopes: [
+        'https://www.googleapis.com/auth/drive.file',
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/userinfo.email'
+      ]
+    });
+
+    console.log('Native Google Sign-In initialized');
+  } catch (error) {
+    console.error('Native Google Sign-In initialization failed:', error);
+  }
+}
 function showDriveStatus(msg, isError, isSuccess) {
   if(driveStatusEl){
     driveStatusEl.textContent = msg;
@@ -1466,17 +1496,81 @@ function gisLoaded() {
   if(gapiInited) restoreGoogleSessionSilently();
 }
 
-function fetchUserInfo() {
-  gapi.client.request({ path: 'https://www.googleapis.com/oauth2/v3/userinfo', method: 'GET' })
-    .then(function(resp){
-      driveUser = resp.result;
-      try { localStorage.setItem('lab_google_user', JSON.stringify(driveUser)); } catch(e) {}
+function fetchUserInfo(nativeResult) {
+
+  // =====================================================
+  // Android APK - Google Sign-In الأصلي
+  // =====================================================
+  if (
+    window.Capacitor &&
+    typeof window.Capacitor.isNativePlatform === 'function' &&
+    window.Capacitor.isNativePlatform()
+  ) {
+
+    if (nativeResult) {
+
+      driveUser = {
+        email: nativeResult.email || '',
+        name: nativeResult.displayName || '',
+        picture: nativeResult.imageUrl || ''
+      };
+
+      try {
+        localStorage.setItem(
+          'lab_google_user',
+          JSON.stringify(driveUser)
+        );
+      } catch (e) {}
+
       updateDriveUI(true);
       checkLastBackup();
       scheduleAutoDriveBackup();
-    }).catch(function(){
-      updateDriveUI(false);
-    });
+
+      return;
+    }
+
+    updateDriveUI(false);
+    return;
+  }
+
+
+  // =====================================================
+  // المتصفح - الطريقة القديمة
+  // =====================================================
+  if (
+    typeof gapi === 'undefined' ||
+    !gapi.client ||
+    typeof gapi.client.request !== 'function'
+  ) {
+    updateDriveUI(false);
+    return;
+  }
+
+  gapi.client.request({
+    path: 'https://www.googleapis.com/oauth2/v3/userinfo',
+    method: 'GET'
+  })
+  .then(function(resp) {
+
+    driveUser = resp.result;
+
+    try {
+      localStorage.setItem(
+        'lab_google_user',
+        JSON.stringify(driveUser)
+      );
+    } catch (e) {}
+
+    updateDriveUI(true);
+    checkLastBackup();
+    scheduleAutoDriveBackup();
+
+  })
+  .catch(function() {
+
+    updateDriveUI(false);
+
+  });
 }
 
 function checkLastBackup() {
@@ -1495,14 +1589,250 @@ function checkLastBackup() {
       document.getElementById('driveLastBackup').textContent = '📅 تعذر التحقق من النسخة';
     });
 }
-function requestGoogleAccess(interactive, callback) {
-  if(!tokenClient){ toast('جاري تحميل أدوات Google...'); setTimeout(function(){requestGoogleAccess(interactive,callback);},500); return; }
-  tokenClient.callback=function(resp){ if(resp && !resp.error){ gapi.client.setToken(resp); fetchUserInfo(); if(callback)callback(true); } else if(callback)callback(false); };
-  try{ tokenClient.requestAccessToken({prompt:interactive?'consent':''}); }catch(e){ if(callback)callback(false); }
+async function requestGoogleAccess(interactive, callback) {
+  try {
+
+    // =====================================================
+    // Android APK - استخدام Google Sign-In الأصلي
+    // =====================================================
+    if (
+      window.Capacitor &&
+      typeof window.Capacitor.isNativePlatform === 'function' &&
+      window.Capacitor.isNativePlatform()
+    ) {
+
+      const GoogleSignIn = window.Capacitor.Plugins.GoogleSignIn;
+
+      if (!GoogleSignIn) {
+        console.error('GoogleSignIn plugin is not available');
+
+        if (callback) callback(false);
+        return;
+      }
+
+      try {
+        const result = await GoogleSignIn.signIn();
+
+        console.log('Google Sign-In result:', result);
+
+        if (!result) {
+          if (callback) callback(false);
+          return;
+        }
+
+        // استخراج Access Token
+        const accessToken =
+          result.accessToken ||
+          (result.authentication && result.authentication.accessToken);
+
+        if (!accessToken) {
+          console.error('No Google access token received');
+
+          if (callback) callback(false);
+          return;
+        }
+
+        // حفظ Access Token
+        try {
+          localStorage.setItem(
+            'lab_google_access_token',
+            accessToken
+          );
+        } catch (e) {}
+
+        // حفظ بيانات المستخدم
+        if (result.user) {
+          driveUser = result.user;
+
+          try {
+            localStorage.setItem(
+              'lab_google_user',
+              JSON.stringify(result.user)
+            );
+          } catch (e) {}
+        }
+
+        // إعطاء GAPI نفس الـ token
+        if (
+          window.gapi &&
+          gapi.client &&
+          typeof gapi.client.setToken === 'function'
+        ) {
+          gapi.client.setToken({
+            access_token: accessToken
+          });
+        }
+
+        updateDriveUI(true);
+        checkLastBackup();
+        scheduleAutoDriveBackup();
+
+        if (callback) callback(true);
+        return;
+
+      } catch (error) {
+        console.error(
+          'Native Google Sign-In failed:',
+          error
+        );
+
+        if (callback) callback(false);
+        return;
+      }
+    }
+
+
+    // =====================================================
+    // Web Browser - الطريقة القديمة
+    // =====================================================
+
+    if (!tokenClient) {
+      toast('جاري تحميل أدوات Google...');
+
+      setTimeout(function() {
+        requestGoogleAccess(
+          interactive,
+          callback
+        );
+      }, 500);
+
+      return;
+    }
+
+    tokenClient.callback = function(resp) {
+
+      if (resp && !resp.error) {
+
+        gapi.client.setToken(resp);
+
+        fetchUserInfo();
+
+        if (callback) {
+          callback(true);
+        }
+
+      } else {
+
+        if (callback) {
+          callback(false);
+        }
+
+      }
+    };
+
+    try {
+
+      tokenClient.requestAccessToken({
+        prompt: interactive ? 'consent' : ''
+      });
+
+    } catch (e) {
+
+      console.error(
+        'Google OAuth error:',
+        e
+      );
+
+      if (callback) {
+        callback(false);
+      }
+    }
+
+  } catch (error) {
+
+    console.error(
+      'requestGoogleAccess error:',
+      error
+    );
+
+    if (callback) {
+      callback(false);
+    }
+  }
 }
-function ensureDriveAuth(callback){
-  if(typeof gapi!=='undefined' && gapi.client && gapi.client.getToken && gapi.client.getToken()){ if(callback)callback(true); return; }
-  requestGoogleAccess(false,function(ok){ if(ok){if(callback)callback(true);} else requestGoogleAccess(true,function(ok2){if(callback)callback(!!ok2);}); });
+function ensureDriveAuth(callback) {
+  try {
+
+    // =====================================================
+    // Android APK
+    // =====================================================
+    if (
+      window.Capacitor &&
+      typeof window.Capacitor.isNativePlatform === 'function' &&
+      window.Capacitor.isNativePlatform()
+    ) {
+
+      const savedToken = localStorage.getItem(
+        'lab_google_access_token'
+      );
+
+      if (savedToken) {
+
+        // إعادة وضع الـ token داخل GAPI
+        if (
+          window.gapi &&
+          gapi.client &&
+          typeof gapi.client.setToken === 'function'
+        ) {
+          gapi.client.setToken({
+            access_token: savedToken
+          });
+        }
+
+        if (callback) callback(true);
+        return;
+      }
+
+      // لا يوجد Token محفوظ → تسجيل دخول
+      requestGoogleAccess(true, function(ok) {
+        if (callback) callback(!!ok);
+      });
+
+      return;
+    }
+
+
+    // =====================================================
+    // Web Browser
+    // =====================================================
+
+    if (
+      typeof gapi !== 'undefined' &&
+      gapi.client &&
+      gapi.client.getToken &&
+      gapi.client.getToken()
+    ) {
+      if (callback) callback(true);
+      return;
+    }
+
+    requestGoogleAccess(false, function(ok) {
+
+      if (ok) {
+
+        if (callback) callback(true);
+
+      } else {
+
+        requestGoogleAccess(true, function(ok2) {
+
+          if (callback) callback(!!ok2);
+
+        });
+
+      }
+
+    });
+
+  } catch (error) {
+
+    console.error(
+      'ensureDriveAuth error:',
+      error
+    );
+
+    if (callback) callback(false);
+  }
 }
 async function driveSignIn() {
   try {
@@ -1532,16 +1862,20 @@ async function driveSignIn() {
           result.accessToken
         );
 
-        if (result.user) {
-          driveUser = result.user;
+        const result = await GoogleSignIn.signIn();
 
-          try {
-            localStorage.setItem(
-              'lab_google_user',
-              JSON.stringify(result.user)
-            );
-          } catch (e) {}
-        }
+console.log('Google Sign-In result:', result);
+
+if (!result) {
+  if (callback) callback(false);
+  return;
+}
+
+fetchUserInfo(result);
+
+const accessToken =
+  result.accessToken ||
+  (result.authentication && result.authentication.accessToken);
 
         updateDriveUI(true);
         checkLastBackup();
@@ -1658,6 +1992,7 @@ function driveRestore(){ ensureDriveAuth(function(ok){ if(!ok){showDriveStatus('
 })();
     // ربط الأحداث الرئيسية
 document.addEventListener('DOMContentLoaded', function(){
+  initNativeGoogleSignIn();
   loadData();
 
   // Drive buttons
