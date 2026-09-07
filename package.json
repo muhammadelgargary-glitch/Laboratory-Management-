@@ -1,0 +1,15 @@
+{
+  "name": "laboratory-management",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "mkdir -p www && cp index.html www/index.html"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/android": "^8.0.0"
+  }
+}
