@@ -34,27 +34,42 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Create Debug Keystore
+      - name: Create standard Android Debug Keystore
         run: |
-          mkdir -p ~/.config/.android
+          mkdir -p ~/.android
+          rm -f ~/.android/debug.keystore
+
           keytool -genkeypair \
             -v \
-            -keystore ~/.config/.android/debug.keystore \
+            -keystore ~/.android/debug.keystore \
             -storepass android \
-            -alias AndroidDebugKey \
+            -alias androiddebugkey \
             -keypass android \
             -keyalg RSA \
             -keysize 2048 \
             -validity 10000 \
             -dname "CN=Android Debug,O=Android,C=US"
 
-      - name: Show Android SHA-1
+      - name: Show Debug Keystore SHA-1
+        run: |
+          echo "===== DEBUG KEY SHA-1 ====="
+          keytool -list -v \
+            -keystore ~/.android/debug.keystore \
+            -storepass android \
+            -alias androiddebugkey | grep -E "Alias name:|SHA1:|SHA-1:"
+
+      - name: Show Android Signing Report
         working-directory: android
         run: ./gradlew signingReport
 
-      - name: Build APK
+      - name: Build Debug APK
         working-directory: android
         run: ./gradlew assembleDebug
+
+      - name: Verify APK exists
+        run: |
+          test -f android/app/build/outputs/apk/debug/app-debug.apk
+          echo "APK created successfully."
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
