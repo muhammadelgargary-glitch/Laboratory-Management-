@@ -1393,6 +1393,10 @@ var driveUser = null;
 var driveStatusEl = document.getElementById('driveStatus');
 async function initNativeGoogleSignIn() {
   try {
+
+    // =====================================================
+    // المتصفح
+    // =====================================================
     if (
       !window.Capacitor ||
       typeof window.Capacitor.isNativePlatform !== 'function' ||
@@ -1401,25 +1405,51 @@ async function initNativeGoogleSignIn() {
       return;
     }
 
-    const GoogleSignIn = window.Capacitor.Plugins.GoogleSignIn;
+    // =====================================================
+    // Android APK
+    // =====================================================
+    var GoogleSignIn =
+      window.Capacitor.Plugins &&
+      window.Capacitor.Plugins.GoogleSignIn;
 
     if (!GoogleSignIn) {
-      console.error('GoogleSignIn plugin is not available');
+      console.error(
+        'GoogleSignIn plugin is not available'
+      );
+
+      showDriveStatus(
+        'إضافة Google Sign-In غير محملة',
+        true
+      );
+
       return;
     }
 
     await GoogleSignIn.initialize({
-      clientId: '302676179340-4e6res67d3sbf7ftg1mr7fqi3i409kt4.apps.googleusercontent.com',
+
+      // Web Client ID
+      clientId:
+        '302676179340-4e6res67d3sbf7ftg1mr7fqi3i409kt4.apps.googleusercontent.com',
+
       scopes: [
         'https://www.googleapis.com/auth/drive.file',
         'https://www.googleapis.com/auth/userinfo.profile',
         'https://www.googleapis.com/auth/userinfo.email'
       ]
+
     });
 
-    console.log('Native Google Sign-In initialized');
+    console.log(
+      'Native Google Sign-In initialized successfully'
+    );
+
   } catch (error) {
-    console.error('Native Google Sign-In initialization failed:', error);
+
+    console.error(
+      'Native Google Sign-In initialization failed:',
+      error
+    );
+
   }
 }
 function showDriveStatus(msg, isError, isSuccess) {
@@ -1435,36 +1465,205 @@ function showDriveStatus(msg, isError, isSuccess) {
 }
 
 function updateDriveUI(connected, cachedOnly) {
+
   var signInBtn = document.getElementById('driveSignInBtn');
   var signOutBtn = document.getElementById('driveSignOutBtn');
   var backupBtn = document.getElementById('driveBackupBtn');
   var restoreBtn = document.getElementById('driveRestoreBtn');
   var userInfo = document.getElementById('driveUserInfo');
-  
+
   var accountBtn = document.getElementById('driveAccountBtn');
   var avatar = document.getElementById('accountAvatar');
   var nameEl = document.getElementById('accountName');
   var checkEl = document.getElementById('accountCheck');
-  if(driveUser) {
-    if(avatar){ avatar.src = driveUser.picture || ''; avatar.style.display = driveUser.picture ? 'inline-flex' : 'none'; }
-    if(nameEl){ nameEl.textContent = driveUser.name || driveUser.email || 'حساب Google'; }
+
+  // التأكد من وجود العناصر
+  if (!signInBtn || !signOutBtn || !backupBtn || !restoreBtn || !userInfo) {
+    return;
   }
-  if(connected && driveUser) {
-    signInBtn.style.display = 'none'; signInBtn.textContent = '🔑 تسجيل الدخول بحساب Google'; signOutBtn.style.display = ''; backupBtn.disabled = false; restoreBtn.disabled = false;
-    userInfo.innerHTML = '<img src="' + escapeHtml(driveUser.picture || '') + '" alt=""><span>' + escapeHtml(driveUser.name || '') + ' (' + escapeHtml(driveUser.email || '') + ')</span> <span class="drive-status-connected">✓ متصل</span>';
-    if(accountBtn){ accountBtn.classList.add('connected'); accountBtn.title = 'حساب Google: ' + (driveUser.email || 'متصل'); }
-    if(checkEl) checkEl.style.display='inline';
-  } else if(cachedOnly && driveUser) {
-    signInBtn.style.display = ''; signInBtn.textContent = '🔑 إعادة الاتصال بحساب Google'; signOutBtn.style.display = ''; backupBtn.disabled = false; restoreBtn.disabled = false;
-    userInfo.innerHTML = '<img src="' + escapeHtml(driveUser.picture || '') + '" alt=""><span>' + escapeHtml(driveUser.name || '') + ' (' + escapeHtml(driveUser.email || '') + ')</span> <span class="drive-status-disconnected">⏳ جارٍ التحقق...</span>';
-    if(accountBtn){ accountBtn.classList.add('connected'); accountBtn.title = 'جارٍ التحقق من حساب Google'; }
-  } else {
-    signInBtn.style.display = ''; signOutBtn.style.display = 'none'; backupBtn.disabled = true; restoreBtn.disabled = true;
-    userInfo.innerHTML = '<span style="color:var(--ink-sub);">غير متصل بحساب Google</span> <span class="drive-status-disconnected">✗ غير متصل</span>';
-    if(accountBtn){ accountBtn.classList.remove('connected'); accountBtn.title = 'تسجيل الدخول بحساب Google'; }
-    if(checkEl) checkEl.style.display='none';
-    if(!cachedOnly) driveUser = null;
+
+  // =====================================================
+  // بيانات الحساب
+  // =====================================================
+  if (driveUser) {
+
+    var userName =
+      driveUser.name ||
+      driveUser.displayName ||
+      driveUser.email ||
+      'حساب Google';
+
+    var userEmail =
+      driveUser.email ||
+      '';
+
+    var userPicture =
+      driveUser.picture ||
+      driveUser.imageUrl ||
+      '';
+
+    if (avatar) {
+      if (userPicture) {
+        avatar.src = userPicture;
+        avatar.style.display = 'inline-flex';
+      } else {
+        avatar.removeAttribute('src');
+        avatar.style.display = 'none';
+      }
+    }
+
+    if (nameEl) {
+      nameEl.textContent = userName;
+    }
+
   }
+
+
+  // =====================================================
+  // متصل فعلياً
+  // =====================================================
+  if (connected && driveUser) {
+
+    signInBtn.style.display = 'none';
+    signInBtn.textContent = '🔑 تسجيل الدخول بحساب Google';
+
+    signOutBtn.style.display = '';
+
+    backupBtn.disabled = false;
+    restoreBtn.disabled = false;
+
+    var picture =
+      driveUser.picture ||
+      driveUser.imageUrl ||
+      '';
+
+    var name =
+      driveUser.name ||
+      driveUser.displayName ||
+      'حساب Google';
+
+    var email =
+      driveUser.email ||
+      '';
+
+    userInfo.innerHTML =
+      (picture
+        ? '<img src="' + escapeHtml(picture) + '" alt="">'
+        : '') +
+      '<span>' +
+      escapeHtml(name) +
+      (email
+        ? ' (' + escapeHtml(email) + ')'
+        : '') +
+      '</span> ' +
+      '<span class="drive-status-connected">✓ متصل</span>';
+
+    if (accountBtn) {
+      accountBtn.classList.add('connected');
+      accountBtn.title =
+        'حساب Google: ' +
+        (email || 'متصل');
+    }
+
+    if (checkEl) {
+      checkEl.style.display = 'inline';
+    }
+
+    return;
+  }
+
+
+  // =====================================================
+  // توجد بيانات محفوظة لكن لم يتم التحقق بعد
+  // =====================================================
+  if (cachedOnly && driveUser) {
+
+    signInBtn.style.display = '';
+    signInBtn.textContent =
+      '🔑 إعادة الاتصال بحساب Google';
+
+    signOutBtn.style.display = '';
+
+    backupBtn.disabled = false;
+    restoreBtn.disabled = false;
+
+    var cachedPicture =
+      driveUser.picture ||
+      driveUser.imageUrl ||
+      '';
+
+    var cachedName =
+      driveUser.name ||
+      driveUser.displayName ||
+      driveUser.email ||
+      'حساب Google';
+
+    var cachedEmail =
+      driveUser.email ||
+      '';
+
+    userInfo.innerHTML =
+      (cachedPicture
+        ? '<img src="' +
+          escapeHtml(cachedPicture) +
+          '" alt="">'
+        : '') +
+      '<span>' +
+      escapeHtml(cachedName) +
+      (cachedEmail
+        ? ' (' +
+          escapeHtml(cachedEmail) +
+          ')'
+        : '') +
+      '</span> ' +
+      '<span class="drive-status-disconnected">' +
+      '⏳ جارٍ التحقق...' +
+      '</span>';
+
+    if (accountBtn) {
+      accountBtn.classList.add('connected');
+      accountBtn.title =
+        'جارٍ التحقق من حساب Google';
+    }
+
+    return;
+  }
+
+
+  // =====================================================
+  // غير متصل
+  // =====================================================
+  signInBtn.style.display = '';
+  signInBtn.textContent =
+    '🔑 تسجيل الدخول بحساب Google';
+
+  signOutBtn.style.display = 'none';
+
+  backupBtn.disabled = true;
+  restoreBtn.disabled = true;
+
+  userInfo.innerHTML =
+    '<span style="color:var(--ink-sub);">' +
+    'غير متصل بحساب Google' +
+    '</span> ' +
+    '<span class="drive-status-disconnected">' +
+    '✗ غير متصل' +
+    '</span>';
+
+  if (accountBtn) {
+    accountBtn.classList.remove('connected');
+    accountBtn.title =
+      'تسجيل الدخول بحساب Google';
+  }
+
+  if (checkEl) {
+    checkEl.style.display = 'none';
+  }
+
+  if (!cachedOnly) {
+    driveUser = null;
+  }
+
 }
 
 function gapiLoaded() {
@@ -1487,13 +1686,54 @@ async function initializeGapiClient() {
 }
 
 function gisLoaded() {
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPES,
-    callback: '', // defined later
-  });
+
+  // =====================================================
+  // Android APK
+  // =====================================================
+  if (
+    window.Capacitor &&
+    typeof window.Capacitor.isNativePlatform === 'function' &&
+    window.Capacitor.isNativePlatform()
+  ) {
+    console.log(
+      'Android APK detected - skipping Web Google OAuth'
+    );
+
+    gisInited = true;
+    return;
+  }
+
+  // =====================================================
+  // المتصفح
+  // =====================================================
+  if (
+    typeof google === 'undefined' ||
+    !google.accounts ||
+    !google.accounts.oauth2
+  ) {
+    console.warn(
+      'Google Identity Services غير متاحة'
+    );
+    return;
+  }
+
+  tokenClient =
+    google.accounts.oauth2.initTokenClient({
+
+      client_id: CLIENT_ID,
+
+      scope: SCOPES,
+
+      callback: ''
+
+    });
+
   gisInited = true;
-  if(gapiInited) restoreGoogleSessionSilently();
+
+  if (gapiInited) {
+    restoreGoogleSessionSilently();
+  }
+
 }
 
 function fetchUserInfo(nativeResult) {
@@ -1574,20 +1814,128 @@ function fetchUserInfo(nativeResult) {
 }
 
 function checkLastBackup() {
-  gapi.client.drive.files.list({ q: "name='lab_backup.json' and trashed=false", fields: 'files(id, name, modifiedTime)', pageSize: 1 })
-    .then(function(resp){
-      var files = resp.result.files || [];
-      if(files.length > 0) {
-        var date = new Date(files[0].modifiedTime);
-        var dateStr = date.toLocaleDateString('ar-EG') + ' ' + date.toLocaleTimeString('ar-EG');
-        document.getElementById('driveLastBackup').textContent = '📅 آخر نسخة: ' + dateStr;
-        try { localStorage.setItem('lab_last_drive_backup_ts', String(date.getTime())); } catch(e) {}
-      } else {
-        document.getElementById('driveLastBackup').textContent = '📅 لا توجد نسخة احتياطية سابقة';
+
+  var token = null;
+
+  // =====================================================
+  // Android APK
+  // =====================================================
+  if (
+    window.Capacitor &&
+    typeof window.Capacitor.isNativePlatform === 'function' &&
+    window.Capacitor.isNativePlatform()
+  ) {
+    token = localStorage.getItem(
+      'lab_google_access_token'
+    );
+  }
+
+  // =====================================================
+  // المتصفح
+  // =====================================================
+  if (
+    !token &&
+    typeof gapi !== 'undefined' &&
+    gapi.client &&
+    gapi.client.getToken
+  ) {
+    var tokenObj = gapi.client.getToken();
+
+    if (tokenObj) {
+      token = tokenObj.access_token;
+    }
+  }
+
+  var lastBackupEl =
+    document.getElementById('driveLastBackup');
+
+  if (!lastBackupEl) {
+    return;
+  }
+
+  if (!token) {
+    lastBackupEl.textContent =
+      '📅 تعذر التحقق من النسخة';
+    return;
+  }
+
+  // =====================================================
+  // البحث عن آخر نسخة احتياطية
+  // =====================================================
+  fetch(
+    'https://www.googleapis.com/drive/v3/files' +
+    '?q=' +
+    encodeURIComponent(
+      "name='lab_backup.json' and trashed=false"
+    ) +
+    '&fields=' +
+    encodeURIComponent(
+      'files(id,name,modifiedTime)'
+    ) +
+    '&pageSize=1' +
+    '&orderBy=modifiedTime desc',
+    {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token
       }
-    }).catch(function(){
-      document.getElementById('driveLastBackup').textContent = '📅 تعذر التحقق من النسخة';
-    });
+    }
+  )
+  .then(function(response) {
+
+    if (!response.ok) {
+      throw new Error(
+        'HTTP ' + response.status
+      );
+    }
+
+    return response.json();
+
+  })
+  .then(function(data) {
+
+    var files = data.files || [];
+
+    if (files.length > 0) {
+
+      var date =
+        new Date(files[0].modifiedTime);
+
+      var dateStr =
+        date.toLocaleDateString('ar-EG') +
+        ' ' +
+        date.toLocaleTimeString('ar-EG');
+
+      lastBackupEl.textContent =
+        '📅 آخر نسخة: ' + dateStr;
+
+      try {
+        localStorage.setItem(
+          'lab_last_drive_backup_ts',
+          String(date.getTime())
+        );
+      } catch (e) {}
+
+    } else {
+
+      lastBackupEl.textContent =
+        '📅 لا توجد نسخة احتياطية سابقة';
+
+    }
+
+  })
+  .catch(function(error) {
+
+    console.error(
+      'Google Drive backup check error:',
+      error
+    );
+
+    lastBackupEl.textContent =
+      '📅 تعذر التحقق من النسخة';
+
+  });
+
 }
 async function requestGoogleAccess(interactive, callback) {
   try {
@@ -1921,55 +2269,747 @@ const accessToken =
     );
   }
   }
-function restoreGoogleSessionSilently(){ if(!tokenClient||!gapiInited||!gisInited)return; requestGoogleAccess(false,function(ok){if(!ok&&driveUser)updateDriveUI(false,true);}); }
+function restoreGoogleSessionSilently() {
 
-function driveSignOut() {
-  var token = gapi.client.getToken();
-  if(token) {
-    google.accounts.oauth2.revoke(token.access_token, function(){
-      gapi.client.setToken(null);
-      driveUser = null;
-      addAudit('تسجيل الخروج من Google Drive','backup','تم تسجيل الخروج من الحساب');
-      try { localStorage.removeItem('lab_google_user'); } catch(e) {}
-      updateDriveUI(false);
-      document.getElementById('driveLastBackup').textContent = '';
-      showDriveStatus('تم تسجيل الخروج', false);
-    });
-  } else {
-    updateDriveUI(false);
+  // =====================================================
+  // Android APK
+  // =====================================================
+  if (
+    window.Capacitor &&
+    typeof window.Capacitor.isNativePlatform === 'function' &&
+    window.Capacitor.isNativePlatform()
+  ) {
+
+    var savedUser = null;
+
+    try {
+      savedUser = localStorage.getItem(
+        'lab_google_user'
+      );
+    } catch (e) {}
+
+    if (savedUser) {
+
+      try {
+        driveUser = JSON.parse(savedUser);
+        updateDriveUI(false, true);
+      } catch (e) {
+        driveUser = null;
+      }
+
+    }
+
+    return;
   }
+
+
+  // =====================================================
+  // المتصفح
+  // =====================================================
+  if (
+    !tokenClient ||
+    !gapiInited ||
+    !gisInited
+  ) {
+    return;
+  }
+
+  requestGoogleAccess(
+    false,
+    function(ok) {
+
+      if (!ok && driveUser) {
+        updateDriveUI(false, true);
+      }
+
+    }
+  );
+
+}
+
+async function driveSignOut() {
+
+  try {
+
+    // =====================================================
+    // Android APK
+    // =====================================================
+    if (
+      window.Capacitor &&
+      typeof window.Capacitor.isNativePlatform === 'function' &&
+      window.Capacitor.isNativePlatform()
+    ) {
+
+      var GoogleSignIn =
+        window.Capacitor.Plugins &&
+        window.Capacitor.Plugins.GoogleSignIn;
+
+      try {
+
+        if (GoogleSignIn) {
+
+          await GoogleSignIn.signOut();
+
+        }
+
+      } catch (e) {
+
+        console.warn(
+          'Native Google Sign-Out warning:',
+          e
+        );
+
+      }
+
+      // حذف Access Token المحفوظ
+      try {
+        localStorage.removeItem(
+          'lab_google_access_token'
+        );
+      } catch (e) {}
+
+      // حذف بيانات الحساب
+      try {
+        localStorage.removeItem(
+          'lab_google_user'
+        );
+      } catch (e) {}
+
+      // إزالة بيانات الحساب من الذاكرة
+      driveUser = null;
+
+      // إزالة Token من GAPI أيضاً
+      if (
+        typeof gapi !== 'undefined' &&
+        gapi.client &&
+        typeof gapi.client.setToken === 'function'
+      ) {
+        gapi.client.setToken(null);
+      }
+
+      addAudit(
+        'تسجيل الخروج من Google Drive',
+        'backup',
+        'تم تسجيل الخروج من الحساب'
+      );
+
+      updateDriveUI(false);
+
+      var lastBackupEl =
+        document.getElementById('driveLastBackup');
+
+      if (lastBackupEl) {
+        lastBackupEl.textContent = '';
+      }
+
+      showDriveStatus(
+        'تم تسجيل الخروج',
+        false
+      );
+
+      return;
+    }
+
+
+    // =====================================================
+    // المتصفح
+    // =====================================================
+    var token =
+      typeof gapi !== 'undefined' &&
+      gapi.client &&
+      gapi.client.getToken
+        ? gapi.client.getToken()
+        : null;
+
+    if (token && token.access_token) {
+
+      if (
+        typeof google !== 'undefined' &&
+        google.accounts &&
+        google.accounts.oauth2
+      ) {
+
+        google.accounts.oauth2.revoke(
+          token.access_token,
+          function() {
+
+            gapi.client.setToken(null);
+
+            driveUser = null;
+
+            try {
+              localStorage.removeItem(
+                'lab_google_user'
+              );
+            } catch (e) {}
+
+            try {
+              localStorage.removeItem(
+                'lab_google_access_token'
+              );
+            } catch (e) {}
+
+            addAudit(
+              'تسجيل الخروج من Google Drive',
+              'backup',
+              'تم تسجيل الخروج من الحساب'
+            );
+
+            updateDriveUI(false);
+
+            var lastBackupEl =
+              document.getElementById(
+                'driveLastBackup'
+              );
+
+            if (lastBackupEl) {
+              lastBackupEl.textContent = '';
+            }
+
+            showDriveStatus(
+              'تم تسجيل الخروج',
+              false
+            );
+
+          }
+        );
+
+      }
+
+    } else {
+
+      driveUser = null;
+
+      try {
+        localStorage.removeItem(
+          'lab_google_user'
+        );
+
+        localStorage.removeItem(
+          'lab_google_access_token'
+        );
+      } catch (e) {}
+
+      updateDriveUI(false);
+
+      var lastBackupEl =
+        document.getElementById(
+          'driveLastBackup'
+        );
+
+      if (lastBackupEl) {
+        lastBackupEl.textContent = '';
+      }
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      'Google Sign-Out error:',
+      error
+    );
+
+    // تنظيف محلي حتى لو حصل خطأ
+    driveUser = null;
+
+    try {
+      localStorage.removeItem(
+        'lab_google_user'
+      );
+
+      localStorage.removeItem(
+        'lab_google_access_token'
+      );
+    } catch (e) {}
+
+    if (
+      typeof gapi !== 'undefined' &&
+      gapi.client &&
+      typeof gapi.client.setToken === 'function'
+    ) {
+      gapi.client.setToken(null);
+    }
+
+    updateDriveUI(false);
+
+    showDriveStatus(
+      'تم تسجيل الخروج',
+      false
+    );
+
+  }
+
 }
 
 function findBackupFile(callback) {
-  gapi.client.drive.files.list({
-    q: "name='lab_backup.json' and trashed=false",
-    fields: 'files(id, name, modifiedTime)',
-    pageSize: 1, orderBy: 'modifiedTime desc'
-  }).then(function(resp){
-    var files = resp.result.files || [];
-    callback(files.length > 0 ? files[0] : null);
-  }).catch(function(e){
-    showDriveStatus('خطأ في البحث: ' + e.message, true);
+
+  var token = null;
+
+  // =====================================================
+  // Android APK
+  // =====================================================
+  if (
+    window.Capacitor &&
+    typeof window.Capacitor.isNativePlatform === 'function' &&
+    window.Capacitor.isNativePlatform()
+  ) {
+
+    token = localStorage.getItem(
+      'lab_google_access_token'
+    );
+
+  }
+
+  // =====================================================
+  // المتصفح
+  // =====================================================
+  if (
+    !token &&
+    typeof gapi !== 'undefined' &&
+    gapi.client &&
+    gapi.client.getToken
+  ) {
+
+    var tokenObj = gapi.client.getToken();
+
+    if (tokenObj) {
+      token = tokenObj.access_token;
+    }
+
+  }
+
+  if (!token) {
+    showDriveStatus(
+      'الرجاء تسجيل الدخول إلى Google أولاً',
+      true
+    );
+
     callback(null);
+    return;
+  }
+
+  // =====================================================
+  // البحث عن ملف النسخة الاحتياطية
+  // =====================================================
+  fetch(
+    'https://www.googleapis.com/drive/v3/files' +
+    '?q=' +
+    encodeURIComponent(
+      "name='lab_backup.json' and trashed=false"
+    ) +
+    '&fields=' +
+    encodeURIComponent(
+      'files(id,name,modifiedTime)'
+    ) +
+    '&pageSize=1' +
+    '&orderBy=modifiedTime desc',
+    {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }
+  )
+  .then(function(response) {
+
+    if (!response.ok) {
+
+      return response.text().then(function(text) {
+
+        var message = 'HTTP ' + response.status;
+
+        try {
+
+          var errorData = JSON.parse(text);
+
+          if (
+            errorData.error &&
+            errorData.error.message
+          ) {
+            message = errorData.error.message;
+          }
+
+        } catch (e) {}
+
+        throw new Error(message);
+
+      });
+
+    }
+
+    return response.json();
+
+  })
+  .then(function(data) {
+
+    var files = data.files || [];
+
+    callback(
+      files.length > 0
+        ? files[0]
+        : null
+    );
+
+  })
+  .catch(function(e) {
+
+    console.error(
+      'Google Drive search error:',
+      e
+    );
+
+    showDriveStatus(
+      'خطأ في البحث: ' + e.message,
+      true
+    );
+
+    callback(null);
+
+  });
+
+}
+
+async function uploadBackupToDrive(backupData, silent) {
+  try {
+    var token = null;
+
+    // APK
+    if (
+      window.Capacitor &&
+      typeof window.Capacitor.isNativePlatform === 'function' &&
+      window.Capacitor.isNativePlatform()
+    ) {
+      token = localStorage.getItem('lab_google_access_token');
+    }
+
+    // المتصفح
+    if (!token && typeof gapi !== 'undefined' && gapi.client && gapi.client.getToken) {
+      var tokenObj = gapi.client.getToken();
+      if (tokenObj) token = tokenObj.access_token;
+    }
+
+    if (!token) {
+      if (!silent) showDriveStatus('الرجاء تسجيل الدخول أولاً', true);
+      return;
+    }
+
+    findBackupFile(function(file) {
+
+      var form = new FormData();
+
+      form.append(
+        'metadata',
+        new Blob(
+          [JSON.stringify({
+            name: 'lab_backup.json',
+            mimeType: 'application/json'
+          })],
+          { type: 'application/json' }
+        )
+      );
+
+      form.append(
+        'file',
+        new Blob(
+          [JSON.stringify(backupData, null, 2)],
+          { type: 'application/json' }
+        )
+      );
+
+      var url = file
+        ? 'https://www.googleapis.com/upload/drive/v3/files/' +
+          encodeURIComponent(file.id) +
+          '?uploadType=multipart'
+        : 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';
+
+      fetch(url, {
+        method: file ? 'PATCH' : 'POST',
+        headers: {
+          Authorization: 'Bearer ' + token
+        },
+        body: form
+      })
+      .then(function(r) {
+        if (!r.ok) {
+          return r.json().then(function(e) {
+            throw new Error(
+              (e.error && e.error.message) ||
+              ('HTTP ' + r.status)
+            );
+          });
+        }
+
+        return r.json();
+      })
+      .then(function() {
+
+        var now = Date.now();
+
+        try {
+          localStorage.setItem(
+            'lab_last_drive_backup_ts',
+            String(now)
+          );
+        } catch (e) {}
+
+        addAudit(
+          'رفع نسخة احتياطية إلى Google Drive',
+          'backup',
+          'تم حفظ نسخة سحابية بنجاح'
+        );
+
+        if (!silent) {
+          showDriveStatus(
+            '✅ تم حفظ النسخة الاحتياطية في Drive',
+            false,
+            true
+          );
+        }
+
+        checkLastBackup();
+
+      })
+      .catch(function(e) {
+
+        if (!silent) {
+          showDriveStatus(
+            '❌ فشل الرفع: ' + e.message,
+            true
+          );
+        }
+  function driveBackup(silent) {
+  ensureDriveAuth(function(ok) {
+
+    if (!ok) {
+      if (!silent) {
+        showDriveStatus('الرجاء تسجيل الدخول أولاً', true);
+      }
+      return;
+    }
+
+    try {
+
+      uploadBackupToDrive({
+        app: 'lab-app',
+        version: 2,
+        exportedAt: new Date().toISOString(),
+        patients: state.patients,
+        settings: state.settings,
+        auditLog: state.auditLog || []
+      }, !!silent);
+
+    } catch (e) {
+
+      if (!silent) {
+        showDriveStatus(
+          'خطأ: ' + e.message,
+          true
+        );
+      }
+
+    }
+
   });
 }
 
-function uploadBackupToDrive(backupData, silent) {
-  var tokenObj=(typeof gapi!=='undefined'&&gapi.client&&gapi.client.getToken)?gapi.client.getToken():null;
-  if(!tokenObj){if(!silent)showDriveStatus('الرجاء تسجيل الدخول أولاً',true);return;}
-  var token=tokenObj.access_token;
-  findBackupFile(function(file){
-    var form=new FormData();
-    form.append('metadata',new Blob([JSON.stringify({name:'lab_backup.json',mimeType:'application/json'})],{type:'application/json'}));
-    form.append('file',new Blob([JSON.stringify(backupData,null,2)],{type:'application/json'}));
-    var url=file?'https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(file.id)+'?uploadType=multipart':'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';
-    fetch(url,{method:file?'PATCH':'POST',headers:{Authorization:'Bearer '+token},body:form}).then(function(r){if(!r.ok)return r.json().then(function(e){throw new Error((e.error&&e.error.message)||('HTTP '+r.status));});return r.json();}).then(function(){var now=Date.now();try{localStorage.setItem('lab_last_drive_backup_ts',String(now));}catch(e){} addAudit('رفع نسخة احتياطية إلى Google Drive','backup','تم حفظ نسخة سحابية بنجاح'); if(!silent)showDriveStatus('✅ تم حفظ النسخة الاحتياطية في Drive',false,true); checkLastBackup();}).catch(function(e){if(!silent)showDriveStatus('❌ فشل الرفع: '+e.message,true);});
+
+async function driveRestore() {
+
+  ensureDriveAuth(function(ok) {
+
+    if (!ok) {
+      showDriveStatus(
+        'الرجاء تسجيل الدخول أولاً',
+        true
+      );
+      return;
+    }
+
+    findBackupFile(function(file) {
+
+      if (!file) {
+        showDriveStatus(
+          'لا يوجد ملف نسخ في Drive',
+          true
+        );
+        return;
+      }
+
+      var token = null;
+
+      // Android APK
+      if (
+        window.Capacitor &&
+        typeof window.Capacitor.isNativePlatform === 'function' &&
+        window.Capacitor.isNativePlatform()
+      ) {
+
+        token = localStorage.getItem(
+          'lab_google_access_token'
+        );
+
+      }
+
+      // المتصفح
+      if (
+        !token &&
+        typeof gapi !== 'undefined' &&
+        gapi.client &&
+        gapi.client.getToken
+      ) {
+
+        var tokenObj = gapi.client.getToken();
+
+        if (tokenObj) {
+          token = tokenObj.access_token;
+        }
+
+      }
+
+      if (!token) {
+        showDriveStatus(
+          'الرجاء تسجيل الدخول إلى Google أولاً',
+          true
+        );
+        return;
+      }
+
+      fetch(
+        'https://www.googleapis.com/drive/v3/files/' +
+        encodeURIComponent(file.id) +
+        '?alt=media',
+        {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
+        }
+      )
+      .then(function(response) {
+
+        if (!response.ok) {
+
+          return response.text().then(function(text) {
+
+            var message = 'HTTP ' + response.status;
+
+            try {
+
+              var errorData = JSON.parse(text);
+
+              if (
+                errorData.error &&
+                errorData.error.message
+              ) {
+                message = errorData.error.message;
+              }
+
+            } catch (e) {}
+
+            throw new Error(message);
+
+          });
+
+        }
+
+        return response.json();
+
+      })
+      .then(function(data) {
+
+        if (
+          !data.patients ||
+          !Array.isArray(data.patients)
+        ) {
+
+          showDriveStatus(
+            'ملف النسخة غير صالح',
+            true
+          );
+
+          return;
+        }
+
+        if (
+          !confirm(
+            'سيتم استبدال كل البيانات الحالية بالنسخة من Drive (' +
+            data.patients.length +
+            ' مريض). متابعة؟'
+          )
+        ) {
+          return;
+        }
+
+        state.patients = data.patients;
+
+        if (data.settings) {
+          state.settings = Object.assign(
+            state.settings,
+            data.settings
+          );
+        }
+
+        if (
+          data.auditLog &&
+          Array.isArray(data.auditLog)
+        ) {
+          state.auditLog = data.auditLog;
+        }
+
+        saveData();
+        saveSettingsData();
+
+        try {
+
+          localStorage.setItem(
+            STORAGE_KEY_AUDIT,
+            JSON.stringify(
+              state.auditLog || []
+            )
+          );
+
+        } catch (e) {}
+
+        restoreCustomTests();
+        applyTheme();
+        applyLogo();
+        renderHeader();
+        renderList();
+        updateAuditBadge();
+
+        addAudit(
+          'استيراد نسخة من Google Drive',
+          'backup',
+          'تم استعادة النسخة السحابية'
+        );
+
+        showDriveStatus(
+          '✅ تم استيراد النسخة من Drive',
+          false,
+          true
+        );
+
+      })
+      .catch(function(e) {
+
+        console.error(
+          'Google Drive restore error:',
+          e
+        );
+
+        showDriveStatus(
+          '❌ فشل تحميل الملف: ' + e.message,
+          true
+        );
+
+      });
+
+    });
+
   });
+
 }
-
-function driveBackup(silent){ ensureDriveAuth(function(ok){ if(!ok){if(!silent)showDriveStatus('الرجاء تسجيل الدخول أولاً',true);return;} try{uploadBackupToDrive({app:'lab-app',version:2,exportedAt:new Date().toISOString(),patients:state.patients,settings:state.settings,auditLog:state.auditLog||[]},!!silent);}catch(e){if(!silent)showDriveStatus('خطأ: '+e.message,true);}}); }
-
-function driveRestore(){ ensureDriveAuth(function(ok){ if(!ok){showDriveStatus('الرجاء تسجيل الدخول أولاً',true);return;} findBackupFile(function(file){ if(!file){showDriveStatus('لا يوجد ملف نسخ في Drive',true);return;} gapi.client.drive.files.get({fileId:file.id,alt:'media'}).then(function(resp){var data=resp.result;if(!data.patients||!Array.isArray(data.patients)){showDriveStatus('ملف النسخة غير صالح',true);return;} if(!confirm('سيتم استبدال كل البيانات الحالية بالنسخة من Drive ('+data.patients.length+' مريض). متابعة؟'))return; state.patients=data.patients;if(data.settings)state.settings=Object.assign(state.settings,data.settings);if(data.auditLog&&Array.isArray(data.auditLog))state.auditLog=data.auditLog;saveData();saveSettingsData();try{localStorage.setItem(STORAGE_KEY_AUDIT,JSON.stringify(state.auditLog||[]));}catch(e){} restoreCustomTests();applyTheme();applyLogo();renderHeader();renderList();updateAuditBadge();addAudit('استيراد نسخة من Google Drive','backup','تم استعادة النسخة السحابية');showDriveStatus('✅ تم استيراد النسخة من Drive',false,true);}).catch(function(e){showDriveStatus('فشل تحميل الملف: '+e.message,true);}); }); }); }
 
 // تحميل مكتبات Google
 (function loadDriveLibs(){
