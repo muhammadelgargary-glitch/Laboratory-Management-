@@ -34,7 +34,9 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Create standard Android Debug Keystore
+      # Create the exact Android Debug Keystore
+      # used by Google Cloud OAuth configuration
+      - name: Create Google OAuth Debug Keystore
         run: |
           mkdir -p ~/.android
           rm -f ~/.android/debug.keystore
@@ -50,23 +52,26 @@ jobs:
             -validity 10000 \
             -dname "CN=Android Debug,O=Android,C=US"
 
-      - name: Show Debug Keystore SHA-1
+      - name: Show Debug SHA-1
         run: |
           echo "===== DEBUG KEY SHA-1 ====="
+
           keytool -list -v \
             -keystore ~/.android/debug.keystore \
             -storepass android \
-            -alias androiddebugkey | grep -E "Alias name:|SHA1:|SHA-1:"
+            -alias androiddebugkey
 
       - name: Show Android Signing Report
         working-directory: android
-        run: ./gradlew signingReport
+        run: |
+          ./gradlew signingReport
 
       - name: Build Debug APK
         working-directory: android
-        run: ./gradlew assembleDebug
+        run: |
+          ./gradlew assembleDebug
 
-      - name: Verify APK exists
+      - name: Verify APK
         run: |
           test -f android/app/build/outputs/apk/debug/app-debug.apk
           echo "APK created successfully."
