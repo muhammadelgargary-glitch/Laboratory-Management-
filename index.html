@@ -1504,7 +1504,89 @@ function ensureDriveAuth(callback){
   if(typeof gapi!=='undefined' && gapi.client && gapi.client.getToken && gapi.client.getToken()){ if(callback)callback(true); return; }
   requestGoogleAccess(false,function(ok){ if(ok){if(callback)callback(true);} else requestGoogleAccess(true,function(ok2){if(callback)callback(!!ok2);}); });
 }
-function driveSignIn(){ requestGoogleAccess(true,function(ok){ if(!ok)showDriveStatus('تعذر تسجيل الدخول إلى Google',true); else showDriveStatus('✅ تم تسجيل الدخول بنجاح',false,true); }); }
+async function driveSignIn() {
+  try {
+    // إذا كان التطبيق يعمل كـ APK
+    if (
+      window.Capacitor &&
+      typeof window.Capacitor.isNativePlatform === 'function' &&
+      window.Capacitor.isNativePlatform()
+    ) {
+      const GoogleSignIn = window.Capacitor.Plugins.GoogleSignIn;
+
+      if (!GoogleSignIn) {
+        showDriveStatus('إضافة Google Sign-In غير محملة', true);
+        return;
+      }
+
+      showDriveStatus('جاري تسجيل الدخول إلى Google...', false);
+
+      const result = await GoogleSignIn.signIn();
+
+      console.log('Google Sign-In result:', result);
+
+      if (result && result.accessToken) {
+        // حفظ Access Token حتى نستخدمه مع Google Drive
+        localStorage.setItem(
+          'lab_google_access_token',
+          result.accessToken
+        );
+
+        if (result.user) {
+          driveUser = result.user;
+
+          try {
+            localStorage.setItem(
+              'lab_google_user',
+              JSON.stringify(result.user)
+            );
+          } catch (e) {}
+        }
+
+        updateDriveUI(true);
+        checkLastBackup();
+        scheduleAutoDriveBackup();
+
+        showDriveStatus(
+          '✅ تم تسجيل الدخول بنجاح',
+          false,
+          true
+        );
+      } else {
+        showDriveStatus(
+          'تعذر الحصول على صلاحية Google Drive',
+          true
+        );
+      }
+
+      return;
+    }
+
+    // إذا كان يعمل من المتصفح، استخدم الطريقة القديمة
+    requestGoogleAccess(true, function(ok) {
+      if (!ok) {
+        showDriveStatus(
+          'تعذر تسجيل الدخول إلى Google',
+          true
+        );
+      } else {
+        showDriveStatus(
+          '✅ تم تسجيل الدخول بنجاح',
+          false,
+          true
+        );
+      }
+    });
+
+  } catch (error) {
+    console.error('Google Sign-In error:', error);
+
+    showDriveStatus(
+      'تعذر تسجيل الدخول إلى Google',
+      true
+    );
+  }
+  }
 function restoreGoogleSessionSilently(){ if(!tokenClient||!gapiInited||!gisInited)return; requestGoogleAccess(false,function(ok){if(!ok&&driveUser)updateDriveUI(false,true);}); }
 
 function driveSignOut() {
