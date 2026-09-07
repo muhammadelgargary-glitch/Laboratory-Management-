@@ -1251,17 +1251,17 @@ function updateDriveUI(connected) {
   var userInfo = document.getElementById('driveUserInfo');
   
   if(connected && driveUser) {
-    signInBtn.style.display = 'none';
-    signOutBtn.style.display = '';
-    backupBtn.disabled = false;
-    restoreBtn.disabled = false;
-    userInfo.innerHTML = '<img src="' + driveUser.picture + '" alt=""><span>' + driveUser.name + ' (' + driveUser.email + ')</span> <span class="drive-status-connected">✓ متصل</span>';
+    if(signInBtn) signInBtn.style.display = 'none';
+    if(signOutBtn) signOutBtn.style.display = '';
+    if(backupBtn) backupBtn.disabled = false;
+    if(restoreBtn) restoreBtn.disabled = false;
+    if(userInfo) userInfo.innerHTML = '<img src="' + driveUser.picture + '" alt="" style="width:28px;height:28px;border-radius:50%;"><span>' + driveUser.name + ' (' + driveUser.email + ')</span> <span class="drive-status-connected">✓ متصل</span>';
   } else {
-    signInBtn.style.display = '';
-    signOutBtn.style.display = 'none';
-    backupBtn.disabled = true;
-    restoreBtn.disabled = true;
-    userInfo.innerHTML = '<span style="color:var(--ink-sub);">غير متصل بحساب Google</span> <span class="drive-status-disconnected">✗ غير متصل</span>';
+    if(signInBtn) signInBtn.style.display = '';
+    if(signOutBtn) signOutBtn.style.display = 'none';
+    if(backupBtn) backupBtn.disabled = true;
+    if(restoreBtn) restoreBtn.disabled = true;
+    if(userInfo) userInfo.innerHTML = '<span style="color:var(--ink-sub);">غير متصل بحساب Google</span> <span class="drive-status-disconnected">✗ غير متصل</span>';
     driveUser = null;
   }
 }
@@ -1277,7 +1277,6 @@ async function initializeGapiClient() {
       discoveryDocs: DISCOVERY_DOCS,
     });
     gapiInited = true;
-    // التحقق من وجود توكن
     var token = gapi.client.getToken();
     if(token) {
       fetchUserInfo();
@@ -1291,7 +1290,7 @@ function gisLoaded() {
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
     scope: SCOPES,
-    callback: '', // defined later
+    callback: '',
   });
   gisInited = true;
 }
@@ -1301,7 +1300,6 @@ function fetchUserInfo() {
     .then(function(resp){
       driveUser = resp.result;
       updateDriveUI(true);
-      // حفظ آخر نسخة احتياطية في Drive
       checkLastBackup();
     }).catch(function(){
       updateDriveUI(false);
@@ -1312,15 +1310,19 @@ function checkLastBackup() {
   gapi.client.drive.files.list({ q: "name='lab_backup.json' and trashed=false", fields: 'files(id, name, modifiedTime)', pageSize: 1 })
     .then(function(resp){
       var files = resp.result.files || [];
-      if(files.length > 0) {
-        var date = new Date(files[0].modifiedTime);
-        var dateStr = date.toLocaleDateString('ar-EG') + ' ' + date.toLocaleTimeString('ar-EG');
-        document.getElementById('driveLastBackup').textContent = '📅 آخر نسخة: ' + dateStr;
-      } else {
-        document.getElementById('driveLastBackup').textContent = '📅 لا توجد نسخة احتياطية سابقة';
+      var el = document.getElementById('driveLastBackup');
+      if(el) {
+        if(files.length > 0) {
+          var date = new Date(files[0].modifiedTime);
+          var dateStr = date.toLocaleDateString('ar-EG') + ' ' + date.toLocaleTimeString('ar-EG');
+          el.textContent = '📅 آخر نسخة: ' + dateStr;
+        } else {
+          el.textContent = '📅 لا توجد نسخة احتياطية سابقة';
+        }
       }
     }).catch(function(){
-      document.getElementById('driveLastBackup').textContent = '📅 تعذر التحقق من النسخة';
+      var el = document.getElementById('driveLastBackup');
+      if(el) el.textContent = '📅 تعذر التحقق من النسخة';
     });
 }
 
@@ -1336,6 +1338,10 @@ function driveSignIn() {
       return;
     }
     gapi.client.setToken(resp);
+    var b1 = document.getElementById('driveBackupBtn'); 
+    var b2 = document.getElementById('driveRestoreBtn');
+    if(b1) b1.disabled = false;
+    if(b2) b2.disabled = false;
     fetchUserInfo();
     showDriveStatus('✅ تم تسجيل الدخول بنجاح', false, true);
   };
@@ -1349,7 +1355,8 @@ function driveSignOut() {
       gapi.client.setToken(null);
       driveUser = null;
       updateDriveUI(false);
-      document.getElementById('driveLastBackup').textContent = '';
+      var el = document.getElementById('driveLastBackup');
+      if(el) el.textContent = '';
       showDriveStatus('تم تسجيل الخروج', false);
     });
   } else {
@@ -1407,6 +1414,10 @@ function uploadBackupToDrive(backupData) {
 }
 
 function driveBackup() {
+  if(!gapi.client.getToken()) {
+    showDriveStatus('الرجاء تسجيل الدخول أولاً', true);
+    return;
+  }
   try {
     var backup = { app: 'lab-app', version: 1, exportedAt: new Date().toISOString(), patients: state.patients, settings: state.settings };
     uploadBackupToDrive(backup);
@@ -1459,307 +1470,12 @@ function driveRestore() {
     gisLoaded();
   }
 })();
-    // ربط الأحداث الرئيسية
-document.addEventListener('DOMContentLoaded', function(){
-  loadData();
 
-  // Drive buttons
-  document.getElementById('driveSignInBtn').addEventListener('click', driveSignIn);
-  document.getElementById('driveSignOutBtn').addEventListener('click', driveSignOut);
-  document.getElementById('driveBackupBtn').addEventListener('click', driveBackup);
-  document.getElementById('driveRestoreBtn').addEventListener('click', driveRestore);
-
-  document.getElementById('darkModeToggle').addEventListener('click', function(){
-    state.settings.darkMode = !state.settings.darkMode; saveSettingsData(); applyTheme();
-  });
-  document.getElementById('uiSettingsBtn').addEventListener('click', function(){ document.getElementById('uiSettingsOverlay').classList.add('open'); });
-  document.getElementById('closeUiSettingsSheet').addEventListener('click', function(){ document.getElementById('uiSettingsOverlay').classList.remove('open'); });
-  document.getElementById('closeUiSettingsBtn').addEventListener('click', function(){ document.getElementById('uiSettingsOverlay').classList.remove('open'); });
-
-  document.querySelectorAll('.color-dot').forEach(function(dot){
-    dot.addEventListener('click', function(){
-      document.querySelectorAll('.color-dot').forEach(function(d){ d.classList.remove('active'); });
-      dot.classList.add('active');
-      state.settings.theme = dot.getAttribute('data-theme');
-      state.settings.customAccent = null;
-      saveSettingsData(); applyTheme();
-    });
-  });
-
-  document.getElementById('customAccentColor').addEventListener('input', function(e){
-    state.settings.customAccent = e.target.value; saveSettingsData(); applyTheme();
-  });
-  document.getElementById('resetAccentBtn').addEventListener('click', function(){
-    state.settings.customAccent = null; saveSettingsData(); applyTheme(); toast('تم استعادة اللون الافتراضي');
-  });
-
-  document.getElementById('fontSizeSlider').addEventListener('input', function(){
-    state.settings.fontSizePx = parseInt(this.value, 10);
-    document.documentElement.style.setProperty('--app-font-size', state.settings.fontSizePx + 'px');
-    document.getElementById('fontSizeValueLabel').textContent = state.settings.fontSizePx + 'px';
-  });
-  document.getElementById('fontSizeSlider').addEventListener('change', function(){ saveSettingsData(); });
-
-  document.getElementById('fontFamilySelect').addEventListener('change', function(){
-    state.settings.fontFamily = this.value;
-    document.documentElement.style.setProperty('--app-font-family', "'" + this.value + "'");
-    saveSettingsData();
-  });
-
-  document.querySelectorAll('.density-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      state.settings.density = btn.getAttribute('data-density'); saveSettingsData(); applyTheme();
-    });
-  });
-
-  document.querySelectorAll('.icon-shape-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      state.settings.iconShape = btn.getAttribute('data-shape'); saveSettingsData(); applyTheme();
-    });
-  });
-
-  document.querySelectorAll('.logo-size-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      state.settings.logoSize = btn.getAttribute('data-size'); saveSettingsData(); applyTheme();
-    });
-  });
-
-  document.getElementById('toggleLogoBorder').addEventListener('click', function(){
-    state.settings.logoBorder = state.settings.logoBorder === false; saveSettingsData(); applyTheme();
-  });
-
-  document.getElementById('uiDarkModeToggle').addEventListener('click', function(){
-    state.settings.darkMode = !state.settings.darkMode; saveSettingsData(); applyTheme();
-  });
-
-  document.getElementById('resetAppearanceBtn').addEventListener('click', function(){
-    if(confirm('هل تريد إعادة تعيين كافة إعدادات المظهر؟')){
-      state.settings.theme = 'default'; state.settings.customAccent = null; state.settings.fontSizePx = 14;
-      state.settings.fontFamily = 'Tajawal'; state.settings.density = 'comfortable'; state.settings.iconShape = 'circle';
-      state.settings.logoSize = 'medium'; state.settings.logoBorder = true; state.settings.darkMode = false;
-      saveSettingsData(); applyTheme(); toast('تم إعادة تعيين المظهر');
-    }
-  });
-
-  document.getElementById('catalogBtn').addEventListener('click', function(){ renderCatalog(); document.getElementById('catalogOverlay').classList.add('open'); });
-  document.getElementById('closeCatalogSheet').addEventListener('click', function(){ document.getElementById('catalogOverlay').classList.remove('open'); });
-
-  document.getElementById('closeReportSheet').addEventListener('click', function(){ document.getElementById('reportOverlay').classList.remove('open'); });
-  document.getElementById('closeReportBtn').addEventListener('click', function(){ document.getElementById('reportOverlay').classList.remove('open'); });
-  document.getElementById('doPrintBtn').addEventListener('click', function(){ window.print(); });
-
-  document.getElementById('btnToolLang').addEventListener('click', function(){ setReportLanguage(reportLang === 'en' ? 'ar' : 'en'); });
-  document.getElementById('btnToolStyle').addEventListener('click', function(){
-    var panel = document.getElementById('tableStylePanel');
-    panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
-  });
-  document.getElementById('btnToolFont').addEventListener('click', function(){
-    fontSizeIdx = (fontSizeIdx + 1) % FONT_SIZES.length; setReportFontSize();
-  });
-  document.getElementById('btnToolEdit').addEventListener('click', function(){
-    var centerElem = document.getElementById('printCenter');
-    if(centerElem){ var newTitle = prompt('أدخل اسم المركز الجديد:', centerElem.innerText); if(newTitle && newTitle.trim() !== '') centerElem.innerText = newTitle; }
-  });
-  ['tblBorderColor','tblHeadBg','tblHeadText'].forEach(function(id){
-    document.getElementById(id).addEventListener('input', applyTableStyle);
-  });
-  document.getElementById('tblStyleResetBtn').addEventListener('click', function(){
-    document.getElementById('tblBorderColor').value = '#111111';
-    document.getElementById('tblHeadBg').value = '#ededed';
-    document.getElementById('tblHeadText').value = '#000000';
-    applyTableStyle();
-  });
-
-  document.getElementById('savePdfBtn').addEventListener('click', function(){
-    var paper = document.getElementById('reportPaper');
-    if(!paper){ toast('لا يوجد تقرير مفتوح'); return; }
-    if(typeof html2pdf === 'undefined'){ toast('تعذر تحميل أداة PDF، تأكد من الاتصال بالإنترنت'); return; }
-    toast('جاري إنشاء ملف PDF...');
-    html2pdf().set({ margin: 5, filename: 'تقرير_طبي_' + todayISO() + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } })
-      .from(paper).save().then(function(){ toast('تم إنشاء وتنزيل ملف PDF'); })
-      .catch(function(e){ toast('تعذر إنشاء PDF: ' + (e && e.message ? e.message : 'خطأ غير معروف')); });
-  });
-
-  document.getElementById('shareReportBtn').addEventListener('click', function(){
-    var paper = document.getElementById('reportPaper');
-    if(!paper){ toast('لا يوجد تقرير'); return; }
-    if(typeof html2pdf === 'undefined'){ toast('تعذر تحميل أداة PDF'); return; }
-    toast('جاري تجهيز الملف للمشاركة...');
-    html2pdf().set({ margin: 5, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } })
-      .from(paper).outputPdf('blob').then(function(pdfBlob){
-        var file = new File([pdfBlob], 'تقرير_طبي.pdf', { type: 'application/pdf' });
-        if(navigator.canShare && navigator.canShare({ files: [file] })){ return navigator.share({ files: [file], title: 'تقرير طبي' }); }
-        toast('المشاركة غير مدعومة في هذا المتصفح');
-      }).catch(function(e){ if(e && e.name !== 'AbortError') toast('تعذرت المشاركة: ' + (e.message || '')); });
-  });
-  if(navigator.share){ var sb0 = document.getElementById('shareReportBtn'); if(sb0) sb0.style.display = ''; }
-
-  document.getElementById('exportReportBtn').addEventListener('click', function(){
-    var html = document.getElementById('printArea').innerHTML;
-    var blob = new Blob(['<!DOCTYPE html><html><head><meta charset="UTF-8"><title>تقرير طبي</title><style>body{font-family:sans-serif; direction:rtl; padding:20px;}</style></head><body>' + html + '</body></html>'], {type:'text/html;charset=utf-8'});
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'تقرير_طبي.html';
-    a.click();
-  });
-
-  document.querySelectorAll('.filter-btn[data-filter]').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      document.querySelectorAll('.filter-btn[data-filter]').forEach(function(b){ b.classList.remove('active'); });
-      btn.classList.add('active');
-      state.activeFilter = btn.getAttribute('data-filter');
-      renderList();
-    });
-  });
-
-  TEST_SECTIONS.forEach(function(sec){
-    var tog = document.getElementById(sec.toggleId);
-    if(tog){
-      tog.addEventListener('click', function(){
-        var sw = document.getElementById(sec.switchId);
-        var isOn = sw.classList.contains('on');
-        setSwitch(sec, !isOn);
-      });
-    }
-  });
-
-  document.getElementById('fillNormalUrineBtn').addEventListener('click', function(){
-    document.getElementById('u_color').value = 'Yellow';
-    document.getElementById('u_appearance').value = 'Clear';
-    document.getElementById('u_ph').value = '6.0';
-    document.getElementById('u_protein').value = 'Negative';
-    document.getElementById('u_glucose').value = 'Negative';
-    document.getElementById('u_rbc').value = '0-2';
-    document.getElementById('u_pus').value = '1-2';
-    document.getElementById('u_epithelial').value = 'Few';
-    document.getElementById('u_crystals').value = 'Nill';
-    toast('تم تعبئة القيم الافتراضية للبول');
-  });
-
-  document.getElementById('addBtn').addEventListener('click', function(){ openPatientSheet(null); });
-  document.getElementById('fabAdd').addEventListener('click', function(){ openPatientSheet(null); });
-  document.getElementById('closePatientSheet').addEventListener('click', function(){ document.getElementById('patientOverlay').classList.remove('open'); });
-  document.getElementById('cancelPatientBtn').addEventListener('click', function(){ document.getElementById('patientOverlay').classList.remove('open'); });
-  document.getElementById('savePatientBtn').addEventListener('click', savePatient);
-  document.getElementById('searchInput').addEventListener('input', renderList);
-  document.getElementById('exportAllExcelBtn').addEventListener('click', exportAllPatientsExcel);
-  document.getElementById('statsBtn').addEventListener('click', function(){ renderStats(); document.getElementById('statsOverlay').classList.add('open'); });
-  document.getElementById('statsPeriodSelect').addEventListener('change', renderStats);
-  document.getElementById('statsSettingsBtn').addEventListener('click', function(){ document.getElementById('statsSettingsOverlay').classList.add('open'); });
-  document.getElementById('closeStatsSettingsSheet').addEventListener('click', function(){ document.getElementById('statsSettingsOverlay').classList.remove('open'); });
-  document.getElementById('closeStatsSettingsBtn').addEventListener('click', function(){ document.getElementById('statsSettingsOverlay').classList.remove('open'); });
-  document.getElementById('toggleStatsGender').addEventListener('click', function(){
-    state.settings.statsShowGender = state.settings.statsShowGender === false; saveSettingsData(); applyStatsSettings();
-  });
-  document.getElementById('toggleStatsChart').addEventListener('click', function(){
-    state.settings.statsShowChart = state.settings.statsShowChart === false; saveSettingsData(); applyStatsSettings();
-  });
-  document.getElementById('toggleStatsDetailsAuto').addEventListener('click', function(){
-    state.settings.statsAutoDetails = !state.settings.statsAutoDetails; saveSettingsData(); renderStats();
-  });
-  document.getElementById('exportStatsExcelBtn').addEventListener('click', exportStatsExcel);
-  document.getElementById('closeStatsSheet').addEventListener('click', function(){ document.getElementById('statsOverlay').classList.remove('open'); });
-          document.getElementById('settingsBtn').addEventListener('click', function(){
-          document.getElementById('s_center').value = state.settings.center || '';
-          document.getElementById('s_directorate').value = state.settings.directorate || '';
-          if(state.settings.logo) {
-            var previewImg = document.querySelector('#settingsOverlay .logo-preview img');
-            var previewSpan = document.querySelector('#settingsOverlay .logo-preview span');
-            if(previewImg) { previewImg.src = state.settings.logo; previewImg.style.display = 'block'; }
-            if(previewSpan) previewSpan.style.display = 'none';
-          } else {
-            var previewImg2 = document.querySelector('#settingsOverlay .logo-preview img');
-            var previewSpan2 = document.querySelector('#settingsOverlay .logo-preview span');
-            if(previewImg2) previewImg2.style.display = 'none';
-            if(previewSpan2) previewSpan2.style.display = 'block';
-          }
-          // تحديث حالة Drive
-          if(gapi && gapi.client && gapi.client.getToken){
-            var token = gapi.client.getToken();
-            if(token) { fetchUserInfo(); } else { updateDriveUI(false); }
-          }
-          document.getElementById('settingsOverlay').classList.add('open');
-        });
-        document.getElementById('closeSettingsSheet').addEventListener('click', function(){ document.getElementById('settingsOverlay').classList.remove('open'); });
-
-        document.getElementById('s_logo').addEventListener('change', function(e){
-          var file = e.target.files[0];
-          if(file) {
-            var reader = new FileReader();
-            reader.onload = function(ev) {
-              state.settings.logo = ev.target.result;
-              var previewImg = document.querySelector('#settingsOverlay .logo-preview img');
-              var previewSpan = document.querySelector('#settingsOverlay .logo-preview span');
-              if(previewImg) { previewImg.src = ev.target.result; previewImg.style.display = 'block'; }
-              if(previewSpan) previewSpan.style.display = 'none';
-              toast('تم تحميل الشعار');
-            };
-            reader.readAsDataURL(file);
-          }
-        });
-        document.getElementById('removeLogoBtn').addEventListener('click', function(){
-          state.settings.logo = null;
-          document.getElementById('s_logo').value = '';
-          var previewImg = document.querySelector('#settingsOverlay .logo-preview img');
-          var previewSpan = document.querySelector('#settingsOverlay .logo-preview span');
-          if(previewImg) previewImg.style.display = 'none';
-          if(previewSpan) previewSpan.style.display = 'block';
-          applyLogo();
-          toast('تم إزالة الشعار');
-        });
-
-        document.getElementById('saveSettingsBtn').addEventListener('click', function(){
-          state.settings.center = document.getElementById('s_center').value.trim();
-          state.settings.directorate = document.getElementById('s_directorate').value.trim();
-          saveSettingsData();
-          renderHeader();
-          applyLogo();
-          document.getElementById('settingsOverlay').classList.remove('open');
-          toast('تم حفظ إعدادات المختبر');
-        });
-
-        document.getElementById('backupExportBtn').addEventListener('click', function(){
-          try {
-            var backup = { app: 'lab-app', version: 1, exportedAt: new Date().toISOString(), patients: state.patients, settings: state.settings };
-            var blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-            var a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'نسخة_احتياطية_المختبر_' + todayISO() + '.json';
-            document.body.appendChild(a); a.click(); document.body.removeChild(a);
-            toast('تم تنزيل النسخة الاحتياطية');
-          } catch(e){ toast('تعذر إنشاء النسخة الاحتياطية'); }
-        });
-
-        document.getElementById('backupImportBtn').addEventListener('click', function(){
-          document.getElementById('backupImportInput').click();
-        });
-        document.getElementById('backupImportInput').addEventListener('change', function(e){
-          var file = e.target.files[0];
-          if(!file) return;
-          var reader = new FileReader();
-          reader.onload = function(evt){
-            try {
-              var data = JSON.parse(evt.target.result);
-              if(!data.patients || !Array.isArray(data.patients)){ toast('ملف النسخة الاحتياطية غير صالح'); return; }
-              if(!confirm('سيتم استبدال جميع بيانات المرضى والإعدادات الحالية بمحتوى هذا الملف (' + data.patients.length + ' مريض). متابعة؟')) return;
-              state.patients = data.patients;
-              if(data.settings) state.settings = Object.assign(state.settings, data.settings);
-              saveData(); saveSettingsData(); restoreCustomTests(); applyTheme(); applyLogo(); renderHeader(); renderList();
-              toast('تم استيراد النسخة الاحتياطية بنجاح');
-              document.getElementById('settingsOverlay').classList.remove('open');
-            } catch(err){ toast('تعذرت قراءة الملف، تأكد أنه نسخة احتياطية صحيحة'); }
-            document.getElementById('backupImportInput').value = '';
-          };
-          reader.readAsText(file);
-        });
-
-        // محاولة استعادة حالة Drive إذا كان هناك توكن
-        if(gapi && gapi.client && gapi.client.getToken){
-          var token = gapi.client.getToken();
-          if(token) fetchUserInfo();
-        }
-      });
-    })();
+// ربط أزرار Drive
+document.getElementById('driveSignInBtn').addEventListener('click', driveSignIn);
+document.getElementById('driveSignOutBtn').addEventListener('click', driveSignOut);
+document.getElementById('driveBackupBtn').addEventListener('click', driveBackup);
+document.getElementById('driveRestoreBtn').addEventListener('click', driveRestore);
   </script>
 </body>
 </html>
