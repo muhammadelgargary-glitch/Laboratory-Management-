@@ -34,32 +34,56 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      # Create the exact Android Debug Keystore
-      # used by Google Cloud OAuth configuration
-      - name: Create Google OAuth Debug Keystore
+      - name: Restore Fixed Google OAuth Keystore
         run: |
-          mkdir -p ~/.android
-          rm -f ~/.android/debug.keystore
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/laboratory-management-release.keystore
 
-          keytool -genkeypair \
-            -v \
-            -keystore ~/.android/debug.keystore \
-            -storepass android \
-            -alias androiddebugkey \
-            -keypass android \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000 \
-            -dname "CN=Android Debug,O=Android,C=US"
+          test -s android/app/laboratory-management-release.keystore
 
-      - name: Show Debug SHA-1
+          echo "Fixed keystore restored successfully."
+
+      - name: Configure Android Debug Signing
+        working-directory: android
         run: |
-          echo "===== DEBUG KEY SHA-1 ====="
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path("app/build.gradle")
+          text = p.read_text()
+
+          signing = '''    signingConfigs {
+              debug {
+                  storeFile file("laboratory-management-release.keystore")
+                  storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                  keyAlias System.getenv("ANDROID_KEY_ALIAS")
+                  keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+              }
+          }
+
+          '''
+
+          if "signingConfigs {" not in text:
+              text = text.replace("android {\n", "android {\n" + signing, 1)
+          else:
+              raise SystemExit("Unexpected existing signingConfigs block; stopping to avoid modifying the wrong configuration.")
+
+          p.write_text(text)
+          PY
+
+      - name: Set Signing Environment
+        run: |
+          echo "ANDROID_KEYSTORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> "$GITHUB_ENV"
+          echo "ANDROID_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}" >> "$GITHUB_ENV"
+          echo "ANDROID_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}" >> "$GITHUB_ENV"
+
+      - name: Show Fixed SHA-1
+        run: |
+          echo "===== FIXED KEY SHA-1 ====="
 
           keytool -list -v \
-            -keystore ~/.android/debug.keystore \
-            -storepass android \
-            -alias androiddebugkey
+            -keystore android/app/laboratory-management-release.keystore \
+            -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+            -alias "${{ secrets.ANDROID_KEY_ALIAS }}" | grep -E "Alias name:|SHA1:|SHA-1:"
 
       - name: Show Android Signing Report
         working-directory: android
