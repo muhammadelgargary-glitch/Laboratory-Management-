@@ -1,0 +1,2992 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>سجل المختبر الطبي الاحترافي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Zain:wght@400;700;800&family=Cairo:wght@400;600;700;900&family=Almarai:wght@400;700;800&family=Changa:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://apis.google.com/js/api.js"></script>
+  <script src="https://accounts.google.com/gsi/client"></script>
+  <style>
+    :root { --paper: #F6F3EC; --panel: #FFFFFF; --ink: #1F2A24; --ink-sub: #6D7A73; --line: #C9BFA6; --navy: #1D3B36; --navy-light: #2E5750; --seal: #9C6B3E; --seal-light: #C99A63; --danger: #A3423A; --good: #3E6B4F; --shadow: 0 4px 12px rgba(0,0,0,0.06); --card-bg: #FFFFFF; --input-bg: #FFFFFF; --header-bg: #1D3B36; --header-text: #F6F3EC; --app-font-size: 14px; --app-font-family: 'Tajawal'; }
+    body.dark-mode { --paper: #121816; --panel: #1A2320; --ink: #E8ECE9; --ink-sub: #9EAEA6; --line: #2E3B35; --navy: #2E5750; --navy-light: #3E6B4F; --seal: #C99A63; --seal-light: #E3CBAE; --danger: #E57373; --good: #81C784; --shadow: 0 4px 14px rgba(0,0,0,0.4); --card-bg: #1E2824; --input-bg: #161E1B; --header-bg: #0D1311; --header-text: #E8ECE9; }
+    body.theme-blue { --navy: #1A365D; --navy-light: #2B6CB0; --seal: #2B6CB0; --seal-light: #4299E1; --header-bg: #0F2942; }
+    body.theme-purple { --navy: #4A154B; --navy-light: #6B21A8; --seal: #7C3AED; --seal-light: #A78BFA; --header-bg: #2E082D; }
+    body.theme-teal { --navy: #0D4A4A; --navy-light: #0D7C7C; --seal: #0D7C7C; --seal-light: #38B2B2; --header-bg: #063333; }
+    body.theme-rose { --navy: #5E1A2E; --navy-light: #B83260; --seal: #B83260; --seal-light: #ED64A6; --header-bg: #3D0F1E; }
+    body.theme-amber { --navy: #6B4C1A; --navy-light: #B7791F; --seal: #B7791F; --seal-light: #ECC94B; --header-bg: #4A3310; }
+    body.font-small { --app-font-size: 12px; }
+    body.font-medium { --app-font-size: 14px; }
+    body.font-large { --app-font-size: 17px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--paper); color: var(--ink); font-family: var(--app-font-family), 'Tajawal', sans-serif; font-size: var(--app-font-size); min-height: 100vh; direction: rtl; transition: background 0.25s, color 0.25s, font-size 0.2s; padding-bottom: env(safe-area-inset-bottom, 20px) !important; }
+    .app-header { background: var(--header-bg); color: var(--header-text); padding: 12px 16px; position: sticky; top: 0; z-index: 40; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+    .header-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand > div:last-child { min-width: 0; overflow: hidden; }
+    .brand-title, .brand-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-actions { display: flex; gap: 6px; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; scrollbar-width: none; -ms-overflow-style: none; }
+    .header-actions::-webkit-scrollbar { display: none; }
+    @media(min-width: 640px){
+      .header-inner { flex-direction: row; align-items: center; justify-content: space-between; }
+      .header-actions { overflow-x: visible; }
+    }
+    .brand-mark { width: var(--logo-size, 42px); height: var(--logo-size, 42px); border-radius: 50%; border: 2px solid var(--seal-light); display: flex; align-items: center; justify-content: center; font-family: 'Zain', sans-serif; font-weight: 700; font-size: calc(var(--logo-size, 42px) * 0.52); color: var(--seal-light); background: rgba(255,255,255,0.08); flex-shrink: 0; overflow: hidden; }
+    .brand-mark img { width: 100%; height: 100%; object-fit: cover; }
+    .brand-mark.no-border, .logo-preview.no-border { border: none; }
+    .brand-title { font-weight: 900; font-size: calc(var(--app-font-size) + 4px); }
+    .brand-sub { font-size: calc(var(--app-font-size) - 2px); opacity: 0.8; margin-top: 2px; }
+    .icon-btn { background:rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 8px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: calc(var(--app-font-size) + 2px); transition: 0.15s; flex-shrink: 0; }
+    .icon-btn:hover { background: rgba(255,255,255,0.2); }
+.account-btn { min-width: 42px; width: auto; padding: 0 8px; gap: 6px; font-size: calc(var(--app-font-size) - 1px); }
+.account-btn .account-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; display:none; border: 1px solid rgba(255,255,255,.55); }
+.account-btn .account-name { max-width: 120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:none; font-weight:800; }
+.account-btn.connected { background: rgba(62,107,79,.35); border-color: rgba(129,199,132,.65); }
+.account-btn.connected .account-avatar, .account-btn.connected .account-name { display:inline-flex; }
+.account-btn.connected .account-login-icon { display:none; }
+.save-status { display:inline-flex; align-items:center; gap:6px; margin-right:auto; padding:7px 10px; border-radius:9px; background:var(--panel); border:1px solid var(--line); color:var(--ink-sub); font-size:calc(var(--app-font-size) - 3px); font-weight:800; white-space:nowrap; }
+.save-status.saved { color:var(--good); }
+.save-status.saving { color:#B7791F; }
+.save-status.error { color:var(--danger); }
+    .audit-btn { position:relative; }
+    .audit-badge { position:absolute; top:-3px; left:-3px; min-width:16px; height:16px; padding:0 4px; border-radius:10px; background:var(--seal); color:#fff; font-size:9px; display:none; align-items:center; justify-content:center; font-weight:900; border:2px solid var(--header-bg); }
+    .stats-pro-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:10px; }
+    .stats-pro-card { background:linear-gradient(180deg,var(--panel),var(--card-bg)); border:1px solid var(--line); border-radius:16px; padding:13px; box-shadow:var(--shadow); }
+    .stats-pro-label { color:var(--ink-sub); font-weight:800; font-size:calc(var(--app-font-size) - 2px); }
+    .stats-pro-value { margin-top:5px; font-size:25px; font-weight:900; color:var(--navy); }
+    .stats-table-wrap { margin-top:14px; border:1px solid var(--line); border-radius:15px; overflow:auto; background:var(--panel); }
+    .stats-table { width:100%; border-collapse:collapse; min-width:430px; }
+    .stats-table th { background:var(--navy); color:#fff; padding:10px 8px; font-weight:900; text-align:right; }
+    .stats-table td { padding:9px 8px; border-top:1px solid var(--line); color:var(--ink); font-weight:600; }
+    .stats-table tr.dept-row td { background:rgba(156,107,62,.08); font-weight:900; }
+    .stats-table .num { text-align:center; font-weight:900; }
+    .audit-item { display:flex; gap:10px; align-items:flex-start; padding:11px 4px; border-bottom:1px solid var(--line); }
+    .audit-item:last-child { border-bottom:0; }
+    .audit-icon { width:34px; height:34px; border-radius:50%; background:rgba(156,107,62,.12); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .audit-main { flex:1; min-width:0; }
+    .audit-action { font-weight:900; }
+    .audit-meta { color:var(--ink-sub); font-size:calc(var(--app-font-size) - 3px); margin-top:3px; }
+    .audit-filter-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+    .audit-filter-row button.active { background:var(--navy); color:#fff; }
+
+.date-filter-row { display:flex; gap:8px; flex-wrap:wrap; align-items:end; }
+.date-filter-row .field { min-width:145px; flex:1; margin:0; }
+.date-filter-row .btn { min-height:40px; }
+.dashboard { display:grid; grid-template-columns:repeat(6,minmax(120px,1fr)); gap:10px; margin-bottom:14px; }
+.dashboard-card { background:var(--card-bg); border:1px solid var(--line); border-radius:12px; padding:11px 12px; box-shadow:var(--shadow); min-width:0; }
+.dashboard-label { color:var(--ink-sub); font-size:calc(var(--app-font-size) - 3px); font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.dashboard-value { color:var(--navy); font-size:calc(var(--app-font-size) + 8px); font-weight:900; margin-top:2px; }
+.dashboard-date { grid-column:1/-1; color:var(--ink-sub); font-size:calc(var(--app-font-size) - 3px); font-weight:700; }
+@media(max-width:760px){ .dashboard { grid-template-columns:repeat(3,1fr); } }
+@media(max-width:460px){ .dashboard { grid-template-columns:repeat(2,1fr); } .account-btn .account-name { max-width:85px; } }
+
+    .toolbar { background: var(--paper); border-bottom: 1px solid var(--line); padding: 12px 18px; position: sticky; top: 70px; z-index: 30; }
+    .toolbar-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+    .search-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .search-wrap { position: relative; flex: 1; min-width: 200px; }
+    .search-wrap input { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--input-bg); color: var(--ink); font-family: inherit; font-size: var(--app-font-size); }
+    .search-wrap input:focus { outline: 2px solid var(--seal); }
+    .btn { font-family: inherit; border: none; border-radius: 10px; padding: 10px 16px; font-size: var(--app-font-size); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; justify-content: center; transition: 0.15s; }
+    .btn-primary { background: var(--seal); color: var(--seal-contrast, #fff); white-space: nowrap; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-ghost { background: var(--panel); color: var(--ink); border: 1px solid var(--line); }
+    .btn-excel { background: #1D6F42; color: #fff; }
+    .btn-excel:hover { background: #155231; }
+    .btn-drive { background: #4285F4; color: #fff; border: none; }
+    .btn-drive:hover { background: #3367D6; }
+    .btn-drive-outline { background: transparent; color: #4285F4; border: 2px solid #4285F4; }
+    .btn-drive-outline:hover { background: #4285F4; color: #fff; }
+    .count-pill { font-size: calc(var(--app-font-size) - 2px); color: var(--ink); background: var(--panel); padding: 8px 12px; border-radius: 10px; font-weight: 700; border: 1px solid var(--line); white-space: nowrap; display: flex; align-items: center; }
+    .filters { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+    .filter-btn { padding: 6px 12px; font-size: calc(var(--app-font-size) - 2px); border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; white-space: nowrap; font-family: inherit; font-weight: 600; }
+    .filter-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .container { max-width: 1100px; margin: 0 auto; padding: 16px 18px 90px; }
+    .grid-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+    .card { background: var(--card-bg); border: 1px solid var(--line); border-radius: 14px; padding: 16px; box-shadow: var(--shadow); transition: transform 0.15s, box-shadow 0.15s; }
+    .card:hover { transform: translateY(-2px); }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .card-name { font-weight: 800; font-size: calc(var(--app-font-size) + 2px); color: var(--ink); }
+    .card-meta { font-size: calc(var(--app-font-size) - 2px); color: var(--ink-sub); margin-top: 4px; }
+    .seq-badge { background: var(--navy); color: #fff; font-size: calc(var(--app-font-size) - 3px); font-weight: 800; border-radius: 6px; padding: 3px 8px; font-family: monospace; }
+    .tag-row { display: flex; gap: 5px; margin: 12px 0 8px; flex-wrap: wrap; }
+    .tag { font-size: calc(var(--app-font-size) - 3px); padding: 3px 8px; border-radius: 6px; font-weight: 700; }
+    .tag-blood { background: rgba(200,50,50,0.15); color: #C0392B; }
+    .tag-chem { background: rgba(156,107,62,0.15); color: var(--seal); }
+    .tag-urine { background: rgba(62,107,79,0.15); color: var(--good); }
+    .tag-stool { background: rgba(180,83,9,0.15); color: #D97706; }
+    .tag-preg { background: rgba(219,39,119,0.15); color: #DB2777; }
+    .tag-serology { background: rgba(124,58,237,0.15); color: #9333EA; }
+    .tag-none { background: rgba(150,150,150,0.15); color: var(--ink-sub); }
+    .card-actions { display: flex; gap: 6px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+    .card-actions button { flex: 1; min-width: 60px; padding: 8px 4px; font-size: calc(var(--app-font-size) - 2px); font-weight: 700; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-family: inherit; cursor: pointer; }
+    .card-actions button.act-view { color: var(--good); }
+    .card-actions button.act-print { color: var(--seal); }
+    .card-actions button.act-excel { color: #1D6F42; }
+    .card-actions button.act-edit { color: #D97706; }
+    .card-actions button.act-del { color: var(--danger); flex: 0 0 36px; min-width: 36px; }
+    .fab { position: fixed; left: 20px; bottom: 24px; z-index: 35; width: 56px; height: 56px; border-radius: 50%; background: var(--seal); color: var(--seal-contrast, #fff); border: none; font-size: 28px; box-shadow: 0 6px 16px rgba(0,0,0,.3); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
+    .fab:hover { transform: scale(1.06); }
+    .toast { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--navy); color: #fff; padding: 9px 20px; border-radius: 999px; font-size: calc(var(--app-font-size) - 1px); font-weight: bold; opacity: 0; pointer-events: none; transition: .2s; z-index: 100; box-shadow: 0 4px 14px rgba(0,0,0,0.3); }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 60; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(3px); }
+    .overlay.open { display: flex; }
+    /* نافذة إعدادات الطباعة يجب أن تظهر فوق نافذة طباعة عدة تقارير عند فتحها منها */
+    #printSettingsOverlay { z-index: 90 !important; }
+    #batchPrintOverlay { z-index: 60 !important; }
+    @media(min-width: 640px){ .overlay { align-items: center; padding: 20px; } .sheet { border-radius: 16px !important; } }
+    .sheet { background: var(--paper); color: var(--ink); width: 100%; max-width: 720px; max-height: 88vh !important; border-radius: 18px 18px 0 0; overflow-y: auto; display: flex; flex-direction: column; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.4); animation: slideUp .22s ease-out; margin-bottom: env(safe-area-inset-bottom, 0px) !important; }
+    @keyframes slideUp { from { transform: translateY(24px); opacity: .4; } to { transform: translateY(0); opacity: 1; } }
+    .sheet-header { position: sticky; top: 0; background: var(--paper); z-index: 10; display: flex; align-items: center; justify-content:space-between; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+    .sheet-title { font-weight: 900; font-size: calc(var(--app-font-size) + 3px); color: var(--ink); }
+    .sheet-close { background: none; border: none; font-size: calc(var(--app-font-size) + 6px); color: var(--ink-sub); cursor: pointer; width: 32px; height: 32px; border-radius: 6px; }
+    .sheet-body { padding: 16px 18px; overflow-y: auto; flex: 1; }
+    .sheet-footer { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px 18px; position: sticky; bottom: 0; background: var(--paper); border-top: 1px solid var(--line); }
+    .sheet-footer .btn { flex: 1 1 auto; min-width: 100px; }
+    .field-row { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .field { flex: 1; min-width: 140px; }
+    label { display: block; font-size: calc(var(--app-font-size) - 2px); color: var(--ink-sub); margin-bottom: 4px; font-weight: 700; }
+    input[type=text], input[type=number], input[type=date], select, input[type=file] { width: 100%; padding: 9px 11px; border-radius: 8px; border: 1px solid var(--line); background: var(--input-bg); color: var(--ink); font-family: inherit; font-size: var(--app-font-size); }
+    input[type=file] { padding: 6px 8px; }
+    .section-toggle { display: flex; align-items: center; justify-content: space-between; background: var(--panel); border-radius: 10px; padding: 12px 14px; margin: 12px 0 8px; cursor: pointer; border: 1px solid var(--line); }
+    .section-toggle:hover { background: var(--line); }
+    .switch { width: 40px; height: 22px; border-radius: 999px; background: #888; position: relative; transition: .15s; flex-shrink: 0; }
+    .switch.on { background: var(--good); }
+    .switch::after { content: ''; position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: .15s; }
+    .switch.on::after { right: 20px; }
+    .test-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 6px; }
+    .test-grid .field { min-width: 60px; }
+    .subhead { font-size: calc(var(--app-font-size) - 2px); font-weight: 800; color: var(--seal); margin: 10px 0 5px; }
+    .add-test-section { background: var(--panel); border: 2px dashed var(--line); border-radius: 10px; padding: 14px; margin: 16px 0 8px; }
+    .add-test-section .field-row { margin-bottom: 8px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .stat-card { background: var(--panel); border: 1px solid var(--line); padding: 14px; border-radius: 10px; text-align: center; }
+    .stat-value { font-size: calc(var(--app-font-size) + 8px); font-weight: 900; color: var(--navy); margin-top: 4px; }
+    .stat-label { font-size: calc(var(--app-font-size) - 2px); color: var(--ink-sub); font-weight: 700; }
+    .chart-bar-wrap { margin-top: 10px; }
+    .chart-row-container { margin-bottom: 10px; border: 1px solid var(--line); border-radius: 8px; padding: 8px; background: var(--panel); }
+    .chart-row { display: flex; align-items: center; gap: 8px; font-size: var(--app-font-size); }
+    .chart-label { width: 110px; font-weight: bold; }
+    .chart-bar-bg { flex: 1; background: var(--line); height: 12px; border-radius: 6px; overflow: hidden; }
+    .chart-bar-fill { background: var(--seal); height: 100%; width: 0%; transition: width 0.4s ease; }
+    .chart-count { width: 30px; text-align: left; font-size: calc(var(--app-font-size) - 3px); font-family: monospace; }
+    .btn-detail-toggle { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; font-size: 11px; padding: 2px 6px; cursor: pointer; color: var(--ink); margin-right: 4px; font-family: inherit; font-weight: bold; }
+    .dept-details-box { display: none; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); font-size: calc(var(--app-font-size) - 2px); }
+    .dept-details-box.open { display: block; }
+    .detail-item { display: flex; justify-content: space-between; padding: 3px 6px; border-bottom: 1px dotted var(--line); }
+    .detail-item:last-child { border-bottom: none; }
+    .color-picker-grid { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+    .color-dot { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: 0.15s; }
+    .color-dot.active { border-color: var(--ink); transform: scale(1.1); }
+    .density-btn.active, .font-size-btn.active, .icon-shape-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+    input[type=range] { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; background: var(--line); outline: none; margin: 6px 0 4px; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--seal); cursor: pointer; border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); }
+    input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--seal); cursor: pointer; border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); }
+    .brand-mark.shape-circle, .logo-preview.shape-circle { border-radius: 50%; clip-path: none; }
+    .brand-mark.shape-rounded, .logo-preview.shape-rounded { border-radius: 14px; clip-path: none; }
+    .brand-mark.shape-square, .logo-preview.shape-square { border-radius: 4px; clip-path: none; }
+    .brand-mark.shape-hexagon, .logo-preview.shape-hexagon { border-radius: 0; clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%); }
+    .brand-mark.shape-blob, .logo-preview.shape-blob { border-radius: 62% 38% 33% 67% / 60% 35% 65% 40%; clip-path: none; }
+    .catalog-table { width: 100%; border-collapse: collapse; font-size: calc(var(--app-font-size) - 1px); margin-bottom: 16px; }
+    .catalog-table caption { text-align: right; font-weight: 800; font-size: calc(var(--app-font-size) + 1px); color: var(--seal); padding: 6px 2px; caption-side: top; }
+    .catalog-table th, .catalog-table td { border: 1px solid var(--line); padding: 7px 9px; text-align: right; }
+    .catalog-table th { background: var(--panel); color: var(--ink); font-weight: 800; }
+    .catalog-table td.range-cell { color: var(--ink-sub); }
+    .catalog-edit-btn { background: none; border: 1px solid var(--line); border-radius: 6px; color: var(--seal); cursor: pointer; font-size: calc(var(--app-font-size) - 1px); padding: 3px 9px; font-family: inherit; }
+    body.density-compact .grid-list { gap: 8px; }
+    body.density-compact .card { padding: 10px; }
+    body.density-compact .card-name { font-size: calc(var(--app-font-size) + 1px); }
+    body.density-compact .card-meta { font-size: calc(var(--app-font-size) - 3px); margin-top: 2px; }
+    body.density-compact .tag-row { margin: 8px 0 6px; }
+    body.density-compact .tag { padding: 2px 6px; font-size: calc(var(--app-font-size) - 4px); }
+    body.density-compact .card-actions { margin-top: 8px; padding-top: 7px; }
+    body.density-compact .card-actions button { padding: 6px 3px; font-size: calc(var(--app-font-size) - 3px); }
+    .report { font-family: 'Tajawal', sans-serif; color: #111; direction: rtl; background: #fff; padding: 15px; border-radius: 8px; font-size: var(--app-font-size); }
+    .report-head { display: flex; justify-content: space-between; border-bottom: 2px solid #111; padding-bottom: 8px; margin-bottom: 12px; }
+    .report-info { display: grid; grid-template-columns: 1fr 1fr; font-size: calc(var(--app-font-size) - 2px); margin-bottom: 14px; border: 1px solid #111; padding: 8px; background: #fafafa; gap: 6px; }
+    .report-section-title { text-align: center; font-weight: bold; font-size: calc(var(--app-font-size) - 1px); margin: 12px 0 5px; background: #eee; padding: 3px; border: 1px solid #ddd; }
+    table.rtable { width: 100%; border-collapse: collapse; font-size: calc(var(--app-font-size) - 2px); margin-bottom: 8px; }
+    table.rtable th, table.rtable td { border: 1px solid #111; padding: 4px 7px; text-align: right; }
+    table.rtable th { background: #EDEDED; }
+    .print-tools { background: var(--panel); padding: 10px; border-radius: 8px; margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 8px; border: 1px solid var(--line); }
+    .print-tools .tool-btn { flex: 1 1 180px; min-width: 150px; }
+    .tool-btn { background: var(--navy); color: #fff; border: 1px solid var(--navy-light); padding: 6px 12px; border-radius: 6px; font-size: calc(var(--app-font-size) - 2px); cursor: pointer; font-family: inherit; font-weight: bold; }
+    .tool-btn:hover { opacity: 0.9; }
+    #tableStylePanel { display:none; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px; margin-bottom:12px; }
+    #tableStylePanel .field-row { margin-bottom:6px; }
+       #tableStylePanel label { font-size:calc(var(--app-font-size) - 3px); margin-bottom:2px; }
+    .lang-btn { background: var(--seal); color: var(--seal-contrast, #fff); }
+    .logo-preview { width: var(--logo-size, 42px); height: var(--logo-size, 42px); border-radius: 50%; border: 2px solid var(--seal-light); display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgba(255,255,255,0.1); flex-shrink: 0; }
+    .logo-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .logo-preview span { font-size: calc(var(--logo-size, 42px) * 0.48); color: var(--seal-light); }
+    #driveStatus { display:none; position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:var(--navy); color:#fff; padding:10px 18px; border-radius:10px; z-index:99; font-size:13px; text-align:center; max-width:90%; }
+    .drive-status-connected { background: #1D6F42; color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 11px; display: inline-block; }
+    .drive-status-disconnected { background: var(--danger); color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 11px; display: inline-block; }
+    .drive-user-info { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: calc(var(--app-font-size) - 2px); flex-wrap: wrap; }
+    .drive-user-info img { width: 28px; height: 28px; border-radius: 50%; }    .drive-section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; margin: 8px 0; }
+    .drive-section .subhead { margin-top: 0; }
+    .print-settings-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .print-setting-card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:10px; }
+    .print-setting-card .subhead { margin:0 0 7px; font-size:calc(var(--app-font-size) - 1px); }
+    .print-setting-card .field-row { margin-bottom:7px; }
+    .print-setting-card label { font-size:calc(var(--app-font-size) - 3px); }
+    .print-setting-card input[type=number], .print-setting-card select, .print-setting-card input[type=text] { width:100%; }
+    .print-switch-row { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 0; border-bottom:1px dashed var(--line); }
+    .print-switch-row:last-child { border-bottom:none; }
+    .batch-patient-list { display:grid; gap:7px; max-height:48vh; overflow:auto; }
+    .batch-patient-item { display:flex; align-items:center; gap:9px; background:var(--panel); border:1px solid var(--line); border-radius:9px; padding:9px; cursor:pointer; }
+    .batch-patient-item input { width:20px; height:20px; accent-color:var(--seal); }
+    .batch-patient-item .b-main { flex:1; min-width:0; }
+    .batch-patient-item .b-name { font-weight:800; color:var(--ink); }
+    .batch-patient-item .b-meta { font-size:calc(var(--app-font-size) - 3px); color:var(--ink-sub); margin-top:2px; }
+    .batch-preview-wrap { background:#d9dde2; border:1px solid var(--line); border-radius:12px; padding:14px; overflow:auto; }
+    .batch-page { width:210mm; min-height:297mm; box-sizing:border-box; margin:0 auto 14px; background:#fff; color:#111; padding:var(--pm-top,8mm) var(--pm-right,8mm) var(--pm-bottom,8mm) var(--pm-left,8mm); display:grid; gap:var(--batch-gap,4mm); align-content:start; }
+    .batch-page.landscape { width:297mm; min-height:210mm; }
+    .batch-page.cols-1 { grid-template-columns:1fr; }
+    .batch-page.cols-2stack { grid-template-columns:1fr; grid-auto-rows:min-content; }
+    .batch-page.cols-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .batch-page.cols-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .batch-page.cols-4 { grid-template-columns:repeat(2,minmax(0,1fr)); grid-auto-rows:min-content; }
+    .batch-report { break-inside:avoid; page-break-inside:avoid; min-width:0; }
+    .batch-report .report { border:1px solid #777; border-radius:4px; padding:5mm; height:auto; box-sizing:border-box; }
+    .batch-report .report-head { margin-bottom:6px; padding-bottom:4px; border-bottom-width:1px; }
+    .batch-report .report-info { margin-bottom:7px; padding:5px; gap:3px; }
+    .batch-report .report-section-title { margin:6px 0 3px; padding:2px; }
+    .batch-report table.rtable { margin-bottom:4px; }
+    .batch-report table.rtable th, .batch-report table.rtable td { padding:2px 4px; }
+    .batch-toolbar { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px; }
+    .batch-toolbar .btn { flex:1; min-width:120px; }
+    .print-preview-note { font-size:calc(var(--app-font-size) - 3px); color:var(--ink-sub); line-height:1.7; margin:5px 0 0; }
+    .report-logo { object-fit:contain; display:block; }
+    .report-head-brand { display:flex; align-items:center; gap:8px; min-width:0; }
+    .report-head-brand.logo-left { flex-direction:row-reverse; }
+    .report-head-brand.logo-center { flex-direction:column; justify-content:center; width:100%; }
+    .report-head-brand.logo-right { flex-direction:row; }
+    .report-footer { border-top:1px solid #777; margin-top:8px; padding-top:5px; display:flex; justify-content:space-between; gap:8px; font-size:.85em; }
+    .report-note { margin-top:7px; padding:5px 7px; border:1px dashed #888; font-size:.9em; }
+    @media(max-width:639px){ .print-settings-grid{grid-template-columns:1fr;} .batch-page{transform-origin:top center;} }
+    @media print {
+      body * { visibility: hidden !important; }
+      #printArea, #printArea * { visibility: visible !important; }
+      #printArea { position: absolute; top: 0; left: 0; width: 100%; background: #fff !important; color: #111 !important; }
+      .print-tools, .batch-toolbar, .print-settings-overlay, .batch-overlay { display: none !important; }
+      .overlay { position: static !important; backdrop-filter: none !important; }
+      .sheet { box-shadow: none !important; border: none !important; max-height: none !important; }
+      .sheet-header, .sheet-footer { display: none !important; }
+      #batchPrintArea { display:block !important; }
+      .batch-preview-wrap { background:#fff !important; border:none !important; padding:0 !important; }
+      .batch-page { margin:0 !important; box-shadow:none !important; }
+      @page { size: A4 portrait; margin: 8mm; }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark" id="brandLogo">
+          <span id="logoText">م</span>
+          <img id="logoImage" style="display:none;" alt="شعار المختبر">
+        </div>
+        <div>
+          <div class="brand-title" id="hdrClinicName">مختبري</div>
+          <div class="brand-sub" id="hdrDept">دائرة الصحة / قسم المختبر</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="darkModeToggle" title="تبديل الوضع الداكن/الفاتح">🌙</button>
+        <button class="icon-btn" id="uiSettingsBtn" title="تخصيص الواجهة">🎨</button>
+        <button class="icon-btn" id="statsBtn" title="الإحصائيات">📊</button>
+        <button class="icon-btn audit-btn" id="auditBtn" title="سجل التعديلات">📝<span class="audit-badge" id="auditBadge">0</span></button>
+        <button class="icon-btn" id="catalogBtn" title="دليل الفحوصات">🗂</button>
+        <button class="icon-btn" id="settingsBtn" title="بيانات المختبر">⚙</button>
+        <button class="icon-btn account-btn" id="driveAccountBtn" title="تسجيل الدخول بحساب Google"><span class="account-login-icon">🔑</span><img class="account-avatar" id="accountAvatar" alt="حساب Google"><span class="account-name" id="accountName"></span><span id="accountCheck" style="display:none;">✓</span></button>
+      </div>
+    </div>
+  </header>
+  <div class="toolbar">
+    <div class="toolbar-inner">
+      <div class="search-row">
+        <div class="search-wrap"><input type="text" id="searchInput" placeholder="بحث بالاسم أو رقم السجل أو الفحص أو النتيجة..."></div>
+        <button class="btn btn-primary" id="addBtn">+ إضافة مريض</button>
+        <button class="btn btn-ghost" id="batchPrintBtn">🖨️ طباعة عدة تقارير</button>
+        <button class="btn btn-excel" id="exportAllExcelBtn">📊 تصدير الكل Excel</button>
+        <span class="count-pill" id="countPill">0 مريض</span>
+        <span class="save-status saved" id="saveStatus">🟢 البيانات محفوظة</span>
+      </div>
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">جميع السجلات</button>
+        <button class="filter-btn" data-filter="today">سجلات اليوم</button>
+        <button class="filter-btn" data-filter="blood">دم</button>
+        <button class="filter-btn" data-filter="chem">كيمياء</button>
+        <button class="filter-btn" data-filter="urine">بول</button>
+        <button class="filter-btn" data-filter="serology">مصليات</button>
+        <button class="filter-btn" data-filter="stool">براز</button>
+        <button class="filter-btn" data-filter="preg">حمل</button>
+      </div>
+      <div class="date-filter-row">
+        <div class="field"><label for="dateFrom">من تاريخ</label><input type="date" id="dateFrom"></div>
+        <div class="field"><label for="dateTo">إلى تاريخ</label><input type="date" id="dateTo"></div>
+        <button class="btn btn-ghost" id="clearDateFilterBtn" type="button">✕ مسح التاريخ</button>
+      </div>
+    </div>
+  </div>
+  <main class="container">
+    <div class="dashboard" id="dashboard">
+      <div class="dashboard-card"><div class="dashboard-label">👤 مرضى اليوم</div><div class="dashboard-value" id="dashToday">0</div></div>
+      <div class="dashboard-card"><div class="dashboard-label">🩸 فحوصات الدم</div><div class="dashboard-value" id="dashBlood">0</div></div>
+      <div class="dashboard-card"><div class="dashboard-label">🧪 الكيمياء</div><div class="dashboard-value" id="dashChem">0</div></div>
+      <div class="dashboard-card"><div class="dashboard-label">💧 البول</div><div class="dashboard-value" id="dashUrine">0</div></div>
+      <div class="dashboard-card"><div class="dashboard-label">🧬 المصليات</div><div class="dashboard-value" id="dashSerology">0</div></div>
+      <div class="dashboard-card"><div class="dashboard-label">💩 البراز</div><div class="dashboard-value" id="dashStool">0</div></div>
+      <div class="dashboard-card"><div class="dashboard-label">🤰 الحمل/الهرمونات</div><div class="dashboard-value" id="dashPreg">0</div></div>
+      <div class="dashboard-card"><div class="dashboard-label">📋 إجمالي السجلات</div><div class="dashboard-value" id="dashTotal">0</div></div>
+      <div class="dashboard-date" id="dashboardDate"></div>
+    </div>
+    <div class="grid-list" id="patientList"></div>
+  </main>
+  <button class="fab" id="fabAdd" title="إضافة مريض جديد">+</button>
+  <div class="overlay" id="patientOverlay">
+  <div class="sheet">
+    <div class="sheet-header">
+      <button class="sheet-close" id="closePatientSheet">✕</button>
+      <div class="sheet-title" id="patientSheetTitle">إضافة/تعديل مريض وفحوصات</div>
+      <div style="width:32px"></div>
+    </div>
+    <div class="sheet-body">
+      <div class="field-row">
+        <div class="field" style="flex:2;"><label>اسم المريض الكامل *</label><input type="text" id="f_name" placeholder="الاسم الثلاثي..."></div>
+        <div class="field"><label>رقم السجل</label><input type="text" id="f_seq" placeholder="تلقائي"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>العمر</label><input type="text" id="f_age" placeholder="مثال: 32"></div>
+        <div class="field"><label>الجنس</label><select id="f_gender"><option value="ذكر">ذكر</option><option value="أنثى">أنثى</option></select></div>
+        <div class="field"><label>تاريخ الفحص</label><input type="date" id="f_date"></div>
+      </div>
+      <div class="field-row"><div class="field"><label>ملاحظات سريرية (اختياري)</label><input type="text" id="f_notes" placeholder="ملاحظة أو تشخيص أولي..."></div></div>
+      <div class="section-toggle" id="toggleBlood"><div>🩸 فحوصات الدم (Hematology)</div><div class="switch" id="switchBlood"></div></div>
+      <div id="bloodPanel" style="display:none;">
+        <div class="test-grid" id="bloodGrid">
+          <div class="field"><label>Hb (Hemoglobin)</label><input type="text" id="t_hb"></div>
+          <div class="field"><label>PCV</label><input type="text" id="t_pcv"></div>
+          <div class="field"><label>WBC Count</label><input type="text" id="t_wbc"></div>
+          <div class="field"><label>ESR</label><input type="text" id="t_esr"></div>
+          <div class="field"><label>ABO Group</label><input type="text" id="t_abo" placeholder="A+, B+, O+..."></div>
+          <div class="field"><label>PLT (Platelets)</label><input type="text" id="t_plt"></div>
+        </div>
+        <div class="add-test-section" id="addBloodTestSection">
+          <div style="font-size:calc(var(--app-font-size) - 1px); font-weight:700; color:var(--seal); margin-bottom:6px;">➕ إضافة فحص جديد لقسم الدم</div>
+          <div class="field-row">
+            <div class="field" style="flex:2;"><label>اسم الفحص</label><input type="text" id="newBloodTestName" placeholder="مثال: MCV"></div>
+            <div class="field" style="flex:1;"><label>القيمة الطبيعية</label><input type="text" id="newBloodTestNormal" placeholder="مثال: 80-96 fL"></div>
+          </div>
+          <button type="button" class="btn btn-primary" id="addBloodTestBtn" style="width:100%; padding:8px;">+ إضافة فحص</button>
+        </div>
+      </div>      <div class="section-toggle" id="toggleChem"><div>🧪 الكيمياء الحيوية (Biochemistry)</div><div class="switch" id="switchChem"></div></div>
+      <div id="chemPanel" style="display:none;">
+        <div class="test-grid" id="chemGrid">
+          <div class="field"><label>FBS (Fasting Sugar)</label><input type="text" id="t_fbs"></div>
+          <div class="field"><label>RBS (Random Sugar)</label><input type="text" id="t_rbs"></div>
+          <div class="field"><label>Urea</label><input type="text" id="t_urea"></div>
+          <div class="field"><label>Creatinine</label><input type="text" id="t_creat"></div>
+          <div class="field"><label>Uric Acid</label><input type="text" id="t_uric"></div>
+          <div class="field"><label>Total Cholesterol</label><input type="text" id="t_chol"></div>
+          <div class="field"><label>Triglycerides</label><input type="text" id="t_trig"></div>
+        </div>
+        <div class="add-test-section" id="addChemTestSection">
+          <div style="font-size:calc(var(--app-font-size) - 1px); font-weight:700; color:var(--seal); margin-bottom:6px;">➕ إضافة فحص جديد لقسم الكيمياء</div>
+          <div class="field-row">
+            <div class="field" style="flex:2;"><label>اسم الفحص</label><input type="text" id="newChemTestName" placeholder="مثال: Albumin"></div>
+            <div class="field" style="flex:1;"><label>القيمة الطبيعية</label><input type="text" id="newChemTestNormal" placeholder="مثال: 3.5-5.0 g/dL"></div>
+          </div>
+          <button type="button" class="btn btn-primary" id="addChemTestBtn" style="width:100%; padding:8px;">+ إضافة فحص</button>
+        </div>
+      </div>
+      <div class="section-toggle" id="toggleUrine"><div>🧪 فحص البول العام (General Urine Exam)</div><div class="switch" id="switchUrine"></div></div>
+      <div id="urinePanel" style="display:none;">
+        <div style="display:flex; justify-content:flex-end; margin-bottom:8px;">
+          <button type="button" class="btn btn-ghost" id="fillNormalUrineBtn" style="font-size:calc(var(--app-font-size) - 3px); padding:4px 8px;">تعبئة القيم الافتراضية</button>
+        </div>
+        <div class="subhead">الفحص الفيزيائي والكيميائي</div>
+        <div class="test-grid" id="urineGrid">
+          <div class="field"><label>Color</label><input type="text" id="u_color" value="Yellow"></div>
+          <div class="field"><label>Appearance</label><input type="text" id="u_appearance" value="Clear"></div>
+          <div class="field"><label>pH</label><input type="text" id="u_ph" value="6.0"></div>
+          <div class="field"><label>Protein</label><input type="text" id="u_protein" value="Negative"></div>
+          <div class="field"><label>Glucose</label><input type="text" id="u_glucose" value="Negative"></div>
+        </div>
+        <div class="subhead">الفحص المجهري</div>
+        <div class="test-grid" id="urineMicroGrid">
+          <div class="field"><label>RBC /HPF</label><input type="text" id="u_rbc" value="0-2"></div>
+          <div class="field"><label>Pus Cells /HPF</label><input type="text" id="u_pus" value="1-2"></div>
+          <div class="field"><label>Epithelial Cells</label><input type="text" id="u_epithelial" value="Few"></div>
+          <div class="field"><label>Crystals</label><input type="text" id="u_crystals" value="Nill"></div>
+        </div>
+        <div class="add-test-section" id="addUrineTestSection">
+          <div style="font-size:calc(var(--app-font-size) - 1px); font-weight:700; color:var(--seal); margin-bottom:6px;">➕ إضافة فحص جديد لقسم البول</div>
+          <div class="field-row">
+            <div class="field" style="flex:2;"><label>اسم الفحص</label><input type="text" id="newUrineTestName" placeholder="مثال: Bacteria"></div>
+            <div class="field" style="flex:1;"><label>القيمة الطبيعية</label><input type="text" id="newUrineTestNormal" placeholder="مثال: Negative"></div>
+          </div>
+          <button type="button" class="btn btn-primary" id="addUrineTestBtn" style="width:100%; padding:8px;">+ إضافة فحص</button>
+        </div>
+      </div>
+      <div class="section-toggle" id="toggleSerology"><div>🧬 مصليات ومناعة (Serology)</div><div class="switch" id="switchSerology"></div></div>
+      <div id="serologyPanel" style="display:none;">
+        <div class="test-grid" id="serologyGrid">
+          <div class="field"><label>CRP</label><input type="text" id="sr_crp" placeholder="Positive / Negative"></div>
+          <div class="field"><label>RF (Rheumatoid)</label><input type="text" id="sr_rf" placeholder="Positive / Negative"></div>
+          <div class="field"><label>ASO</label><input type="text" id="sr_aso" placeholder="Positive / Negative"></div>
+          <div class="field"><label>H. pylori Ag/Ab</label><input type="text" id="sr_hpylori" placeholder="Positive / Negative"></div>
+          <div class="field"><label>Widal Test</label><input type="text" id="sr_widal" placeholder="Negative / 1:80..."></div>
+        </div>
+        <div class="add-test-section" id="addSerologyTestSection">
+          <divstyle="font-size:calc(var(--app-font-size) - 1px); font-weight:700; color:var(--seal); margin-bottom:6px;">➕ إضافة فحص جديد لقسم المصليات</div>
+          <div class="field-row">
+            <div class="field" style="flex:2;"><label>اسم الفحص</label><input type="text" id="newSerologyTestName" placeholder="مثال: Brucella"></div>
+            <div class="field" style="flex:1;"><label>القيمة الطبيعية</label><input type="text" id="newSerologyTestNormal" placeholder="مثال: Negative"></div>
+          </div>
+          <button type="button" class="btn btn-primary" id="addSerologyTestBtn" style="width:100%; padding:8px;">+ إضافة فحص</button>
+        </div>
+      </div>
+      <div class="section-toggle" id="toggleStool"><div>🧫 فحص البراز العام (Stool Exam)</div><div class="switch" id="switchStool"></div></div>
+      <div id="stoolPanel" style="display:none;">
+        <div class="test-grid" id="stoolGrid">
+          <div class="field"><label>Color</label><input type="text" id="so_color" value="Brown"></div>
+          <div class="field"><label>Consistency</label><input type="text" id="so_consistency" value="Formed"></div>
+          <div class="field"><label>Mucus</label><input type="text" id="so_mucus" value="Nill"></div>
+          <div class="field"><label>Ova / Parasites</label><input type="text" id="so_ova" value="Nill"></div>
+        </div>
+        <div class="add-test-section" id="addStoolTestSection">
+          <div style="font-size:calc(var(--app-font-size) - 1px); font-weight:700; color:var(--seal); margin-bottom:6px;">➕ إضافة فحص جديد لقسم البراز</div>
+          <div class="field-row">
+            <div class="field" style="flex:2;"><label>اسم الفحص</label><input type="text" id="newStoolTestName" placeholder="مثال: Occult Blood"></div>
+            <div class="field" style="flex:1;"><label>القيمة الطبيعية</label><input type="text" id="newStoolTestNormal" placeholder="مثال: Negative"></div>
+          </div>
+          <button type="button" class="btn btn-primary" id="addStoolTestBtn" style="width:100%; padding:8px;">+ إضافة فحص</button>
+        </div>
+      </div>
+      <div class="section-toggle" id="togglePreg"><div>🤰 فحص الحمل والهرمونات</div><div class="switch" id="switchPreg"></div></div>
+      <div id="pregPanel" style="display:none;">
+        <div class="test-grid" id="pregGrid">
+          <div class="field"><label>Pregnancy Test (β-hCG)</label><input type="text" id="h_preg" placeholder="Positive / Negative"></div>
+          <div class="field"><label>TSH</label><input type="text" id="h_tsh"></div>
+        </div>
+        <div class="add-test-section" id="addPregTestSection">
+          <div style="font-size:calc(var(--app-font-size) - 1px); font-weight:700; color:var(--seal); margin-bottom:6px;">➕ إضافة فحص جديد لقسم الحمل</div>
+          <div class="field-row">
+            <div class="field" style="flex:2;"><label>اسم الفحص</label><input type="text" id="newPregTestName" placeholder="مثال: Prolactin"></div>
+            <div class="field" style="flex:1;"><label>القيمة الطبيعية</label><input type="text" id="newPregTestNormal" placeholder="مثال: 2-18 ng/mL"></div>
+          </div>
+          <button type="button" class="btn btn-primary" id="addPregTestBtn" style="width:100%; padding:8px;">+ إضافة فحص</button>
+        </div>
+      </div>
+  </div>    <div class="sheet-footer">
+      <button class="btn btn-ghost" id="cancelPatientBtn">إلغاء</button>
+      <button class="btn btn-primary" id="savePatientBtn">حفظ السجل</button>
+    </div>
+  </div>
+  </div>
+  <div class="overlay" id="statsOverlay">
+  <div class="sheet" style="max-width:650px;">
+    <div class="sheet-header">
+      <button class="sheet-close" id="closeStatsSheet">✕</button>
+      <div class="sheet-title">📊 الإحصائيات والتحليلات</div>
+      <button type="button" class="icon-btn" id="statsSettingsBtn" title="إعدادات الإحصائيات" style="background:var(--panel); color:var(--ink); border-color:var(--line);">⚙</button>
+    </div>
+    <div class="sheet-body">
+      <div class="field-row" style="align-items:center; margin-bottom:18px;">
+        <label style="margin:0; white-space:nowrap; font-weight:bold;">النطاق الزمني:</label>
+        <select id="statsPeriodSelect" style="flex:1;">
+          <option value="all">كل السجلات</option>
+          <option value="monthly">الشهر الحالي</option>
+          <option value="yearly">السنة الحالية</option>
+        </select>
+      </div>
+      <div class="subhead" style="font-size:calc(var(--app-font-size) + 1px);">ملخص الفترة المحددة</div>
+      <div class="stats-pro-grid">
+        <div class="stat-card"><div class="stat-label">إجمالي المرضى</div><div class="stat-value" id="stTotal">0</div></div>
+        <div class="stat-card"><div class="stat-label">سجلات اليوم</div><div class="stat-value" id="stToday">0</div></div>
+      </div>
+      <div class="stats-pro-grid" id="genderStatsWrap" style="margin-top:10px;">
+        <div class="stat-card"><div class="stat-label">نسبة الذكور</div><div class="stat-value" id="stMaleRatio">0%</div></div>
+        <div class="stat-card"><div class="stat-label">نسبة الإناث</div><div class="stat-value" id="stFemaleRatio">0%</div></div>
+      </div>
+      <div id="chartSection">
+        <div class="subhead" style="font-size:calc(var(--app-font-size) + 1px); margin-top:18px;">توزيع الفحوصات الطبية المنجزة</div>
+        <div class="chart-bar-wrap" id="chartContainer"></div>
+      </div>
+    </div>
+    <div class="sheet-footer" style="display:flex; gap:10px;">
+      <button class="btn btn-excel" id="exportStatsExcelBtn" style="flex:1;">📊 تصدير Excel</button>
+      <button class="btn btn-primary" id="exportStatsPdfBtn" style="flex:1;">📄 تصدير PDF</button>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="auditOverlay">
+  <div class="sheet" style="max-width:650px;">
+    <div class="sheet-header">
+      <button class="sheet-close" id="closeAuditSheet">✕</button>
+      <div class="sheet-title">📝 سجل التعديلات</div>
+      <button type="button" class="icon-btn" id="clearAuditBtn" title="مسح السجل" style="background:var(--panel); color:var(--danger); border-color:var(--line);">🗑</button>
+    </div>
+    <div class="sheet-body">
+      <div class="audit-filter-row">
+        <button class="btn btn-ghost active" data-audit-filter="all">الكل</button>
+        <button class="btn btn-ghost" data-audit-filter="patient">المرضى</button>
+        <button class="btn btn-ghost" data-audit-filter="backup">النسخ الاحتياطي</button>
+        <button class="btn btn-ghost" data-audit-filter="settings">الإعدادات</button>
+      </div>
+      <div id="auditList"></div>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="statsSettingsOverlay">
+  <div class="sheet" style="max-width:420px;">
+    <div class="sheet-header">
+      <button class="sheet-close" id="closeStatsSettingsSheet">✕</button>
+      <div class="sheet-title">⚙️ إعدادات الإحصائيات</div>
+      <div style="width:32px"></div>
+    </div>
+    <div class="sheet-body">
+      <div class="section-toggle" id="toggleStatsGender"><div>إظهار نسبة الذكور / الإناث</div><div class="switch on" id="switchStatsGender"></div></div>
+      <div class="section-toggle" id="toggleStatsChart"><div>إظهار مخطط توزيع الفحوصات</div><div class="switch on" id="switchStatsChart"></div></div>
+      <div class="section-toggle" id="toggleStatsDetailsAuto"><div>فتح التفاصيل تلقائياً</div><div class="switch" id="switchStatsDetailsAuto"></div></div>
+    </div>
+    <div class="sheet-footer">
+      <button class="btn btn-primary" id="closeStatsSettingsBtn" style="flex:1;">تم</button>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="settingsOverlay">
+  <div class="sheet" style="max-width:480px;">
+    <div class="sheet-header">
+      <button class="sheet-close" id="closeSettingsSheet">✕</button>
+      <div class="sheet-title">⚙️ إعدادات المختبر</div>
+      <div style="width:32px"></div>
+    </div>
+    <div class="sheet-body">
+      <div class="field" style="margin-bottom:12px;"><label>اسم المركز الصحي / المختبر</label><input type="text" id="s_center"></div>
+      <div class="field" style="margin-bottom:12px;"><label>الدائرة الصحية / القطاع</label><input type="text" id="s_directorate"></div>
+      <div class="field" style="margin-bottom:12px;">
+        <label>شعار المختبر (صورة)</label>
+        <input type="file" id="s_logo" accept="image/*">
+        <div style="margin-top:8px; display:flex; align-items:center; gap:10px;">
+          <div class="logo-preview" id="logoPreview"><span>م</span></div>
+          <button type="button" class="btn btn-ghost" id="removeLogoBtn" style="font-size:calc(var(--app-font-size) - 2px); padding:4px 10px;">إزالة الشعار</button>
+        </div>
+      </div>
+      
+      <div class="subhead" style="margin-top:16px;">📁 النسخ الاحتياطي والبيانات</div>
+      <p style="font-size:calc(var(--app-font-size) - 2px); color:var(--ink-sub); line-height:1.7; margin:4px 0 10px;">
+        بيانات المرضى تُحفظ تلقائياً على هذا الجهاز. عند تسجيل الدخول إلى Google Drive، يحاول البرنامج أخذ نسخة احتياطية سحابية تلقائياً مرة كل 24 ساعة، مع إمكانية الرفع والاستيراد يدوياً. يُفضّل الاحتفاظ بنسخة محلية دورية أيضاً.
+      </p>
+      <div class="field-row">
+        <button type="button" class="btn btn-ghost" id="backupExportBtn" style="flex:1;">⬇️ تنزيل نسخة احتياطية</button>
+        <button type="button" class="btn btn-ghost" id="backupImportBtn" style="flex:1;">⬆️ استيراد نسخة احتياطية</button>
+      </div>      <input type="file" id="backupImportInput" accept="application/json" style="display:none;">
+      
+      <div class="drive-section" style="margin-top:14px;">
+        <div class="subhead" style="margin-top:0;">☁️ Google Drive - النسخ الاحتياطي السحابي</div>
+        <div id="driveUserInfo" class="drive-user-info" style="margin:6px 0;">
+          <span style="color:var(--ink-sub);">غير متصل بحساب Google</span>
+        </div>
+        <div class="field-row" style="margin-top:6px;">
+          <button type="button" class="btn btn-drive" id="driveSignInBtn" style="flex:1;">🔑 تسجيل الدخول بحساب Google</button>
+          <button type="button" class="btn btn-ghost" id="driveSignOutBtn" style="flex:1; display:none;">🚪 تسجيل الخروج</button>
+        </div>
+        <div class="field-row" style="margin-top:6px;">
+          <button type="button" class="btn btn-drive" id="driveBackupBtn" style="flex:1;" disabled>☁️ رفع نسخة إلى Drive</button>
+          <button type="button" class="btn btn-drive-outline" id="driveRestoreBtn" style="flex:1;" disabled>☁️ استيراد من Drive</button>
+        </div>
+        <div id="driveLastBackup" style="font-size:calc(var(--app-font-size) - 3px); color:var(--ink-sub); margin-top:4px;"></div>
+        <div id="driveStatus" style="margin-top:4px;"></div>
+      </div>
+    </div>
+    <div class="sheet-footer">
+      <button class="btn btn-primary" id="saveSettingsBtn" style="flex:1;">حفظ الإعدادات</button>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="uiSettingsOverlay">
+  <div class="sheet" style="max-width:480px;">
+    <div class="sheet-header">
+      <button class="sheet-close" id="closeUiSettingsSheet">✕</button>
+      <div class="sheet-title">🎨 تخصيص الواجهة</div>
+      <div style="width:32px"></div>
+    </div>
+    <div class="sheet-body">
+      <div class="subhead">ألوان البرنامج الجاهزة</div>
+      <div class="color-picker-grid">
+        <div class="color-dot active" data-theme="default" style="background:#1D3B36;" title="زيتي طبيعي"></div>
+        <div class="color-dot" data-theme="blue" style="background:#1A365D;" title="أزرق طبي"></div>
+        <div class="color-dot" data-theme="purple" style="background:#4A154B;" title="بنفسجي ملكي"></div>
+        <div class="color-dot" data-theme="teal" style="background:#0D4A4A;" title="فيروزي"></div>
+        <div class="color-dot" data-theme="rose" style="background:#5E1A2E;" title="وردي"></div>
+        <div class="color-dot" data-theme="amber" style="background:#6B4C1A;" title="عنبر"></div>
+      </div>
+      <div class="subhead" style="margin-top:18px;">لون مخصص (اختياري)</div>
+      <div class="field-row" style="align-items:center;">
+        <input type="color" id="customAccentColor" value="#9C6B3E" style="width:52px; height:38px; padding:2px; border:1px solid var(--line); border-radius:8px; background:var(--panel);">
+        <button type="button" class="btn btn-ghost" id="resetAccentBtn" style="font-size:calc(var(--app-font-size) - 2px); padding:6px 12px;">إعادة للون الافتراضي</button>
+      </div>
+      <div class="subhead" style="margin-top:18px;">نوع الخط العربي</div>
+      <select id="fontFamilySelect" style="margin-bottom:14px;">
+        <option value="Tajawal">Tajawal</option>
+        <option value="Cairo">Cairo</option>
+        <option value="Almarai">Almarai</option>
+        <option value="Changa">Changa</option>
+        <option value="IBM Plex Sans Arabic">IBM Plex Sans Arabic</option>
+      </select>
+      <div class="subhead" style="margin-top:4px; display:flex; justify-content:space-between; align-items:center;">
+        <span>حجم الخط الإجمالي</span><span id="fontSizeValueLabel" style="color:var(--ink);">14px</span>
+      </div>
+      <input type="range" id="fontSizeSlider" min="11" max="20" step="1" value="14">
+      <div class="subhead" style="margin-top:18px;">كثافة عرض البطاقات</div>
+      <div class="field-row">
+        <button type="button" class="filter-btn density-btn active" data-density="comfortable" style="flex:1;">مريح</button>
+        <button type="button" class="filter-btn density-btn" data-density="compact" style="flex:1;">مضغوط</button>
+      </div>
+      <div class="subhead" style="margin-top:18px;">شكل شعار المختبر</div>
+      <div class="field-row" style="flex-wrap:wrap;">
+        <button type="button" class="filter-btn icon-shape-btn active" data-shape="circle" style="flex:1; min-width:80px;">دائري</button>
+        <button type="button" class="filter-btn icon-shape-btn" data-shape="rounded" style="flex:1; min-width:80px;">مربع دائري</button>
+        <button type="button" class="filter-btn icon-shape-btn" data-shape="square" style="flex:1; min-width:80px;">مربع</button>
+        <button type="button" class="filter-btn icon-shape-btn" data-shape="hexagon" style="flex:1; min-width:80px;">سداسي</button>
+        <button type="button" class="filter-btn icon-shape-btn" data-shape="blob" style="flex:1; min-width:80px;">عضوي</button>
+      </div>
+      <div class="subhead" style="margin-top:18px;">حجم شعار المختبر</div>
+      <div class="field-row">
+        <button type="button" class="filter-btn logo-size-btn" data-size="small" style="flex:1;">صغير</button>
+        <button type="button" class="filter-btn logo-size-btn active" data-size="medium" style="flex:1;">متوسط</button>
+        <button type="button" class="filter-btn logo-size-btn" data-size="large" style="flex:1;">كبير</button>
+        <button type="button" class="filter-btn logo-size-btn" data-size="xlarge" style="flex:1;">كبير جدًا</button>
+      </div>
+      <div class="section-toggle" id="toggleLogoBorder" style="margin-top:14px;"><div>إظهار إطار حول الشعار</div><div class="switch on" id="switchLogoBorder"></div></div>
+      <div class="subhead" style="margin-top:18px;">الوضع الداكن</div>
+      <div class="field-row">
+        <button type="button" class="btn btn-ghost" id="uiDarkModeToggle" style="flex:1;">🌙 تبديل الوضع الداكن / الفاتح</button>
+      </div>
+      <div class="field-row" style="margin-top:6px;">
+        <button type="button" class="btn btn-ghost" id="resetAppearanceBtn" style="flex:1; color:var(--danger); border-color:var(--danger);">↺ إعادة تعيين المظهر بالكامل</button>
+      </div>
+    </div>
+    <div class="sheet-footer">
+      <button class="btn btn-primary" id="closeUiSettingsBtn" style="flex:1;">تم</button>
+    </div>
+  </div>
+</div><div class="overlay" id="catalogOverlay">
+  <div class="sheet" style="max-width:560px;">
+    <div class="sheet-header">
+      <button class="sheet-close" id="closeCatalogSheet">✕</button>
+      <div class="sheet-title">دليل الفحوصات والقيم المرجعية</div>
+      <div style="width:32px"></div>
+    </div>
+    <div class="sheet-body" id="catalogBody"></div>
+  </div>
+</div>
+<div class="overlay" id="reportOverlay">
+  <div class="sheet" style="max-width:750px;">
+    <div class="sheet-header">
+      <button class="sheet-close" id="closeReportSheet">✕</button>
+      <div class="sheet-title">معاينة التقرير الطبي</div>
+      <div style="width:32px"></div>
+    </div>
+    <div class="sheet-body">
+      <div class="print-tools">
+        <button type="button" class="tool-btn lang-btn" id="btnToolLang">🌐 Language (EN/AR)</button>
+        <button type="button" class="tool-btn" id="btnToolStyle">🎨 تعديل شكل الجدول</button>
+<button type="button" class="tool-btn" id="btnToolPrintSettings">⚙️ إعدادات الطباعة</button>
+        <button type="button" class="tool-btn" id="btnToolBatch">🖨️ عدة تقارير</button>
+      </div>
+      <div id="tableStylePanel">
+        <div class="field-row">
+          <div class="field"><label>لون الحدود</label><input type="color" id="tblBorderColor" value="#111111"></div>
+          <div class="field"><label>خلفية العناوين</label><input type="color" id="tblHeadBg" value="#ededed"></div>
+          <div class="field"><label>نص العناوين</label><input type="color" id="tblHeadText" value="#000000"></div>
+        </div>
+        <button type="button" class="btn btn-ghost" id="tblStyleResetBtn" style="width:100%; padding:6px; font-size:calc(var(--app-font-size) - 2px);">إعادة تعيين الألوان</button>
+      </div>
+      <div id="printArea"></div>
+    </div>
+    <div class="sheet-footer">
+      <button class="btn btn-ghost" id="closeReportBtn">إغلاق</button>
+      <button class="btn btn-ghost" id="exportReportBtn">⬇️ تنزيل HTML</button>
+      <button class="btn btn-primary" id="savePdfBtn">📄 حفظ PDF</button>
+      <button class="btn btn-ghost" id="shareReportBtn" style="display:none;">📤 مشاركة</button>
+      <button class="btn btn-primary" id="doPrintBtn">🖨 طباعة</button>
+    </div>
+  </div>
+</div>
+<div class="overlay print-settings-overlay" id="printSettingsOverlay">
+  <div class="sheet" style="max-width:760px;">
+    <div class="sheet-header">
+      <button class="sheet-close" id="closePrintSettingsSheet">✕</button>
+      <div class="sheet-title">🖨️ إعدادات التقرير والطباعة</div>
+      <div style="width:32px"></div>
+    </div>
+    <div class="sheet-body">
+      <div class="print-settings-grid">
+        <div class="print-setting-card">
+          <div class="subhead">📄 الصفحة والتخطيط</div>
+          <div class="field-row">
+            <div class="field" style="flex:1"><label>حجم الورق</label><select id="psPaper"><option value="A4">A4</option><option value="A5">A5</option><option value="Letter">Letter</option></select></div>
+            <div class="field" style="flex:1"><label>الاتجاه</label><select id="psOrientation"><option value="portrait">عمودي</option><option value="landscape">أفقي</option></select></div>
+          </div>
+          <div class="field-row">
+            <div class="field" style="flex:1"><label>تخطيط التقارير المتعددة <span style="font-size:12px;color:var(--ink-sub)">(فوق بعض = بعرض الصفحة)</span></label><select id="psLayout"><option value="auto">تلقائي ذكي — توفير الورق</option><option value="1">تقرير واحد في الصفحة</option><option value="2stack">تقريران فوق بعض</option><option value="2">تقريران جنب بعض</option><option value="3">3 تقارير / صف</option><option value="4">4 تقارير / صفحة (2×2)</option></select></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>المسافة بين التقارير (مم)</label><input type="number" id="psGap" min="0" max="20" step="1"></div>
+          </div>
+          <div class="print-preview-note">وضع «تلقائي» يحاول وضع أكبر عدد ممكن من التقارير الصغيرة في الصفحة مع الحفاظ على قابلية القراءة.</div>
+        </div>
+        <div class="print-setting-card">
+          <div class="subhead">📐 الهوامش (مم)</div>
+          <div class="field-row">
+            <div class="field"><label>أعلى</label><input type="number" id="psMarginTop" min="0" max="30" step="0.5"></div>
+            <div class="field"><label>يمين</label><input type="number" id="psMarginRight" min="0" max="30" step="0.5"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>أسفل</label><input type="number" id="psMarginBottom" min="0" max="30" step="0.5"></div>
+            <div class="field"><label>يسار</label><input type="number" id="psMarginLeft" min="0" max="30" step="0.5"></div>
+          </div>
+        </div>
+        <div class="print-setting-card">
+          <div class="subhead">🔤 الخط</div>
+          <div class="field-row">
+            <div class="field"><label>حجم خط التقرير</label><input type="number" id="psFontSize" min="8" max="22" step="1"></div>
+            <div class="field"><label>حجم خط الجدول</label><input type="number" id="psTableFontSize" min="7" max="18" step="1"></div>
+          </div>
+          <div class="field-row">
+            <div class="field" style="flex:1"><label>نوع الخط</label><select id="psFontFamily"><option value="Tajawal">Tajawal</option><option value="Cairo">Cairo</option><option value="Almarai">Almarai</option><option value="Changa">Changa</option><option value="IBM Plex Sans Arabic">IBM Plex Sans Arabic</option></select></div>
+          </div>
+        </div>
+        <div class="print-setting-card">
+          <div class="subhead">🏷️ الشعار والعنوان</div>
+          <div class="print-switch-row"><span>إظهار شعار المختبر</span><div class="switch on" id="psShowLogo"></div></div>
+          <div class="field-row" style="margin-top:8px">
+            <div class="field"><label>مكان الشعار</label><select id="psLogoPosition"><option value="right">يمين</option><option value="center">وسط</option><option value="left">يسار</option></select></div>
+            <div class="field"><label>حجم الشعار (مم)</label><input type="number" id="psLogoSize" min="8" max="50" step="1"></div>
+          </div>
+          <div class="field"><label>عنوان التقرير</label><input type="text" id="psReportTitle" placeholder="تقرير الفحوصات المخبرية"></div>
+        </div>
+        <div class="print-setting-card">
+          <div class="subhead">👤 بيانات التقرير</div>
+          <div class="print-switch-row"><span>اسم المختبر / المركز</span><div class="switch on" id="psShowCenter"></div></div>
+          <div class="print-switch-row"><span>الدائرة الصحية / القطاع</span><div class="switch on" id="psShowDirectorate"></div></div>
+          <div class="print-switch-row"><span>التاريخ</span><div class="switch on" id="psShowDate"></div></div>
+          <div class="print-switch-row"><span>رقم السجل</span><div class="switch on" id="psShowSeq"></div></div>
+          <div class="print-switch-row"><span>الملاحظات</span><div class="switch on" id="psShowNotes"></div></div>
+        </div>
+        <div class="print-setting-card">
+          <div class="subhead">🧾 أسفل التقرير</div>
+          <div class="print-switch-row"><span>إظهار اسم المختص / المختبر</span><div class="switch on" id="psShowFooter"></div></div>
+          <div class="print-switch-row"><span>إظهار خط الإطار حول التقرير</span><div class="switch on" id="psShowBorder"></div></div>
+          <div class="field"><label>نص التذييل</label><input type="text" id="psFooterText" placeholder="مع تمنياتنا بالصحة والعافية"></div>
+        </div>
+      </div>
+      <div style="margin-top:10px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:10px;">
+        <div class="subhead" style="margin:0 0 5px">💡 الحفظ</div>
+        <div class="print-preview-note">هذه الإعدادات تُحفظ تلقائياً في بيانات التطبيق وتُستخدم في الطباعة وPDF وطباعة عدة تقارير.</div>
+      </div>
+    </div>
+    <div class="sheet-footer">
+      <button class="btn btn-ghost" id="resetPrintSettingsBtn">↺ الافتراضي</button>
+      <button class="btn btn-primary" id="savePrintSettingsBtn" style="flex:1">✓ حفظ الإعدادات</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay batch-overlay" id="batchPrintOverlay">
+  <div class="sheet" style="max-width:900px;">
+    <div class="sheet-header">
+      <button class="sheet-close" id="closeBatchPrintSheet">✕</button>
+      <div class="sheet-title">🖨️ طباعة عدة تقارير وتوفير الورق</div>
+      <div style="width:32px"></div>
+    </div>
+    <div class="sheet-body">
+      <div class="batch-toolbar">
+        <button class="btn btn-ghost" id="batchSelectAllBtn">☑ تحديد الكل</button>
+        <button class="btn btn-ghost" id="batchClearBtn">☐ إلغاء التحديد</button>
+        <button class="btn btn-ghost" id="batchSettingsBtn">⚙ إعدادات الطباعة</button>
+        <button class="btn btn-ghost" id="batchRefreshPreviewBtn">👁 معاينة الصفحة</button>
+      </div>
+      <div id="batchSelectionInfo" style="font-weight:800; margin-bottom:8px; color:var(--ink);">تم تحديد 0 تقرير</div>
+      <div id="batchPatientList" class="batch-patient-list"></div>
+      <div class="print-preview-note">حدد المرضى الذين تريد طباعتهم. سيقوم الوضع التلقائي بترتيب التقارير على ورقة A4 قدر الإمكان، ويمكنك تغيير التخطيط من إعدادات الطباعة.</div>
+      <div id="batchPrintPreview" class="batch-preview-wrap" style="display:none; margin-top:12px;"></div>
+    </div>
+    <div class="sheet-footer">
+      <button class="btn btn-ghost" id="closeBatchPrintBtn">إغلاق</button>
+      <button class="btn btn-ghost" id="batchPdfBtn">📄 PDF المحدد</button>
+      <button class="btn btn-primary" id="batchDoPrintBtn">🖨️ طباعة المحدد</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+  (function(){
+    var STORAGE_KEY_PATIENTS = 'lab_patients_db';
+    var STORAGE_KEY_SETTINGS = 'lab_settings_db';
+    var STORAGE_KEY_AUDIT = 'lab_audit_log';
+    var state = {
+      patients: [],
+      settings: { center: 'مركز الرعاية الصحية الأولية', directorate: 'دائرة الصحة / قطاع الرعاية', logo: null, darkMode: false, theme: 'default', customAccent: null, density: 'comfortable', fontSizePx: 14, fontFamily: 'Tajawal', customRanges: {}, customTests: {}, iconShape: 'circle', logoSize: 'medium', logoBorder: true, statsShowGender: true, statsShowChart: true, statsAutoDetails: false, printSettings: { paper: 'A4', orientation: 'portrait', layout: 'auto', gap: 4, marginTop: 8, marginRight: 8, marginBottom: 8, marginLeft: 8, fontSize: 13, tableFontSize: 11, fontFamily: 'Tajawal', showLogo: true, logoPosition: 'right', logoSize: 24, reportTitle: 'تقرير الفحوصات المخبرية', showCenter: true, showDirectorate: true, showDate: true, showSeq: true, showNotes: true, showFooter: true, showBorder: true, footerText: 'مع تمنياتنا بالصحة والعافية', borderColor: '#777777' } },
+      editingId: null,
+      activeFilter: 'all',
+      auditLog: [],
+      auditFilter: 'all'
+    };
+
+    var TEST_SECTIONS = [
+      { key: 'Blood', dataKey: 'blood', prefix: 't_', switchId: 'switchBlood', panelId: 'bloodPanel', toggleId: 'toggleBlood', fields: ['hb','pcv','wbc','esr','abo','plt'], tagClass: 'tag-blood', tagLabel: 'دم', labels: { hb:'Hb', pcv:'PCV', wbc:'WBC', esr:'ESR', abo:'ABO GROUP', plt:'PLT' }, normal: { hb:'12 - 17 g/dl', pcv:'36 - 50 %', wbc:'4,000 - 11,000 /µl', esr:'0 - 20 mm/hr', abo:'—', plt:'150,000 - 450,000 /µl' }, printTitle: 'Hematology (Blood)', printType: 'kv' },
+      { key: 'Chem', dataKey: 'chem', prefix: 't_', switchId: 'switchChem', panelId: 'chemPanel', toggleId: 'toggleChem', fields: ['fbs','rbs','urea','creat','uric','chol','trig'], tagClass: 'tag-chem', tagLabel: 'كيمياء', labels: { fbs:'FBS', rbs:'RBS', urea:'Urea', creat:'Creatinine', uric:'Uric Acid', chol:'Cholesterol', trig:'Triglycerides' }, normal: { fbs:'70 - 110 mg/dl', rbs:'70 - 140 mg/dl', urea:'15 - 45 mg/dl', creat:'0.6 - 1.3 mg/dl', uric:'3.5 - 7.2 mg/dl', chol:'< 200 mg/dl', trig:'< 150 mg/dl' }, printTitle: 'Biochemistry', printType: 'kv' },
+      { key: 'Urine', dataKey: 'urine', prefix: 'u_', switchId: 'switchUrine', panelId: 'urinePanel', toggleId: 'toggleUrine', fields: ['color','appearance','ph','protein','glucose','rbc','pus','epithelial','crystals'], tagClass: 'tag-urine', tagLabel: 'بول', labels: { color:'Color', appearance:'Appearance', ph:'pH', protein:'Protein', glucose:'Glucose', rbc:'RBC /HPF', pus:'Pus Cells', epithelial:'Epithelial', crystals:'Crystals' }, normal: { color:'Yellow', appearance:'Clear', ph:'4.5 - 8.0', protein:'Negative', glucose:'Negative', rbc:'0 - 2 /HPF', pus:'0 - 5 /HPF', epithelial:'Few', crystals:'Nill' }, printTitle: 'General Urine Examination', printType: 'kv' },
+      { key: 'Serology', dataKey: 'serology', prefix: 'sr_', switchId: 'switchSerology', panelId: 'serologyPanel', toggleId: 'toggleSerology', fields: ['crp','rf','aso','hpylori','widal'], tagClass: 'tag-serology', tagLabel: 'مصليات', labels: { crp:'CRP', rf:'RF', aso:'ASO', hpylori:'H. pylori', widal:'Widal' }, normal: { crp:'Negative (< 6 mg/L)', rf:'Negative (< 14 IU/ml)', aso:'Negative (< 200 IU/ml)', hpylori:'Negative', widal:'Titer < 1:80' }, printTitle: 'Serology & Immunology', printType: 'kv' },
+      { key: 'Stool', dataKey: 'stool', prefix: 'so_', switchId: 'switchStool', panelId: 'stoolPanel', toggleId: 'toggleStool', fields: ['color','consistency','mucus','ova'], tagClass: 'tag-stool', tagLabel: 'براز', labels: { color:'Color', consistency:'Consistency', mucus:'Mucus', ova:'Ova / Parasites' }, normal: { color:'Brown', consistency:'Formed', mucus:'Nill', ova:'Nill' }, printTitle: 'Stool Examination', printType: 'kv' },
+      { key: 'Preg', dataKey: 'preg', prefix: 'h_', switchId: 'switchPreg', panelId: 'pregPanel', toggleId: 'togglePreg', fields: ['preg','tsh'], tagClass: 'tag-preg', tagLabel: 'حمل', labels: { preg:'Pregnancy Test', tsh:'TSH' }, normal: { preg:'Negative', tsh:'0.4 - 4.0 mIU/L' }, printTitle: 'Pregnancy & Hormones', printType: 'kv' }
+    ];
+
+    function getNormalRange(sec, key) {
+      var ck = sec.key + '.' + key;
+      var custom = state.settings.customRanges || {};
+      if(custom[ck] !== undefined && custom[ck] !== '') return custom[ck];
+      return (sec.normal && sec.normal[key]) || '—';
+    }
+
+    function todayISO() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+    function toast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 2000); }
+
+    function applyTheme() {
+      if(state.settings.darkMode) { document.body.classList.add('dark-mode'); document.getElementById('darkModeToggle').textContent = '☀️'; } else { document.body.classList.remove('dark-mode'); document.getElementById('darkModeToggle').textContent = '🌙'; }
+      document.body.classList.remove('theme-blue', 'theme-purple', 'theme-teal', 'theme-rose', 'theme-amber');
+      if(state.settings.theme === 'blue') document.body.classList.add('theme-blue');
+      else if(state.settings.theme === 'purple') document.body.classList.add('theme-purple');
+      else if(state.settings.theme === 'teal') document.body.classList.add('theme-teal');
+      else if(state.settings.theme === 'rose') document.body.classList.add('theme-rose');
+      else if(state.settings.theme === 'amber') document.body.classList.add('theme-amber');
+      document.body.classList.remove('density-compact');
+      if(state.settings.density === 'compact') document.body.classList.add('density-compact');
+      document.querySelectorAll('.density-btn').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-density') === (state.settings.density || 'comfortable')); });
+      document.documentElement.style.setProperty('--app-font-size', (state.settings.fontSizePx || 14) + 'px');
+      document.documentElement.style.setProperty('--app-font-family', "'" + (state.settings.fontFamily || 'Tajawal') + "'");
+      var fsSlider = document.getElementById('fontSizeSlider'); if(fsSlider) fsSlider.value = state.settings.fontSizePx || 14;
+      var fsLabel = document.getElementById('fontSizeValueLabel'); if(fsLabel) fsLabel.textContent = (state.settings.fontSizePx || 14) + 'px';
+      var ffSelect = document.getElementById('fontFamilySelect'); if(ffSelect) ffSelect.value = state.settings.fontFamily || 'Tajawal';
+      if(state.settings.customAccent) { document.documentElement.style.setProperty('--seal', state.settings.customAccent); document.documentElement.style.setProperty('--seal-light', state.settings.customAccent); var accInput = document.getElementById('customAccentColor'); if(accInput) accInput.value = state.settings.customAccent; } else { document.documentElement.style.removeProperty('--seal'); document.documentElement.style.removeProperty('--seal-light'); }
+      var shape = state.settings.iconShape || 'circle';
+      var border = state.settings.logoBorder !== false;
+      var sizeMap = { small: '34px', medium: '42px', large: '52px', xlarge: '64px' };
+      var logoSize = sizeMap[state.settings.logoSize] || sizeMap.medium;
+      document.documentElement.style.setProperty('--logo-size', logoSize);
+      ['brandLogo', 'logoPreview'].forEach(function(id){
+        var el = document.getElementById(id);
+        if(!el) return;
+        el.classList.remove('shape-circle', 'shape-rounded', 'shape-square', 'shape-hexagon', 'shape-blob');
+        el.classList.add('shape-' + shape);
+        el.classList.toggle('no-border', !border);
+      });
+      document.querySelectorAll('.icon-shape-btn').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-shape') === shape); });
+      document.querySelectorAll('.logo-size-btn').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-size') === (state.settings.logoSize || 'medium')); });
+      var swBorder = document.getElementById('switchLogoBorder'); if(swBorder) swBorder.classList.toggle('on', border);
+      updateSealContrast();
+    }
+    function hexToRgb(hex) {
+      hex = (hex || '').replace('#', '').trim();
+      if(hex.length === 3) hex = hex.split('').map(function(c){ return c + c; }).join('');
+      var num = parseInt(hex, 16);
+      if(isNaN(num)) return { r: 156, g: 107, b: 62 };
+      return { r: (num>>16)&255, g: (num>>8)&255, b: num&255 };
+    }
+    function relLuminance(hex) {
+      var rgb = hexToRgb(hex);
+      function chan(c){ c = c/255; return c <= 0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4); }
+      return 0.2126*chan(rgb.r) + 0.7152*chan(rgb.g) + 0.0722*chan(rgb.b);
+    }
+    function updateSealContrast() {
+      var val = getComputedStyle(document.body).getPropertyValue('--seal').trim();
+      if(!val || val.charAt(0) !== '#') val = '#9C6B3E';
+      var lum = relLuminance(val);
+      document.documentElement.style.setProperty('--seal-contrast', lum > 0.55 ? '#111111' : '#ffffff');
+    }
+
+    function applyLogo() {
+      var logoImg = document.getElementById('logoImage');
+      var logoTxt = document.getElementById('logoText');
+      if(state.settings.logo) {
+        logoImg.src = state.settings.logo;
+        logoImg.style.display = 'block';
+        logoTxt.style.display = 'none';
+        var previewImg = document.querySelector('#settingsOverlay .logo-preview img');
+        var previewSpan = document.querySelector('#settingsOverlay .logo-preview span');
+        if(previewImg) { previewImg.src = state.settings.logo; previewImg.style.display = 'block'; }
+        if(previewSpan) previewSpan.style.display = 'none';
+      } else {
+        logoImg.style.display = 'none';
+        logoTxt.style.display = 'block';
+        var previewImg2 = document.querySelector('#settingsOverlay .logo-preview img');
+        var previewSpan2 = document.querySelector('#settingsOverlay .logo-preview span');
+        if(previewImg2) previewImg2.style.display = 'none';
+        if(previewSpan2) previewSpan2.style.display = 'block';
+      }
+    }
+
+    var saveStatusTimer = null;
+    function setSaveStatus(text, type) {
+      var el = document.getElementById('saveStatus');
+      if(!el) return;
+      el.textContent = text;
+      el.className = 'save-status ' + (type || '');
+      clearTimeout(saveStatusTimer);
+      if(type === 'saving') saveStatusTimer = setTimeout(function(){ setSaveStatus('🟢 محفوظ تلقائياً', 'saved'); }, 1200);
+    }
+    function scheduleAutoDriveBackup() {
+      clearTimeout(window._driveAutoBackupTimer);
+      window._driveAutoBackupTimer = setTimeout(function(){
+        try {
+          if(typeof gapi !== 'undefined' && gapi.client && gapi.client.getToken && gapi.client.getToken()) {
+            var last = parseInt(localStorage.getItem('lab_last_drive_backup_ts') || '0', 10);
+            if(!last || (Date.now() - last) > 24*60*60*1000) driveBackup(true);
+          }
+        } catch(e) {}
+      }, 5000);
+    }
+    function loadData() {
+      try { var p = localStorage.getItem(STORAGE_KEY_PATIENTS); state.patients = p ? JSON.parse(p) : []; var s = localStorage.getItem(STORAGE_KEY_SETTINGS); if(s) state.settings = Object.assign(state.settings, JSON.parse(s)); } catch(e) {}
+      var a = localStorage.getItem(STORAGE_KEY_AUDIT); if(a){ try { state.auditLog = JSON.parse(a) || []; } catch(e) { state.auditLog = []; } }
+      restoreCustomTests();
+      applyTheme(); applyLogo(); renderHeader(); renderList(); renderDashboard();
+      setSaveStatus('🟢 البيانات محفوظة', 'saved');
+      updateAuditBadge();
+      var cached = localStorage.getItem('lab_google_user');
+      if(cached) { try { driveUser = JSON.parse(cached); updateDriveUI(false, true); } catch(e) {} }
+    }
+    function addAudit(action, category, details) {
+      try { state.auditLog=state.auditLog||[]; state.auditLog.unshift({id:'a_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),action:action,category:category||'patient',details:details||'',at:new Date().toISOString()}); if(state.auditLog.length>300) state.auditLog=state.auditLog.slice(0,300); localStorage.setItem(STORAGE_KEY_AUDIT,JSON.stringify(state.auditLog)); updateAuditBadge(); } catch(e) {}
+    }
+    function updateAuditBadge(){ var b=document.getElementById('auditBadge'); if(!b)return; var n=(state.auditLog||[]).length; b.textContent=n>99?'99+':n; b.style.display=n?'inline-flex':'none'; }
+    function formatAuditDate(iso){ try{var d=new Date(iso);return d.toLocaleDateString('ar-IQ')+' '+d.toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'});}catch(e){return iso||'';} }
+    function renderAuditLog(){ var list=document.getElementById('auditList'); if(!list)return; var arr=(state.auditLog||[]).filter(function(x){return state.auditFilter==='all'||x.category===state.auditFilter;}); if(!arr.length){list.innerHTML='<div style="text-align:center;padding:35px;color:var(--ink-sub);font-weight:700;">لا توجد تعديلات مسجلة</div>';return;} list.innerHTML=arr.map(function(x){var icon=x.category==='backup'?'☁️':x.category==='settings'?'⚙️':'👤';return '<div class="audit-item"><div class="audit-icon">'+icon+'</div><div class="audit-main"><div class="audit-action">'+escapeHtml(x.action)+'</div><div class="audit-meta">'+escapeHtml(x.details||'')+' • '+escapeHtml(formatAuditDate(x.at))+'</div></div></div>';}).join(''); }
+
+    function saveData() {
+      try { localStorage.setItem(STORAGE_KEY_PATIENTS, JSON.stringify(state.patients)); setSaveStatus('🟢 تم الحفظ تلقائياً', 'saved'); scheduleAutoDriveBackup(); }
+      catch(e){ setSaveStatus('🔴 تعذر الحفظ', 'error'); }
+    }
+    function saveSettingsData() {
+      try { localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(state.settings)); setSaveStatus('🟢 تم حفظ الإعدادات', 'saved'); }
+      catch(e){ setSaveStatus('🔴 تعذر حفظ الإعدادات', 'error'); }
+    }
+    function renderHeader() { document.getElementById('hdrClinicName').textContent = state.settings.center || 'مختبري'; document.getElementById('hdrDept').textContent = state.settings.directorate || ''; }
+    function escapeHtml(s) { return (s===undefined||s===null?'':String(s)).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+    // ===== حفظ/مشاركة/طباعة الملفات - يعمل في المتصفح وAPK =====
+    function isNativePlatform() {
+      return !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform());
+    }
+
+    function blobToBase64(blob) {
+      return new Promise(function(resolve, reject){
+        var reader = new FileReader();
+        reader.onloadend = function(){ resolve(String(reader.result).split(',')[1] || ''); };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    function downloadBlobInBrowser(filename, blob) {
+      try {
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function(){
+          if(a.parentNode) a.parentNode.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 1500);
+        return true;
+      } catch(e) {
+        console.error('Browser download error:', e);
+        return false;
+      }
+    }
+
+    async function saveNativeFile(filename, blob, mimeType, shareTitle) {
+      try {
+        var Filesystem = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Filesystem;
+        var Share = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Share;
+        if (!Filesystem) {
+          toast('إضافة حفظ الملفات غير متوفرة في إصدار التطبيق');
+          return false;
+        }
+        var base64 = await blobToBase64(blob);
+        var safeName = String(filename || 'lab-file').replace(/[\\/:*?"<>|]/g, '_');
+        var result = await Filesystem.writeFile({
+          path: safeName,
+          data: base64,
+          directory: 'CACHE'
+        });
+        if (Share && result && result.uri) {
+          await Share.share({
+            url: result.uri,
+            title: shareTitle || safeName,
+            text: shareTitle || safeName,
+            dialogTitle: shareTitle || safeName
+          });
+        } else {
+          toast('تم إنشاء الملف: ' + safeName);
+        }
+        return true;
+      } catch (error) {
+        console.error('saveNativeFile error:', error);
+        var msg = (error && error.message) ? String(error.message) : '';
+        if (msg.toLowerCase().indexOf('cancel') === -1 && msg.toLowerCase().indexOf('abort') === -1) {
+          toast('تعذر حفظ أو مشاركة الملف');
+        }
+        return false;
+      }
+    }
+
+    function saveOrShareFile(filename, blob, mimeType) {
+      if (isNativePlatform()) return saveNativeFile(filename, blob, mimeType, filename);
+      return Promise.resolve(downloadBlobInBrowser(filename, blob));
+    }
+
+    // ===== الطباعة في المتصفح: طباعة الصفحة الحالية بعد تفعيل CSS الخاص بالتقرير =====
+    function printReportInBrowser() {
+      var paper = document.getElementById('reportPaper');
+      if (!paper) { toast('لا يوجد تقرير مفتوح'); return; }
+      var ps=getPrintSettings(), size=paperCssSize(ps.paper), previousTitle=document.title;
+      document.title='تقرير_طبي_'+todayISO();
+      var runtime=document.createElement('style'); runtime.id='singlePrintRuntimeStyle'; runtime.textContent='@media print { @page { size: '+(ps.orientation==='landscape'?size.h+'mm '+size.w+'mm':size.w+'mm '+size.h+'mm')+'; margin: '+ps.marginTop+'mm '+ps.marginRight+'mm '+ps.marginBottom+'mm '+ps.marginLeft+'mm; } }'; document.head.appendChild(runtime);
+      var cleanup=function(){document.title=previousTitle;if(runtime.parentNode)runtime.parentNode.removeChild(runtime);};
+      window.addEventListener('afterprint', cleanup, { once: true });
+      setTimeout(function(){
+        try {
+          window.focus();
+          window.print();
+        } catch(e) {
+          console.error('Browser print error:', e);
+          cleanup();
+          toast('تعذرت الطباعة من المتصفح');
+        }
+      }, 120);
+    }
+
+    function generatePdfBlobFromElement(element, options) {
+      if (typeof html2pdf === 'undefined') {
+        toast('تعذر تحميل أداة PDF، تأكد من الاتصال بالإنترنت');
+        return Promise.resolve(null);
+      }
+      if (!element) return Promise.resolve(null);
+
+      var host = document.createElement('div');
+      host.id = 'pdfRenderHost_' + Date.now();
+      var renderWidthMm = (options && options.renderWidthMm) ? Number(options.renderWidthMm) : 190;
+      host.style.cssText = [
+        'position:absolute',
+        'left:0',
+        'top:0',
+        'width:' + renderWidthMm + 'mm',
+        'min-height:270mm',
+        'padding:0',
+        'margin:0',
+        'background:#fff',
+        'color:#111',
+        'direction:rtl',
+        'z-index:2147483647',
+        'opacity:1',
+        'visibility:visible',
+        'pointer-events:none',
+        'overflow:visible'
+      ].join(';');
+
+      var clone = element.cloneNode(true);
+      clone.removeAttribute('id');
+      clone.style.cssText += ';display:block;visibility:visible;opacity:1;background:#fff;color:#111;width:100%;min-height:0;';
+      host.appendChild(clone);
+      document.body.appendChild(host);
+
+      var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+      return ready.then(function(){
+        return new Promise(function(resolve){
+          requestAnimationFrame(function(){
+            requestAnimationFrame(resolve);
+          });
+        });
+      }).then(function(){
+        var cfg = Object.assign({
+          margin: 5,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            allowTaint: false,
+            backgroundColor: '#fff',
+            logging: false,
+            foreignObjectRendering: false,
+            scrollX: 0,
+            scrollY: 0,
+            windowWidth: Math.max(document.documentElement.clientWidth || 0, host.scrollWidth || 0),
+            windowHeight: Math.max(document.documentElement.clientHeight || 0, host.scrollHeight || 0)
+          },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          pagebreak: { mode: ['css', 'legacy'] }
+        }, options || {});
+        return html2pdf().set(cfg).from(clone).outputPdf('blob');
+      }).finally(function(){
+        if(host.parentNode) host.parentNode.removeChild(host);
+      }).catch(function(e){
+        console.error('PDF generation error:', e);
+        toast('تعذر إنشاء ملف PDF');
+        return null;
+      });
+    }
+
+
+    // ===== Native APK: إنشاء PDF للتقارير المتعددة بطريقة Raster آمنة =====
+    // لا نعتمد على html2pdf مع صفحة مجمعة واحدة داخل Android WebView، لأن بعض إصدارات
+    // WebView قد تعطي PDF أبيض عند وجود CSS Grid/page-breaks متداخلة. هنا نلتقط كل
+    // صفحة A4 كـ Canvas ثم نضعها مباشرة في jsPDF. النتيجة ثابتة في APK والمتصفح.
+    function generateNativeBatchPdfBlob(host, ps) {
+      if (!host) return Promise.resolve(null);
+      if (typeof html2pdf === 'undefined') {
+        toast('تعذر تحميل أداة PDF، تأكد من الاتصال بالإنترنت');
+        return Promise.resolve(null);
+      }
+
+      var size = paperCssSize(ps.paper);
+      var pageW = ps.orientation === 'landscape' ? size.h : size.w;
+      var pageH = ps.orientation === 'landscape' ? size.w : size.h;
+      var sourcePages = Array.prototype.slice.call(host.querySelectorAll('.batch-page'));
+      if (!sourcePages.length) {
+        toast('لا توجد صفحات جاهزة للطباعة');
+        return Promise.resolve(null);
+      }
+
+      // Render host مستقل حتى لا تتأثر اللقطة بعناصر التطبيق أو overflow الشاشة.
+      var renderHost = document.createElement('div');
+      renderHost.id = 'nativeBatchRender_' + Date.now();
+      renderHost.style.cssText = [
+        'position:absolute','left:0','top:0','width:'+pageW+'mm','padding:0','margin:0',
+        'background:#fff','color:#111','direction:rtl','z-index:2147483647',
+        'visibility:visible','opacity:1','pointer-events:none','overflow:visible'
+      ].join(';');
+
+      sourcePages.forEach(function(page){
+        var clone = page.cloneNode(true);
+        clone.style.cssText += ';display:grid!important;visibility:visible!important;opacity:1!important;position:relative!important;left:auto!important;top:auto!important;width:'+pageW+'mm!important;height:'+pageH+'mm!important;min-height:'+pageH+'mm!important;margin:0!important;box-sizing:border-box!important;overflow:hidden!important;background:#fff!important;box-shadow:none!important;transform:none!important;break-after:auto!important;page-break-after:auto!important;';
+        clone.querySelectorAll('*').forEach(function(el){
+          el.style.visibility = 'visible';
+        });
+        renderHost.appendChild(clone);
+      });
+      document.body.appendChild(renderHost);
+
+      var waitFonts = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+      return waitFonts.then(function(){
+        return new Promise(function(resolve){
+          requestAnimationFrame(function(){
+            requestAnimationFrame(resolve);
+          });
+        });
+      }).then(function(){
+        var pages = Array.prototype.slice.call(renderHost.querySelectorAll('.batch-page'));
+        if (!pages.length) return null;
+
+        function canvasOptionsFor(pageEl){
+          return {
+            scale: 2,
+            useCORS: true,
+            allowTaint: false,
+            backgroundColor: '#fff',
+            logging: false,
+            foreignObjectRendering: false,
+            scrollX: 0,
+            scrollY: 0,
+            width: pageEl.scrollWidth,
+            height: pageEl.scrollHeight,
+            windowWidth: Math.max(document.documentElement.clientWidth || 0, pageEl.scrollWidth || 0),
+            windowHeight: Math.max(document.documentElement.clientHeight || 0, pageEl.scrollHeight || 0)
+          };
+        }
+
+        // html2pdf bundle يحتوي html2canvas و jsPDF معاً؛ نستخدم Worker للحصول على
+        // canvas موثوق، ثم نضيف الصفحات التالية إلى نفس كائن PDF.
+        var first = html2pdf().set({
+          margin: 0,
+          image: {type:'jpeg',quality:0.98},
+          html2canvas: canvasOptionsFor(pages[0]),
+          jsPDF: {unit:'mm',format:[pageW,pageH],orientation:ps.orientation||'portrait'},
+          pagebreak: {mode:[]}
+        }).from(pages[0]).toCanvas().toPdf().get('pdf');
+
+        return first.then(function(pdf){
+          function capture(index){
+            if(index >= pages.length) return Promise.resolve(pdf);
+            return html2pdf().set({
+              margin:0,
+              image:{type:'jpeg',quality:0.98},
+              html2canvas: canvasOptionsFor(pages[index]),
+              jsPDF:{unit:'mm',format:[pageW,pageH],orientation:ps.orientation||'portrait'},
+              pagebreak:{mode:[]}
+            }).from(pages[index]).toCanvas().get('canvas').then(function(canvas){
+              pdf.addPage([pageW,pageH], ps.orientation === 'landscape' ? 'landscape' : 'portrait');
+              pdf.addImage(canvas.toDataURL('image/jpeg',0.98),'JPEG',0,0,pageW,pageH,undefined,'FAST');
+              return capture(index+1);
+            });
+          }
+          return capture(1).then(function(){
+            return pdf.output('blob');
+          });
+        });
+      }).catch(function(e){
+        console.error('Native batch PDF raster error:', e);
+        toast('تعذر تجهيز التقارير للطباعة');
+        return null;
+      }).finally(function(){
+        if(renderHost.parentNode) renderHost.parentNode.removeChild(renderHost);
+      });
+    }
+
+    function generateReportPdfBlob(paper) {
+      var ps=getPrintSettings();
+      var size=paperCssSize(ps.paper);
+      return generatePdfBlobFromElement(paper, {
+        margin: Math.max(ps.marginTop,ps.marginRight,ps.marginBottom,ps.marginLeft),
+        html2canvas: { scale:2,useCORS:true,allowTaint:false,backgroundColor:'#fff',logging:false,foreignObjectRendering:false,scrollX:0,scrollY:0 },
+        jsPDF: { unit:'mm', format:[size.w,size.h], orientation:ps.orientation||'portrait' },
+        renderWidthMm: ps.orientation==='landscape' ? size.h : size.w,
+        pagebreak:{mode:['css','legacy']}
+      });
+    }
+
+    function printReport() {
+      var paper = document.getElementById('reportPaper');
+      if (!paper) { toast('لا يوجد تقرير مفتوح'); return; }
+      if (isNativePlatform()) {
+        toast('جاري تجهيز التقرير للطباعة...');
+        generateReportPdfBlob(paper).then(function(blob){
+          if (!blob) return;
+          return saveNativeFile('تقرير_طبي_' + todayISO() + '.pdf', blob, 'application/pdf', 'طباعة التقرير الطبي');
+        });
+        return;
+      }
+      printReportInBrowser();
+    }
+
+function exportToExcelCSV(filename, rows) {
+      var csvContent = "\uFEFF";
+      rows.forEach(function(row) {
+        var rowStr = row.map(function(val) { var v = (val === undefined || val === null) ? "" : String(val); return '"' + v.replace(/"/g, '""') + '"'; }).join(",");
+        csvContent += rowStr + "\r\n";
+      });
+      var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      saveOrShareFile(filename, blob, 'text/csv');
+    }
+    function exportAllPatientsExcel() {
+  if(!state.patients.length){ toast("لا توجد سجلات لتصديرها"); return; }
+  var headers = ["رقم السجل", "الاسم", "العمر", "الجنس", "التاريخ", "ملاحظات"];
+  TEST_SECTIONS.forEach(function(sec) {
+    sec.fields.forEach(function(f) { headers.push(sec.tagLabel + " (" + (sec.labels[f] || f) + ")"); });
+  });
+  var rows = [headers];
+  state.patients.forEach(function(p){
+    var r = [p.seq || "", p.name || "", p.age || "", p.gender || "", p.date || "", p.notes || ""];
+    TEST_SECTIONS.forEach(function(sec){
+      var data = p[sec.dataKey] || {};
+      sec.fields.forEach(function(f){ r.push((p['include' + sec.key] && data[f] !== undefined) ? data[f] : ""); });
+    });
+    rows.push(r);
+  });
+  exportToExcelCSV("جميع_المرضى_" + todayISO() + ".csv", rows);
+  toast("تم تصدير جميع المرضى بنجاح");
+}
+
+function renderDashboard() {
+  var t = todayISO();
+  var today = state.patients.filter(function(p){ return p.date === t; });
+  function count(secKey){ return today.filter(function(p){ return p['include' + secKey]; }).length; }
+  var ids = [['dashToday', today.length],['dashBlood',count('Blood')],['dashChem',count('Chem')],['dashUrine',count('Urine')],['dashSerology',count('Serology')],['dashStool',count('Stool')],['dashPreg',count('Preg')],['dashTotal',state.patients.length]];
+  ids.forEach(function(x){ var el=document.getElementById(x[0]); if(el) el.textContent=x[1]; });
+  var de=document.getElementById('dashboardDate'); if(de) de.textContent='📅 اليوم: ' + t + ' — الأرقام الخاصة بالمرضى المسجلين اليوم.';
+}
+
+function patientSearchText(p) {
+  var parts = [p.name, p.seq, p.date, p.age, p.gender, p.notes];
+  TEST_SECTIONS.forEach(function(sec){
+    var data = p[sec.dataKey] || {};
+    sec.fields.forEach(function(f){ parts.push(sec.labels[f] || f); parts.push(data[f]); });
+  });
+  if(p.customTests) p.customTests.forEach(function(t){ parts.push(t.name); parts.push(t.result); });
+  return parts.filter(function(v){ return v !== undefined && v !== null; }).join(' ').toLowerCase();
+}
+
+function renderList() {
+  renderDashboard();
+  var q = document.getElementById('searchInput').value.trim().toLowerCase();
+  var from = document.getElementById('dateFrom') ? document.getElementById('dateFrom').value : '';
+  var to = document.getElementById('dateTo') ? document.getElementById('dateTo').value : '';
+  var list = document.getElementById('patientList');
+  var items = state.patients.slice().sort(function(a,b){ return (b.createdAt||0)-(a.createdAt||0); });
+  if(state.activeFilter === 'today') { var t = todayISO(); items = items.filter(function(p){ return p.date === t; }); }
+  else if(state.activeFilter !== 'all') { var filterKey = state.activeFilter.charAt(0).toUpperCase() + state.activeFilter.slice(1); items = items.filter(function(p){ return p['include' + filterKey]; }); }
+  if(from) items = items.filter(function(p){ return (p.date || '') >= from; });
+  if(to) items = items.filter(function(p){ return (p.date || '') <= to; });
+  if(q) { items = items.filter(function(p){ return patientSearchText(p).indexOf(q) !== -1; }); }
+  document.getElementById('countPill').textContent = items.length + ' مريض';
+  if(items.length === 0) { list.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 40px; color: var(--ink-sub);"><h3>لا توجد سجلات مطابقة</h3></div>'; return; }
+  var html = '';
+  items.forEach(function(p){
+    var tags = '';
+    TEST_SECTIONS.forEach(function(sec){ if(p['include' + sec.key]) tags += '<span class="tag ' + sec.tagClass + '">' + sec.tagLabel + '</span> '; });
+    html += '<div class="card" data-id="' + p.id + '"><div class="card-top"><div><div class="card-name">' + escapeHtml(p.name || 'بدون اسم') + '</div><div class="card-meta">' + escapeHtml(p.date || '') + ' &bull; العمر: ' + escapeHtml(p.age || '-') + ' &bull; ' + escapeHtml(p.gender || '') + '</div></div><div class="seq-badge">#' + escapeHtml(p.seq || '') + '</div></div><div class="tag-row">' + (tags || '<span class="tag tag-none">بدون فحوصات</span>') + '</div><div class="card-actions"><button class="act-view">🔍 عرض</button><button class="act-edit">✏️ تعديل</button><button class="act-print">🖨 طباعة</button><button class="act-excel">📊 Excel</button><button class="act-del">✕</button></div></div>';
+  });
+  list.innerHTML = html;
+  list.querySelectorAll('.card').forEach(function(card){
+    var id = card.getAttribute('data-id');
+    card.querySelector('.act-view').addEventListener('click', function(){ viewReport(id); });
+    card.querySelector('.act-edit').addEventListener('click', function(){ openPatientSheet(id); });
+    card.querySelector('.act-print').addEventListener('click', function(){ viewReport(id, true); });
+    card.querySelector('.act-excel').addEventListener('click', function(){ exportSinglePatientExcel(id); });
+    card.querySelector('.act-del').addEventListener('click', function(){ deletePatient(id); });
+  });
+}
+
+function exportSinglePatientExcel(id) {
+  var p = state.patients.find(function(x){ return x.id === id; });
+  if(!p) return;
+  var rows = [["رقم السجل", p.seq || ""], ["اسم المريض", p.name || ""], ["العمر", p.age || ""], ["الجنس", p.gender || ""], ["التاريخ", p.date || ""], ["ملاحظات", p.notes || ""], [], ["القسم / الفحص", "النتيجة", "القيمة الطبيعية"]];
+  TEST_SECTIONS.forEach(function(sec){
+    if(p['include' + sec.key]){
+      var data = p[sec.dataKey] || {};
+      sec.fields.forEach(function(f){
+        if(data[f] !== undefined && data[f] !== ""){ rows.push([sec.tagLabel + " - " + (sec.labels[f] || f), data[f], getNormalRange(sec, f)]); }
+      });
+    }
+  });
+  exportToExcelCSV("مريض_" + (p.name || "سجل").replace(/\s+/g, '_') + "_" + (p.date || todayISO()) + ".csv", rows);
+  toast("تم تصدير ملف المريض بنجاح");
+}
+
+function setSwitch(sec, on) { var el = document.getElementById(sec.switchId); if(on) el.classList.add('on'); else el.classList.remove('on'); document.getElementById(sec.panelId).style.display = on ? 'block' : 'none'; }
+
+function injectCustomFieldDom(sec, fieldKey, label) {
+  var gridId = sec.panelId.replace('Panel', 'Grid');
+  var grid = document.getElementById(gridId);
+  if(grid && !document.getElementById(sec.prefix + fieldKey)){
+    var fieldDiv = document.createElement('div');
+    fieldDiv.className = 'field';
+    fieldDiv.innerHTML = '<label>' + escapeHtml(label) + '</label><input type="text" id="' + sec.prefix + fieldKey + '">';
+    grid.appendChild(fieldDiv);
+  }
+}
+
+function restoreCustomTests() {
+  var ct = state.settings.customTests || {};
+  Object.keys(ct).forEach(function(secKey){
+    var sec = TEST_SECTIONS.find(function(s){ return s.key === secKey; });
+    if(!sec) return;
+    (ct[secKey] || []).forEach(function(item){
+      if(sec.fields.indexOf(item.key) === -1) sec.fields.push(item.key);
+      sec.labels[item.key] = item.label;
+      injectCustomFieldDom(sec, item.key, item.label);
+    });
+  });
+}
+
+function deleteCustomTest(sectionKey, fieldKey) {
+  var sec = TEST_SECTIONS.find(function(s){ return s.key === sectionKey; });
+  if(!sec) return;
+  var idx = sec.fields.indexOf(fieldKey);
+  if(idx > -1) sec.fields.splice(idx, 1);
+  delete sec.labels[fieldKey];
+  if(state.settings.customRanges) delete state.settings.customRanges[sectionKey + '.' + fieldKey];
+  if(state.settings.customTests && state.settings.customTests[sectionKey]){
+    state.settings.customTests[sectionKey] = state.settings.customTests[sectionKey].filter(function(it){ return it.key !== fieldKey; });
+  }
+  var inputEl = document.getElementById(sec.prefix + fieldKey);
+  if(inputEl){
+    var wrap = inputEl.closest('.field');
+    if(wrap && wrap.parentNode) wrap.parentNode.removeChild(wrap);
+  }
+  saveSettingsData();
+  renderCatalog();
+  toast('تم حذف الفحص نهائيًا');
+}
+
+function addCustomTestToSection(sectionKey, testName, normalValue) {
+  var sec = TEST_SECTIONS.find(function(s){ return s.key === sectionKey; });
+  if(!sec) return;
+  var fieldKey = 'custom_' + Date.now();
+  sec.fields.push(fieldKey);
+  sec.labels[fieldKey] = testName;
+  if(!state.settings.customRanges) state.settings.customRanges = {};
+  state.settings.customRanges[sectionKey + '.' + fieldKey] = normalValue || '—';
+  if(!state.settings.customTests) state.settings.customTests = {};
+  if(!state.settings.customTests[sectionKey]) state.settings.customTests[sectionKey] = [];
+  state.settings.customTests[sectionKey].push({ key: fieldKey, label: testName });
+  injectCustomFieldDom(sec, fieldKey, testName);
+  saveSettingsData();
+  toast('تم إضافة الفحص "' + testName + '" لقسم ' + sec.tagLabel);
+}
+
+// أزرار إضافة الفحوصات
+document.getElementById('addBloodTestBtn').addEventListener('click', function(){
+  var name = document.getElementById('newBloodTestName').value.trim();
+  var normal = document.getElementById('newBloodTestNormal').value.trim();
+  if(!name){ toast('يرجى إدخال اسم الفحص'); return; }
+  addCustomTestToSection('Blood', name, normal);
+  document.getElementById('newBloodTestName').value = '';
+  document.getElementById('newBloodTestNormal').value = '';
+});
+document.getElementById('addChemTestBtn').addEventListener('click', function(){
+  var name = document.getElementById('newChemTestName').value.trim();
+  var normal = document.getElementById('newChemTestNormal').value.trim();
+  if(!name){ toast('يرجى إدخال اسم الفحص'); return; }
+  addCustomTestToSection('Chem', name, normal);
+  document.getElementById('newChemTestName').value = '';
+  document.getElementById('newChemTestNormal').value = '';
+});
+document.getElementById('addUrineTestBtn').addEventListener('click', function(){
+  var name = document.getElementById('newUrineTestName').value.trim();
+  var normal = document.getElementById('newUrineTestNormal').value.trim();
+  if(!name){ toast('يرجى إدخال اسم الفحص'); return; }
+  addCustomTestToSection('Urine', name, normal);
+  document.getElementById('newUrineTestName').value = '';
+  document.getElementById('newUrineTestNormal').value = '';
+});
+document.getElementById('addSerologyTestBtn').addEventListener('click', function(){
+  var name = document.getElementById('newSerologyTestName').value.trim();
+  var normal = document.getElementById('newSerologyTestNormal').value.trim();
+  if(!name){ toast('يرجى إدخال اسم الفحص'); return; }
+  addCustomTestToSection('Serology', name, normal);
+  document.getElementById('newSerologyTestName').value = '';
+  document.getElementById('newSerologyTestNormal').value = '';
+});
+document.getElementById('addStoolTestBtn').addEventListener('click', function(){
+  var name = document.getElementById('newStoolTestName').value.trim();
+  var normal = document.getElementById('newStoolTestNormal').value.trim();
+  if(!name){ toast('يرجى إدخال اسم الفحص'); return; }
+  addCustomTestToSection('Stool', name, normal);
+  document.getElementById('newStoolTestName').value = '';
+  document.getElementById('newStoolTestNormal').value = '';
+});
+document.getElementById('addPregTestBtn').addEventListener('click', function(){
+  var name = document.getElementById('newPregTestName').value.trim();
+  var normal = document.getElementById('newPregTestNormal').value.trim();
+  if(!name){ toast('يرجى إدخال اسم الفحص'); return; }
+  addCustomTestToSection('Preg', name, normal);
+  document.getElementById('newPregTestName').value = '';
+  document.getElementById('newPregTestNormal').value = '';
+});
+
+function openPatientSheet(id) {
+  state.editingId = id || null;
+  document.getElementById('patientSheetTitle').textContent = id ? '✏️ تعديل بيانات المريض' : '➕ إضافة مريض جديد';
+  document.getElementById('f_name').value = '';
+  document.getElementById('f_age').value = '';
+  document.getElementById('f_seq').value = state.patients.length + 1;
+  document.getElementById('f_gender').value = 'ذكر';
+  document.getElementById('f_date').value = todayISO();
+  document.getElementById('f_notes').value = '';
+  TEST_SECTIONS.forEach(function(sec){
+    setSwitch(sec, false);
+    sec.fields.forEach(function(f){ var el = document.getElementById(sec.prefix + f); if(el) el.value = ''; });
+  });
+  if(id){
+    var p = state.patients.find(function(x){ return x.id === id; });
+    if(p){
+      document.getElementById('f_name').value = p.name || '';
+      document.getElementById('f_age').value = p.age || '';
+      document.getElementById('f_gender').value = p.gender || 'ذكر';
+      document.getElementById('f_date').value = p.date || todayISO();
+      document.getElementById('f_seq').value = p.seq || '';
+      document.getElementById('f_notes').value = p.notes || '';
+      TEST_SECTIONS.forEach(function(sec){
+        setSwitch(sec, !!p['include' + sec.key]);
+        var data = p[sec.dataKey];
+        if(data){
+          sec.fields.forEach(function(f){
+            var el = document.getElementById(sec.prefix + f);
+            if(el && data[f] !== undefined) el.value = data[f];
+          });
+        }
+      });
+    }
+  }
+  document.getElementById('patientOverlay').classList.add('open');
+}
+function collectForm() {
+  var out = { name: document.getElementById('f_name').value.trim(), age: document.getElementById('f_age').value.trim(), gender: document.getElementById('f_gender').value, date: document.getElementById('f_date').value || todayISO(), seq: document.getElementById('f_seq').value.trim(), notes: document.getElementById('f_notes').value.trim() };
+  TEST_SECTIONS.forEach(function(sec){
+    out['include' + sec.key] = document.getElementById(sec.switchId).classList.contains('on');
+    var data = {};
+    sec.fields.forEach(function(f){ var el = document.getElementById(sec.prefix + f); if(el) data[f] = el.value.trim(); });
+    out[sec.dataKey] = data;
+  });
+  return out;
+}
+
+function savePatient() {
+  var data = collectForm();
+  if(!data.name){ toast('يرجى إدخال اسم المريض'); return; }
+  if(state.editingId){
+    var idx = state.patients.findIndex(function(x){ return x.id === state.editingId; });
+    if(idx !== -1){ data.id = state.editingId; data.createdAt = state.patients[idx].createdAt; state.patients[idx] = data; addAudit('تعديل سجل مريض','patient','المريض: '+(data.name||'—')+' — رقم السجل: '+(data.seq||'—')); }
+  } else {
+    data.id = 'p_' + Date.now(); data.createdAt = Date.now();
+    state.patients.unshift(data); addAudit('إضافة مريض جديد','patient','المريض: '+(data.name||'—')+' — رقم السجل: '+(data.seq||'—'));
+  }
+  saveData();
+  document.getElementById('patientOverlay').classList.remove('open');
+  renderList();
+  toast('تم الحفظ بنجاح');
+}
+
+function deletePatient(id) {
+  if(!confirm('هل أنت متأكد من حذف هذا المريض؟')) return;
+  var deleted = state.patients.find(function(p){ return p.id === id; });
+  state.patients = state.patients.filter(function(p){ return p.id !== id; });
+  addAudit('حذف سجل مريض','patient','المريض: '+((deleted&&deleted.name)||'—')+' — رقم السجل: '+((deleted&&deleted.seq)||'—'));
+  saveData(); renderList(); toast('تم الحذف');
+}
+
+var reportLang = 'ar';
+
+function getPrintSettings(){
+  var d = { paper:'A4', orientation:'portrait', layout:'auto', gap:4, marginTop:8, marginRight:8, marginBottom:8, marginLeft:8, fontSize:13, tableFontSize:11, fontFamily:'Tajawal', showLogo:true, logoPosition:'right', logoSize:24, reportTitle:'تقرير الفحوصات المخبرية', showCenter:true, showDirectorate:true, showDate:true, showSeq:true, showNotes:true, showFooter:true, showBorder:true, footerText:'مع تمنياتنا بالصحة والعافية', borderColor:'#777777' };
+  state.settings.printSettings = Object.assign(d, state.settings.printSettings || {});
+  return state.settings.printSettings;
+}
+function setSwitchValue(id, value){ var el=document.getElementById(id); if(el) el.classList.toggle('on', !!value); }
+function getSwitchValue(id){ var el=document.getElementById(id); return !!(el && el.classList.contains('on')); }
+function paperCssSize(paper){ return paper === 'A5' ? {w:148,h:210} : paper === 'Letter' ? {w:215.9,h:279.4} : {w:210,h:297}; }
+function reportRowCount(p){
+  var n=0;
+  TEST_SECTIONS.forEach(function(sec){
+    if(!p['include'+sec.key]) return;
+    var data=p[sec.dataKey]||{};
+    sec.fields.forEach(function(k){ if(data[k]!==undefined && data[k]!==null && data[k]!== '') n++; });
+  });
+  (p.customTests||[]).forEach(function(ct){ if(ct.name && ct.result) n++; });
+  return n;
+}
+function chooseBatchColumns(patients, ps){
+  if(ps.layout !== 'auto') return ps.layout === '2stack' ? '2stack' : (parseInt(ps.layout,10) || 1);
+  if(!patients.length) return 1;
+  var maxRows=Math.max.apply(null, patients.map(reportRowCount));
+  var avg=patients.reduce(function(a,p){return a+reportRowCount(p);},0)/patients.length;
+  if(ps.orientation === 'landscape'){
+    if(maxRows <= 4 && avg <= 3) return 4;
+    if(maxRows <= 8 && avg <= 6) return '2stack';
+    if(maxRows <= 10 && avg <= 8) return 3;
+    return 2;
+  }
+  // In portrait, stacking short/medium reports vertically preserves readable width.
+  // Very short reports can still use the compact 2×2 layout.
+  if(maxRows <= 3 && avg <= 2.5) return 4;
+  if(maxRows <= 7 && avg <= 5.5) return '2stack';
+  return 1;
+}
+function batchPerPage(layout){
+  return layout === 4 ? 4 : (layout === 3 ? 3 : (layout === 2 || layout === '2stack' ? 2 : 1));
+}
+function buildReportHtml(p, compact){
+  var ps=getPrintSettings();
+  var showLogo=ps.showLogo !== false && !!state.settings.logo;
+  var logoClass='logo-'+(ps.logoPosition||'right');
+  var logoHtml=showLogo ? '<img class="report-logo" src="'+escapeHtml(state.settings.logo)+'" alt="شعار المختبر" style="width:'+Number(ps.logoSize||24)+'mm;height:'+Number(ps.logoSize||24)+'mm;">' : '';
+  var brandBits='';
+  if(ps.showCenter !== false) brandBits += '<b class="report-center-name">'+escapeHtml(state.settings.center || '')+'</b>';
+  if(ps.showDirectorate !== false && state.settings.directorate) brandBits += '<span class="report-directorate">'+escapeHtml(state.settings.directorate)+'</span>';
+  var brand = '<div class="report-head-brand '+logoClass+'">'+logoHtml+'<div class="report-brand-text">'+brandBits+'</div></div>';
+  var title = escapeHtml(ps.reportTitle || (reportLang === 'en' ? 'Laboratory Test Report' : 'تقرير الفحوصات المخبرية'));
+  var dateHtml = ps.showDate !== false ? '<b id="lblPDate">'+(reportLang==='en'?'Date:':'التاريخ:')+'</b> '+escapeHtml(p.date||'') : '';
+  var seqHtml = ps.showSeq !== false ? '<div class="report-seq"><b>'+(reportLang==='en'?'Record No:':'رقم السجل:')+'</b> '+escapeHtml(p.seq||'—')+'</div>' : '';
+  var head='<div class="report-head"><div>'+brand+'</div><div style="text-align:center;flex:1"><b style="font-size:1.2em" id="printTitleText">'+title+'</b></div><div style="text-align:left">'+dateHtml+seqHtml+'</div></div>';
+  var info='<div class="report-info"><div><b id="lblPName">'+(reportLang==='en'?'Patient Name:':'اسم المريض:')+'</b> '+escapeHtml(p.name||'')+'</div><div><b id="lblPAge">'+(reportLang==='en'?'Age:':'العمر:')+'</b> '+escapeHtml(p.age||'-')+' &bull; <b id="lblPGender">'+(reportLang==='en'?'Gender:':'الجنس:')+'</b> '+escapeHtml(p.gender||'')+'</div></div>';
+  var sectionsHtml='';
+  TEST_SECTIONS.forEach(function(sec){
+    if(!p['include'+sec.key]) return;
+    var data=p[sec.dataKey]||{}, rows='';
+    sec.fields.forEach(function(k){ var val=data[k]; if(val!==undefined&&val!==null&&val!=='') rows+='<tr><td>'+escapeHtml(sec.labels[k]||k)+'</td><td><b>'+escapeHtml(val)+'</b></td><td>'+escapeHtml(getNormalRange(sec,k))+'</td></tr>'; });
+    if(rows) sectionsHtml+='<div class="report-section-title">'+escapeHtml(sec.printTitle||sec.tagLabel)+'</div><table class="rtable"><thead><tr><th class="thTest">'+(reportLang==='en'?'Test Name':'اسم الفحص')+'</th><th class="thRes">'+(reportLang==='en'?'Result':'النتيجة')+'</th><th class="thNorm">'+(reportLang==='en'?'Normal Range':'القيمة الطبيعية')+'</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  });
+  if(p.customTests && p.customTests.length){ var crows=''; p.customTests.forEach(function(ct){ if(ct.name&&ct.result) crows+='<tr><td>'+escapeHtml(ct.name)+'</td><td><b>'+escapeHtml(ct.result)+'</b></td><td>'+escapeHtml(ct.normal||'—')+'</td></tr>'; }); if(crows) sectionsHtml+='<div class="report-section-title">فحوصات إضافية</div><table class="rtable"><thead><tr><th class="thTest">اسم الفحص</th><th class="thRes">النتيجة</th><th class="thNorm">القيمة الطبيعية</th></tr></thead><tbody>'+crows+'</tbody></table>'; }
+  if(!sectionsHtml) sectionsHtml='<div style="text-align:center;padding:20px;color:#999">لا توجد فحوصات مسجلة لهذا المريض</div>';
+  var notes=(ps.showNotes !== false && p.notes) ? '<div class="report-note"><b>'+(reportLang==='en'?'Notes:':'ملاحظات:')+'</b> '+escapeHtml(p.notes)+'</div>' : '';
+  var footer=ps.showFooter !== false ? '<div class="report-footer"><span>'+escapeHtml(ps.footerText||'')+'</span><span>'+escapeHtml(state.settings.center||'')+'</span></div>' : '';
+  var compactClass=compact?' compact-report':'';
+  return '<div class="report'+compactClass+'" style="direction:'+(reportLang==='en'?'ltr':'rtl')+';text-align:'+(reportLang==='en'?'left':'right')+';font-size:'+Number(ps.fontSize||13)+'px;font-family:\''+escapeHtml(ps.fontFamily||'Tajawal')+'\';border:'+(ps.showBorder===false?'none':'1px solid '+(ps.borderColor||'#777'))+';box-sizing:border-box;">'+head+info+sectionsHtml+notes+footer+'</div>';
+}
+function viewReport(id, autoPrint) {
+  var p=state.patients.find(function(x){return x.id===id;});
+  if(!p){toast('المريض غير موجود');return;}
+  var hasTests=false; TEST_SECTIONS.forEach(function(sec){if(p['include'+sec.key]) hasTests=true;});
+  if(!hasTests && (!p.customTests||p.customTests.length===0)) toast('لا توجد فحوصات مسجلة لهذا المريض');
+  document.getElementById('printArea').innerHTML='<div id="reportPaper">'+buildReportHtml(p,false)+'</div>';
+  document.getElementById('reportOverlay').classList.add('open');
+  document.querySelector('.print-tools').style.display='flex';
+  document.getElementById('tableStylePanel').style.display='none';
+  setReportLanguage(reportLang);
+  setReportFontSize();
+  applyTableStyle();
+  if(autoPrint) setTimeout(function(){printReport();},500);
+}
+
+function setReportLanguage(lang){
+  var paper = document.getElementById('reportPaper');
+  if(!paper) return;
+  reportLang = lang;
+  paper.style.direction = (lang === 'en') ? 'ltr' : 'rtl';
+  paper.style.textAlign = (lang === 'en') ? 'left' : 'right';
+  var map = (lang === 'en')
+    ? { title:'Laboratory Test Report', date:'Date:', name:'Patient Name:', age:'Age:', gender:'Gender:', test:'Test Name', result:'Result', norm:'Normal Range' }
+    : { title:'تقرير الفحوصات المخبرية', date:'التاريخ:', name:'اسم المريض:', age:'العمر:', gender:'الجنس:', test:'اسم الفحص', result:'النتيجة', norm:'القيمة الطبيعية' };
+  var el;
+  el = document.getElementById('printTitleText'); if(el) el.innerText = map.title;
+  el = document.getElementById('lblPDate'); if(el) el.innerText = map.date;
+  el = document.getElementById('lblPName'); if(el) el.innerText = map.name;
+  el = document.getElementById('lblPAge'); if(el) el.innerText = map.age;
+  el = document.getElementById('lblPGender'); if(el) el.innerText = map.gender;
+  document.querySelectorAll('.thTest').forEach(function(e){ e.innerText = map.test; });
+  document.querySelectorAll('.thRes').forEach(function(e){ e.innerText = map.result; });
+  document.querySelectorAll('.thNorm').forEach(function(e){ e.innerText = map.norm; });
+}
+
+function applyTableStyle(){
+  var border = document.getElementById('tblBorderColor') ? document.getElementById('tblBorderColor').value : '#111111';
+  var headBg = document.getElementById('tblHeadBg') ? document.getElementById('tblHeadBg').value : '#ededed';
+  var headText = document.getElementById('tblHeadText') ? document.getElementById('tblHeadText').value : '#000000';
+  var ps=getPrintSettings();
+  document.querySelectorAll('#printArea table.rtable').forEach(function(tbl){
+    tbl.style.border = '1px solid ' + border;
+    tbl.style.fontSize = (ps.tableFontSize || 11) + 'px';
+    tbl.querySelectorAll('th, td').forEach(function(cell){ cell.style.borderColor = border; });
+    tbl.querySelectorAll('th').forEach(function(th){ th.style.background = headBg; th.style.color = headText; });
+  });
+}
+
+function setReportFontSize(){
+  var paper=document.getElementById('reportPaper');
+  if(paper){ var ps=getPrintSettings(); paper.querySelectorAll('.report').forEach(function(r){ r.style.fontSize=(ps.fontSize||13)+'px'; r.style.fontFamily=ps.fontFamily||'Tajawal'; }); }
+}
+
+
+function populatePrintSettingsUI(){
+  var ps=getPrintSettings();
+  var map={psPaper:ps.paper,psOrientation:ps.orientation,psLayout:ps.layout,psGap:ps.gap,psMarginTop:ps.marginTop,psMarginRight:ps.marginRight,psMarginBottom:ps.marginBottom,psMarginLeft:ps.marginLeft,psFontSize:ps.fontSize,psTableFontSize:ps.tableFontSize,psFontFamily:ps.fontFamily,psLogoPosition:ps.logoPosition,psLogoSize:ps.logoSize,psReportTitle:ps.reportTitle,psFooterText:ps.footerText};
+  Object.keys(map).forEach(function(id){var e=document.getElementById(id);if(e)e.value=map[id];});
+  ['psShowLogo','psShowCenter','psShowDirectorate','psShowDate','psShowSeq','psShowNotes','psShowFooter','psShowBorder'].forEach(function(id){
+    var key={psShowLogo:'showLogo',psShowCenter:'showCenter',psShowDirectorate:'showDirectorate',psShowDate:'showDate',psShowSeq:'showSeq',psShowNotes:'showNotes',psShowFooter:'showFooter',psShowBorder:'showBorder'}[id];
+    setSwitchValue(id,ps[key]!==false);
+  });
+}
+function savePrintSettingsFromUI(){
+  var ps=getPrintSettings();
+  function val(id,def){var e=document.getElementById(id);return e?e.value:def;}
+  ps.paper=val('psPaper','A4'); ps.orientation=val('psOrientation','portrait'); ps.layout=val('psLayout','auto');
+  ps.gap=Math.max(0,Number(val('psGap',4))||4); ps.marginTop=Math.max(0,Number(val('psMarginTop',8))||0); ps.marginRight=Math.max(0,Number(val('psMarginRight',8))||0); ps.marginBottom=Math.max(0,Number(val('psMarginBottom',8))||0); ps.marginLeft=Math.max(0,Number(val('psMarginLeft',8))||0);
+  ps.fontSize=Math.min(22,Math.max(8,Number(val('psFontSize',13))||13)); ps.tableFontSize=Math.min(18,Math.max(7,Number(val('psTableFontSize',11))||11)); ps.fontFamily=val('psFontFamily','Tajawal');
+  ps.logoPosition=val('psLogoPosition','right'); ps.logoSize=Math.min(50,Math.max(8,Number(val('psLogoSize',24))||24)); ps.reportTitle=val('psReportTitle','تقرير الفحوصات المخبرية'); ps.footerText=val('psFooterText','');
+  ps.showLogo=getSwitchValue('psShowLogo'); ps.showCenter=getSwitchValue('psShowCenter'); ps.showDirectorate=getSwitchValue('psShowDirectorate'); ps.showDate=getSwitchValue('psShowDate'); ps.showSeq=getSwitchValue('psShowSeq'); ps.showNotes=getSwitchValue('psShowNotes'); ps.showFooter=getSwitchValue('psShowFooter'); ps.showBorder=getSwitchValue('psShowBorder');
+  saveSettingsData(); addAudit('تعديل إعدادات التقرير والطباعة','settings','تحديث حجم الورق والخط والتخطيط والشعار وبيانات التقرير');
+  toast('تم حفظ إعدادات الطباعة');
+}
+function resetPrintSettings(){
+  state.settings.printSettings={paper:'A4',orientation:'portrait',layout:'auto',gap:4,marginTop:8,marginRight:8,marginBottom:8,marginLeft:8,fontSize:13,tableFontSize:11,fontFamily:'Tajawal',showLogo:true,logoPosition:'right',logoSize:24,reportTitle:'تقرير الفحوصات المخبرية',showCenter:true,showDirectorate:true,showDate:true,showSeq:true,showNotes:true,showFooter:true,showBorder:true,footerText:'مع تمنياتنا بالصحة والعافية',borderColor:'#777777'};
+  saveSettingsData(); populatePrintSettingsUI(); toast('تمت إعادة إعدادات الطباعة للوضع الافتراضي');
+}
+function openPrintSettings(){ populatePrintSettingsUI(); document.getElementById('printSettingsOverlay').classList.add('open'); }
+function closePrintSettings(){ document.getElementById('printSettingsOverlay').classList.remove('open'); }
+function filteredPatientsForBatch(){
+  var q=(document.getElementById('searchInput').value||'').trim().toLowerCase();
+  var from=document.getElementById('dateFrom')?document.getElementById('dateFrom').value:''; var to=document.getElementById('dateTo')?document.getElementById('dateTo').value:'';
+  var items=state.patients.slice().sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0);});
+  if(state.activeFilter==='today') items=items.filter(function(p){return p.date===todayISO();});
+  else if(state.activeFilter!=='all'){var fk=state.activeFilter.charAt(0).toUpperCase()+state.activeFilter.slice(1);items=items.filter(function(p){return p['include'+fk];});}
+  if(from) items=items.filter(function(p){return (p.date||'')>=from;}); if(to) items=items.filter(function(p){return (p.date||'')<=to;});
+  if(q) items=items.filter(function(p){return patientSearchText(p).indexOf(q)!==-1;});
+  return items;
+}
+var batchSelectedIds=[];
+function renderBatchPatients(){
+  var items=filteredPatientsForBatch(), set={}; batchSelectedIds.forEach(function(id){set[id]=true;});
+  var list=document.getElementById('batchPatientList');
+  if(!items.length){list.innerHTML='<div style="text-align:center;padding:30px;color:var(--ink-sub)">لا توجد سجلات مطابقة للفلاتر الحالية</div>';return;}
+  list.innerHTML=items.map(function(p){return '<label class="batch-patient-item"><input type="checkbox" data-batch-id="'+escapeHtml(p.id)+'" '+(set[p.id]?'checked':'')+'><div class="b-main"><div class="b-name">'+escapeHtml(p.name||'بدون اسم')+'</div><div class="b-meta">'+escapeHtml(p.date||'')+' • رقم '+escapeHtml(p.seq||'—')+' • '+reportRowCount(p)+' نتيجة</div></div></label>';}).join('');
+  list.querySelectorAll('input[data-batch-id]').forEach(function(cb){cb.addEventListener('change',function(){var id=cb.getAttribute('data-batch-id');if(cb.checked){if(batchSelectedIds.indexOf(id)<0)batchSelectedIds.push(id);}else{batchSelectedIds=batchSelectedIds.filter(function(x){return x!==id;});}updateBatchSelectionInfo();});});
+  updateBatchSelectionInfo();
+}
+function updateBatchSelectionInfo(){
+  var el=document.getElementById('batchSelectionInfo'); if(el) el.textContent='تم تحديد '+batchSelectedIds.length+' تقرير';
+}
+function selectedBatchPatients(){var ids={};batchSelectedIds.forEach(function(id){ids[id]=true;});return state.patients.filter(function(p){return !!ids[p.id];});}
+function renderBatchPreview(){
+  var patients=selectedBatchPatients(), ps=getPrintSettings(), wrap=document.getElementById('batchPrintPreview');
+  if(!patients.length){wrap.style.display='none';wrap.innerHTML='';return;}
+  var cols=chooseBatchColumns(patients,ps), perPage=batchPerPage(cols);
+  var pages=[]; for(var i=0;i<patients.length;i+=perPage) pages.push(patients.slice(i,i+perPage));
+  var size=paperCssSize(ps.paper);
+  wrap.innerHTML=pages.map(function(page,pi){
+    var cls='batch-page cols-'+cols+(ps.orientation==='landscape'?' landscape':'');
+    return '<div class="'+cls+'" style="--pm-top:'+ps.marginTop+'mm;--pm-right:'+ps.marginRight+'mm;--pm-bottom:'+ps.marginBottom+'mm;--pm-left:'+ps.marginLeft+'mm;--batch-gap:'+ps.gap+'mm;width:'+(ps.orientation==='landscape'?size.h:size.w)+'mm;min-height:'+(ps.orientation==='landscape'?size.w:size.h)+'mm">'+page.map(function(p){return '<div class="batch-report">'+buildReportHtml(p,true)+'</div>';}).join('')+'</div>';
+  }).join('');
+  wrap.style.display='block';
+}
+function buildBatchPrintDocument(){
+  var patients=selectedBatchPatients(); if(!patients.length){toast('حدد مريضاً واحداً على الأقل');return null;}
+  var ps=getPrintSettings(), cols=chooseBatchColumns(patients,ps), perPage=batchPerPage(cols), pages=[];
+  for(var i=0;i<patients.length;i+=perPage) pages.push(patients.slice(i,i+perPage));
+  var size=paperCssSize(ps.paper);
+  var host=document.createElement('div'); host.id='batchPrintArea'; host.style.cssText='position:absolute;left:0;top:0;width:100%;background:#fff;color:#111;z-index:2147483646;display:none;';
+  host.innerHTML=pages.map(function(page){return '<div class="batch-page cols-'+cols+(ps.orientation==='landscape'?' landscape':'')+'" style="--pm-top:'+ps.marginTop+'mm;--pm-right:'+ps.marginRight+'mm;--pm-bottom:'+ps.marginBottom+'mm;--pm-left:'+ps.marginLeft+'mm;--batch-gap:'+ps.gap+'mm;width:'+(ps.orientation==='landscape'?size.h:size.w)+'mm;min-height:'+(ps.orientation==='landscape'?size.w:size.h)+'mm">'+page.map(function(p){return '<div class="batch-report">'+buildReportHtml(p,true)+'</div>';}).join('')+'</div>';}).join('');
+  document.body.appendChild(host); return host;
+}
+function printBatchReports(){
+  var patients=selectedBatchPatients(); if(!patients.length){toast('حدد مريضاً واحداً على الأقل');return;}
+  var ps=getPrintSettings();
+  if(isNativePlatform()){
+    toast('جاري تجهيز التقارير للطباعة...');
+    var host=buildBatchPrintDocument(); if(!host)return;
+    host.style.display='block';
+    generateNativeBatchPdfBlob(host,ps).then(function(blob){if(blob)return saveNativeFile('تقارير_متعددة_'+todayISO()+'.pdf',blob,'application/pdf','طباعة التقارير المحددة');}).finally(function(){if(host&&host.parentNode)host.parentNode.removeChild(host);});
+    return;
+  }
+  var oldTitle=document.title, cleanup=function(){document.title=oldTitle;var h=document.getElementById('batchPrintArea');if(h&&h.parentNode)h.parentNode.removeChild(h);};
+  var host=buildBatchPrintDocument(); if(!host)return; host.style.display='block'; document.title='تقارير_متعددة_'+todayISO();
+  var st=document.createElement('style'); st.id='batchPrintRuntimeStyle'; st.textContent='@media print { @page { size: '+(ps.orientation==='landscape'?paperCssSize(ps.paper).h+'mm '+paperCssSize(ps.paper).w+'mm':paperCssSize(ps.paper).w+'mm '+paperCssSize(ps.paper).h+'mm')+'; margin:0; } body *{visibility:hidden!important} #batchPrintArea,#batchPrintArea *{visibility:visible!important} #batchPrintArea{display:block!important;position:absolute!important;left:0;top:0;width:100%;} .batch-page{break-after:page;page-break-after:always;box-shadow:none!important;margin:0!important;} .batch-page:last-child{break-after:auto;page-break-after:auto;} }'; document.head.appendChild(st);
+  window.addEventListener('afterprint',function(){if(st.parentNode)st.parentNode.removeChild(st);cleanup();},{once:true}); setTimeout(function(){window.print();},180);
+}
+function exportBatchPdf(){
+  var patients=selectedBatchPatients(); if(!patients.length){toast('حدد مريضاً واحداً على الأقل');return;}
+  if(typeof html2pdf==='undefined'){toast('تعذر تحميل أداة PDF، تأكد من الاتصال بالإنترنت');return;}
+  var ps=getPrintSettings(), host=buildBatchPrintDocument(); if(!host)return; host.style.display='block'; toast('جاري إنشاء PDF للتقارير المحددة...');
+  var size=paperCssSize(ps.paper);
+  if(isNativePlatform()){
+    generateNativeBatchPdfBlob(host,ps).then(function(blob){if(blob)saveOrShareFile('تقارير_متعددة_'+todayISO()+'.pdf',blob,'application/pdf');}).finally(function(){if(host&&host.parentNode)host.parentNode.removeChild(host);});
+  } else {
+    generatePdfBlobFromElement(host,{margin:0,html2canvas:{scale:2,useCORS:true,allowTaint:false,backgroundColor:'#fff',logging:false,foreignObjectRendering:false,scrollX:0,scrollY:0},jsPDF:{unit:'mm',format:[size.w,size.h],orientation:ps.orientation},renderWidthMm:ps.orientation==='landscape'?size.h:size.w,pagebreak:{mode:['css','legacy']}}).then(function(blob){if(blob)saveOrShareFile('تقارير_متعددة_'+todayISO()+'.pdf',blob,'application/pdf');}).finally(function(){if(host&&host.parentNode)host.parentNode.removeChild(host);});
+  }
+}
+
+function applyStatsSettings() {
+  var g = state.settings.statsShowGender !== false;
+  var c = state.settings.statsShowChart !== false;
+  var genderWrap = document.getElementById('genderStatsWrap');
+  var chartSection = document.getElementById('chartSection');
+  if(genderWrap) genderWrap.style.display = g ? '' : 'none';
+  if(chartSection) chartSection.style.display = c ? '' : 'none';
+  var swG = document.getElementById('switchStatsGender'); if(swG) swG.classList.toggle('on', g);
+  var swC = document.getElementById('switchStatsChart'); if(swC) swC.classList.toggle('on', c);
+  var swA = document.getElementById('switchStatsDetailsAuto'); if(swA) swA.classList.toggle('on', !!state.settings.statsAutoDetails);
+}
+
+function renderStats() {
+  applyStatsSettings();
+  var period = document.getElementById('statsPeriodSelect') ? document.getElementById('statsPeriodSelect').value : 'all';
+  var filteredPatients = state.patients;
+  var now = new Date();
+  var currentMonth = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  var currentYear = String(now.getFullYear());
+  if(period === 'monthly'){ filteredPatients = state.patients.filter(function(p){ return p.date && p.date.indexOf(currentMonth) === 0; }); }
+  else if(period === 'yearly'){ filteredPatients = state.patients.filter(function(p){ return p.date && p.date.indexOf(currentYear) === 0; }); }
+  var total = filteredPatients.length;
+  var tDate = todayISO();
+  var todayCount = 0, males = 0, females = 0;
+  var sectionCounts = {};
+  var fieldCounts = {};
+  TEST_SECTIONS.forEach(function(sec){
+    sectionCounts[sec.key] = 0;
+    fieldCounts[sec.key] = {};
+    sec.fields.forEach(function(f){
+      fieldCounts[sec.key][f] = 0;
+    });
+  });
+  filteredPatients.forEach(function(p){
+    if(p.date === tDate) todayCount++;
+    if(p.gender === 'ذكر') males++;
+    if(p.gender === 'أنثى') females++;
+    TEST_SECTIONS.forEach(function(sec){
+      if(p['include' + sec.key]) {
+        sectionCounts[sec.key]++;
+        var data = p[sec.dataKey] || {};
+        sec.fields.forEach(function(f){
+          if(data[f] !== undefined && data[f] !== null && String(data[f]).trim() !== ""){
+            fieldCounts[sec.key][f]++;
+          }
+        });
+      }
+    });
+  });
+  document.getElementById('stTotal').textContent = total;
+  document.getElementById('stToday').textContent = todayCount;
+  document.getElementById('stMaleRatio').textContent = total ? Math.round((males/total)*100) + '%' : '0%';
+  document.getElementById('stFemaleRatio').textContent = total ? Math.round((females/total)*100) + '%' : '0%';
+  var chartHtml = '<div class="stats-table-wrap"><table class="stats-table"><thead><tr><th>القسم</th><th>عدد المرضى</th><th>النسبة</th><th>التفاصيل</th></tr></thead><tbody>';
+  var autoOpen = !!state.settings.statsAutoDetails;
+  TEST_SECTIONS.forEach(function(sec){
+    var cnt = sectionCounts[sec.key]; var pct = total ? Math.round((cnt/total)*100) : 0; var detailsHtml='';
+    sec.fields.forEach(function(f){ detailsHtml += '<div class="detail-item"><span>'+escapeHtml(sec.labels[f]||f)+'</span><b>'+fieldCounts[sec.key][f]+'</b></div>'; });
+    chartHtml += '<tr class="dept-row"><td>'+escapeHtml(sec.tagLabel)+'</td><td class="num">'+cnt+'</td><td class="num">'+pct+'%</td><td class="num"><button type="button" class="btn-detail-toggle" data-sec="'+sec.key+'">'+(autoOpen?'▲':'▼')+'</button></td></tr><tr><td colspan="4"><div class="dept-details-box '+(autoOpen?'open':'')+'" id="details_'+sec.key+'">'+detailsHtml+'</div></td></tr>';
+  });
+  chartHtml += '</tbody></table></div>';
+  document.getElementById('chartContainer').innerHTML=chartHtml;
+  document.querySelectorAll('.btn-detail-toggle').forEach(function(btn){btn.addEventListener('click',function(){var box=document.getElementById('details_'+btn.getAttribute('data-sec'));if(box){var isOpen=box.classList.contains('open');box.classList.toggle('open',!isOpen);btn.textContent=isOpen?'▼':'▲';}});});
+}
+function getStatsExportData(){
+  var period=document.getElementById('statsPeriodSelect')?document.getElementById('statsPeriodSelect').value:'all';
+  var periodText=period==='monthly'?'الشهر الحالي':(period==='yearly'?'السنة الحالية':'كل السجلات');
+  var now=new Date(), month=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0'), year=String(now.getFullYear());
+  var patients=state.patients.slice();
+  if(period==='monthly') patients=patients.filter(function(p){return p.date&&p.date.indexOf(month)===0;});
+  else if(period==='yearly') patients=patients.filter(function(p){return p.date&&p.date.indexOf(year)===0;});
+  var total=patients.length, today=todayISO(), todayCount=patients.filter(function(p){return p.date===today;}).length;
+  var males=patients.filter(function(p){return p.gender==='ذكر';}).length, females=patients.filter(function(p){return p.gender==='أنثى';}).length;
+  var sections=[];
+  TEST_SECTIONS.forEach(function(sec){
+    var count=0, tests=[];
+    sec.fields.forEach(function(f){tests.push({name:sec.labels[f]||f,count:0});});
+    patients.forEach(function(p){if(p['include'+sec.key]){count++;var d=p[sec.dataKey]||{};sec.fields.forEach(function(f,i){if(d[f]!==undefined&&d[f]!==null&&String(d[f]).trim()!=='')tests[i].count++;});}});
+    sections.push({name:sec.tagLabel,count:count,tests:tests});
+  });
+  return {period:periodText,total:total,today:todayCount,males:total?Math.round(males/total*100)+'%':'0%',females:total?Math.round(females/total*100)+'%':'0%',sections:sections};
+}
+
+function exportStatsExcel() {
+  var data = getStatsExportData();
+  if(typeof XLSX === 'undefined'){
+    toast('تعذر تحميل أداة Excel، تأكد من الاتصال بالإنترنت');
+    return;
+  }
+  var wb = XLSX.utils.book_new();
+  var center = state.settings.center || 'مختبري';
+  var wsData = [
+    ['التقرير الإحصائي الطبي الشامل'],
+    ['اسم المختبر', center],
+    ['الفترة الزمنية', data.period],
+    ['تاريخ التصدير', todayISO()],
+    [],
+    ['الملخص العام'],
+    ['المؤشر الإحصائي', 'القيمة'],
+    ['إجمالي عدد المرضى', Number(data.total) || 0],
+    ['عدد سجلات اليوم', Number(data.today) || 0],
+    ['نسبة الذكور', data.males],
+    ['نسبة الإناث', data.females],
+    [],
+    ['توزيع الفحوصات الطبية المنجزة'],
+    ['القسم', 'عدد الفحوصات']
+  ];
+  data.sections.forEach(function(sec){ wsData.push([sec.name, Number(sec.count) || 0]); });
+  wsData.push([], ['تفاصيل الفحوصات'], ['القسم', 'الفحص', 'عدد النتائج']);
+  data.sections.forEach(function(sec){
+    sec.tests.forEach(function(test){ wsData.push([sec.name, test.name, Number(test.count) || 0]); });
+  });
+  var ws = XLSX.utils.aoa_to_sheet(wsData);
+  ws['!cols'] = [{wch:32},{wch:32},{wch:18}];
+  ws['!freeze'] = { xSplit: 0, ySplit: 7 };
+  if(wsData.length > 13) ws['!autofilter'] = { ref: 'A14:B' + (14 + data.sections.length - 1) };
+  ws['!merges'] = [
+    {s:{r:0,c:0},e:{r:0,c:2}},
+    {s:{r:5,c:0},e:{r:5,c:2}},
+    {s:{r:12,c:0},e:{r:12,c:2}}
+  ];
+  XLSX.utils.book_append_sheet(wb, ws, 'الملخص');
+
+  var detailRows = [['القسم', 'الفحص', 'عدد النتائج']];
+  data.sections.forEach(function(sec){
+    sec.tests.forEach(function(test){ detailRows.push([sec.name, test.name, Number(test.count) || 0]); });
+  });
+  var wd = XLSX.utils.aoa_to_sheet(detailRows);
+  wd['!cols'] = [{wch:22},{wch:38},{wch:18}];
+  wd['!freeze'] = { xSplit: 0, ySplit: 1 };
+  if(detailRows.length > 1) wd['!autofilter'] = { ref: 'A1:C' + detailRows.length };
+  XLSX.utils.book_append_sheet(wb, wd, 'تفاصيل الفحوصات');
+
+  var filename = 'إحصائيات_المختبر_' + todayISO() + '.xlsx';
+  var wbArray = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  var blob = new Blob([wbArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  saveOrShareFile(filename, blob, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  toast('تم تصدير ملف Excel مرتب بنجاح');
+}
+
+function exportStatsPdf(){
+  if(typeof html2pdf==='undefined'){toast('تعذر تحميل أداة PDF، تأكد من الاتصال بالإنترنت');return;}
+  var data=getStatsExportData(), center=escapeHtml(state.settings.center||'مختبري');
+  var rows='';
+  data.sections.forEach(function(sec){
+    rows+='<tr class="dept-row"><td>'+escapeHtml(sec.name)+'</td><td>'+escapeHtml(sec.count)+'</td><td>—</td></tr>';
+    sec.tests.forEach(function(t){rows+='<tr><td>'+escapeHtml(sec.name)+'</td><td>'+escapeHtml(t.name)+'</td><td>'+escapeHtml(t.count)+'</td></tr>';});
+  });
+
+  var wrap=document.createElement('div');
+  wrap.style.cssText='position:relative;width:190mm;min-height:270mm;background:#fff;color:#1f2a24;padding:10mm;font-family:Arial,Tahoma,sans-serif;direction:rtl;z-index:2147483647;opacity:1;visibility:visible;pointer-events:none;';
+  wrap.innerHTML='<div style="text-align:center;border-bottom:3px solid #1d3b36;padding-bottom:10px;margin-bottom:14px"><div style="font-size:24px;font-weight:800;color:#1d3b36">التقرير الإحصائي الطبي</div><div style="font-size:16px;font-weight:700;margin-top:6px">'+center+'</div></div><table style="width:100%;border-collapse:collapse;margin-bottom:14px;font-size:12px"><tr><th style="background:#1d3b36;color:#fff;padding:7px;border:1px solid #aaa">الفترة</th><td style="padding:7px;border:1px solid #aaa">'+escapeHtml(data.period)+'</td><th style="background:#1d3b36;color:#fff;padding:7px;border:1px solid #aaa">تاريخ التصدير</th><td style="padding:7px;border:1px solid #aaa">'+todayISO()+'</td></tr></table><div style="display:flex;gap:8px;margin-bottom:14px"><div style="flex:1;border:1px solid #bbb;padding:9px;text-align:center"><b>إجمالي المرضى</b><div style="font-size:22px;font-weight:900">'+escapeHtml(data.total)+'</div></div><div style="flex:1;border:1px solid #bbb;padding:9px;text-align:center"><b>سجلات اليوم</b><div style="font-size:22px;font-weight:900">'+escapeHtml(data.today)+'</div></div><div style="flex:1;border:1px solid #bbb;padding:9px;text-align:center"><b>ذكور</b><div style="font-size:22px;font-weight:900">'+escapeHtml(data.males)+'</div></div><div style="flex:1;border:1px solid #bbb;padding:9px;text-align:center"><b>إناث</b><div style="font-size:22px;font-weight:900">'+escapeHtml(data.females)+'</div></div></div><h3 style="color:#9c6b3e;margin:10px 0 7px">توزيع الفحوصات</h3><table style="width:100%;border-collapse:collapse;font-size:11px"><tr><th style="background:#1d3b36;color:#fff;padding:7px;border:1px solid #aaa">القسم</th><th style="background:#1d3b36;color:#fff;padding:7px;border:1px solid #aaa">الفحص / المؤشر</th><th style="background:#1d3b36;color:#fff;padding:7px;border:1px solid #aaa">العدد</th></tr>'+rows+'</table><div style="margin-top:12px;text-align:center;font-size:9px;color:#777">تم إنشاء التقرير من نظام المختبر</div>';
+  document.body.appendChild(wrap);
+
+  var ready=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+  ready.then(function(){
+    return new Promise(function(resolve){requestAnimationFrame(function(){requestAnimationFrame(resolve);});});
+  }).then(function(){
+    return html2pdf().set({
+      margin:5,
+      image:{type:'jpeg',quality:.98},
+      html2canvas:{scale:2,useCORS:true,allowTaint:false,backgroundColor:'#fff',logging:false,foreignObjectRendering:false,scrollX:0,scrollY:0},
+      jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+      pagebreak:{mode:['css','legacy']}
+    }).from(wrap).outputPdf('blob');
+  }).then(function(blob){
+    if(wrap.parentNode) wrap.parentNode.removeChild(wrap);
+    if(!blob){toast('تعذر إنشاء ملف PDF');return;}
+    var filename='إحصائيات_المختبر_'+todayISO()+'.pdf';
+    return saveOrShareFile(filename,blob,'application/pdf').then(function(ok){
+      if(ok) toast('تم إنشاء تقرير PDF بنجاح');
+    });
+  }).catch(function(e){
+    console.error('Stats PDF error:',e);
+    if(wrap.parentNode) wrap.parentNode.removeChild(wrap);
+    toast('تعذر إنشاء ملف PDF');
+  });
+}
+
+function renderCatalog(){
+  var body = document.getElementById('catalogBody');
+  var html = '';
+  TEST_SECTIONS.forEach(function(sec){
+    html += '<table class="catalog-table"><caption>' + sec.tagLabel + '</caption><thead><tr><th>الفحص</th><th>القيمة الطبيعية</th><th style="width:70px;">إجراءات</th></tr></thead><tbody>';
+    sec.fields.forEach(function(f){
+      var label = sec.labels[f] || f;
+      var isCustom = f.indexOf('custom_') === 0;
+      html += '<tr><td>' + escapeHtml(label) + '</td><td class="range-cell">' + escapeHtml(getNormalRange(sec, f)) + '</td>' +
+        '<td style="white-space:nowrap;">' +
+          '<button type="button" class="catalog-edit-btn" data-sec="' + sec.key + '" data-field="' + f + '" data-label="' + escapeHtml(label) + '" data-action="edit" title="تعديل القيمة الطبيعية">✎</button>' +
+          (isCustom ? ' <button type="button" class="catalog-edit-btn" style="color:var(--danger); border-color:var(--danger);" data-sec="' + sec.key + '" data-field="' + f + '" data-label="' + escapeHtml(label) + '" data-action="delete" title="حذف الفحص">🗑</button>' : '') +
+        '</td></tr>';
+    });
+    html += '</tbody></table>';
+  });
+  body.innerHTML = html;
+  body.querySelectorAll('.catalog-edit-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var secKey = btn.getAttribute('data-sec');
+      var field = btn.getAttribute('data-field');
+      var label = btn.getAttribute('data-label');
+      var action = btn.getAttribute('data-action');
+      if(action === 'delete'){
+        if(confirm('هل تريد حذف فحص "' + label + '" نهائيًا؟ لن تتمكن من التراجع.')) deleteCustomTest(secKey, field);
+        return;
+      }
+      var sec = TEST_SECTIONS.find(function(s){ return s.key === secKey; });
+      var current = getNormalRange(sec, field);
+      var val = prompt('القيمة الطبيعية لفحص ' + label + ':', current === '—' ? '' : current);
+      if(val !== null){
+        if(!state.settings.customRanges) state.settings.customRanges = {};
+        state.settings.customRanges[secKey + '.' + field] = val.trim();
+        saveSettingsData();
+        renderCatalog();
+        toast('تم تحديث القيمة الطبيعية');
+      }
+    });
+  });
+  }
+    // ===== Google Sign-In (هوية) منفصل عن Google Drive (صلاحية) =====
+    // تسجيل الدخول لا يطلب أي Scope من Drive أو userinfo.profile/email إطلاقًا.
+    // صلاحية Google Drive (drive.file فقط) تُطلب فقط عند ضغط المستخدم على "رفع نسخة" أو "استيراد نسخة".
+    // كل مستخدم يحصل على Access Token خاص به بعد تسجيل دخوله؛ لا يوجد Token ثابت مخزن مسبقًا،
+    // ولا يُستخدم أي حساب Google مركزي/حساب مطور للوصول لبيانات المستخدمين.
+var WEB_CLIENT_ID = '302676179340-4e6res67d3sbf7ftg1mr7fqi3i409kt4.apps.googleusercontent.com';
+var CLIENT_ID = WEB_CLIENT_ID; // إبقاء الاسم القديم لأي كود آخر قد يشير إليه
+var API_KEY = '';
+var DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
+var SCOPES = DRIVE_SCOPE; // Scope وحيد يُستخدم فقط عند طلب صلاحية Drive
+var DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'];
+var tokenClient = null;      // GIS OAuth2 - لطلب صلاحية Drive فقط (يُستدعى عند Backup/Restore)
+var gapiInited = false;
+var gisInited = false;       // جاهزية OAuth2 token client (Drive)
+var gisIdInited = false;     // جاهزية Google Identity Services (تسجيل الدخول)
+var driveUser = null;        // بيانات هوية المستخدم الحالي (من تسجيل الدخول فقط)
+var driveAuthorized = false; // هل مُنحت صلاحية Google Drive فعليًا لهذا المستخدم؟
+var driveStatusEl = document.getElementById('driveStatus');
+
+// Android APK - تهيئة تسجيل الدخول الأصلي: هوية فقط، بدون أي Scope من Drive
+async function initNativeGoogleSignIn() {
+  try {
+    if (
+      !window.Capacitor ||
+      typeof window.Capacitor.isNativePlatform !== 'function' ||
+      !window.Capacitor.isNativePlatform()
+    ) {
+      return;
+    }
+
+    const GoogleSignIn = window.Capacitor.Plugins.GoogleSignIn;
+
+    if (!GoogleSignIn) {
+      console.error('GoogleSignIn plugin is not available');
+      return;
+    }
+
+    // بدون scopes = تسجيل دخول (ID token + بيانات الحساب) فقط، دون صلاحية Drive
+    await GoogleSignIn.initialize({
+      clientId: WEB_CLIENT_ID
+    });
+
+    console.log('Native Google Sign-In initialized (identity only)');
+  } catch (error) {
+    console.error('Native Google Sign-In initialization failed:', error);
+  }
+}
+
+// إعادة تهيئة الإضافة الأصلية مع صلاحية Google Drive - تُستدعى فقط عند Backup/Restore
+async function initNativeGoogleSignInWithDriveScope() {
+  const GoogleSignIn = window.Capacitor.Plugins.GoogleSignIn;
+  if (!GoogleSignIn) throw new Error('GoogleSignIn plugin is not available');
+  await GoogleSignIn.initialize({
+    clientId: WEB_CLIENT_ID,
+    scopes: [DRIVE_SCOPE]
+  });
+}
+function showDriveStatus(msg, isError, isSuccess) {
+  if(driveStatusEl){
+    driveStatusEl.textContent = msg;
+    driveStatusEl.style.display = 'block';
+    if(isError) driveStatusEl.style.background = 'var(--danger)';
+    else if(isSuccess) driveStatusEl.style.background = '#1D6F42';
+    else driveStatusEl.style.background = 'var(--navy)';
+    clearTimeout(driveStatusEl._timeout);
+    driveStatusEl._timeout = setTimeout(function(){ driveStatusEl.style.display = 'none'; }, 5000);
+  }
+}
+
+function updateDriveUI(connected, cachedOnly) {
+  var signInBtn = document.getElementById('driveSignInBtn');
+  var signOutBtn = document.getElementById('driveSignOutBtn');
+  var backupBtn = document.getElementById('driveBackupBtn');
+  var restoreBtn = document.getElementById('driveRestoreBtn');
+  var userInfo = document.getElementById('driveUserInfo');
+  
+  var accountBtn = document.getElementById('driveAccountBtn');
+  var avatar = document.getElementById('accountAvatar');
+  var nameEl = document.getElementById('accountName');
+  var checkEl = document.getElementById('accountCheck');
+  if(driveUser) {
+    if(avatar){ avatar.src = driveUser.picture || ''; avatar.style.display = driveUser.picture ? 'inline-flex' : 'none'; }
+    if(nameEl){ nameEl.textContent = driveUser.name || driveUser.email || 'حساب Google'; }
+  }
+  if(connected && driveUser) {
+    // مسجل دخول + صلاحية Drive ممنوحة فعليًا
+    signInBtn.style.display = 'none'; signInBtn.textContent = '🔑 تسجيل الدخول بحساب Google'; signOutBtn.style.display = ''; backupBtn.disabled = false; restoreBtn.disabled = false;
+    userInfo.innerHTML = '<img src="' + escapeHtml(driveUser.picture || '') + '" alt=""><span>' + escapeHtml(driveUser.name || '') + ' (' + escapeHtml(driveUser.email || '') + ')</span> <span class="drive-status-connected">✓ متصل بـ Drive</span>';
+    if(accountBtn){ accountBtn.classList.add('connected'); accountBtn.title = 'حساب Google: ' + (driveUser.email || 'متصل'); }
+    if(checkEl) checkEl.style.display='inline';
+  } else if(driveUser) {
+    // مسجل دخول (هوية) لكن صلاحية Drive غير مفعّلة بعد - ستُطلب تلقائيًا عند الضغط على رفع/استيراد
+    signInBtn.style.display = 'none'; signOutBtn.style.display = ''; backupBtn.disabled = false; restoreBtn.disabled = false;
+    userInfo.innerHTML = '<img src="' + escapeHtml(driveUser.picture || '') + '" alt=""><span>' + escapeHtml(driveUser.name || '') + ' (' + escapeHtml(driveUser.email || '') + ')</span> <span class="drive-status-disconnected">' + (cachedOnly ? '⏳ جارٍ التحقق...' : '⚠️ اضغط رفع/استيراد لمنح صلاحية Drive') + '</span>';
+    if(accountBtn){ accountBtn.classList.add('connected'); accountBtn.title = 'حساب Google: ' + (driveUser.email || ''); }
+    if(checkEl) checkEl.style.display='inline';
+  } else {
+    signInBtn.style.display = ''; signOutBtn.style.display = 'none'; backupBtn.disabled = true; restoreBtn.disabled = true;
+    userInfo.innerHTML = '<span style="color:var(--ink-sub);">غير متصل بحساب Google</span> <span class="drive-status-disconnected">✗ غير متصل</span>';
+    if(accountBtn){ accountBtn.classList.remove('connected'); accountBtn.title = 'تسجيل الدخول بحساب Google'; }
+    if(checkEl) checkEl.style.display='none';
+    driveAuthorized = false;
+  }
+}
+
+function gapiLoaded() {
+  gapi.load('client', initializeGapiClient);
+}
+
+async function initializeGapiClient() {
+  try {
+    await gapi.client.init({
+      apiKey: API_KEY,
+      discoveryDocs: DISCOVERY_DOCS,
+    });
+    gapiInited = true;
+    // لا نطلب أي Access Token هنا تلقائيًا: صلاحية Drive تُطلب فقط عند Backup/Restore
+  } catch(e) {
+    console.warn('GAPI init error:', e);
+  }
+}
+
+// ===== Google Identity Services: تسجيل الدخول بالهوية فقط (بدون أي Scope) =====
+function gisIdLoaded() {
+  if(typeof google === 'undefined' || !google.accounts || !google.accounts.id) return;
+  google.accounts.id.initialize({
+    client_id: WEB_CLIENT_ID,
+    callback: handleGoogleIdentityCredential,
+    auto_select: false,
+    use_fedcm_for_prompt: true
+  });
+  gisIdInited = true;
+}
+
+function parseJwt(token) {
+  try {
+    var base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    var jsonStr = decodeURIComponent(atob(base64).split('').map(function(c){
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonStr);
+  } catch(e) { return null; }
+}
+
+function handleGoogleIdentityCredential(response) {
+  var payload = response && response.credential ? parseJwt(response.credential) : null;
+  if(!payload) { showDriveStatus('تعذر تسجيل الدخول إلى Google', true); return; }
+  driveUser = { email: payload.email || '', name: payload.name || '', picture: payload.picture || '' };
+  try { localStorage.setItem('lab_google_user', JSON.stringify(driveUser)); } catch(e) {}
+  driveAuthorized = false;
+  updateDriveUI(false);
+  showDriveStatus('✅ تم تسجيل الدخول بنجاح', false, true);
+}
+
+// عرض زر Google الرسمي بشكل مخفي والضغط عليه برمجيًا - أكثر موثوقية من prompt() وحده عبر المتصفحات
+function triggerGoogleIdentityPrompt() {
+  var hidden = document.getElementById('gisHiddenBtn');
+  if(!hidden) {
+    hidden = document.createElement('div');
+    hidden.id = 'gisHiddenBtn';
+    hidden.style.cssText = 'position:fixed;top:-1000px;left:-1000px;opacity:0;pointer-events:none;';
+    document.body.appendChild(hidden);
+    google.accounts.id.renderButton(hidden, { type: 'standard' });
+  }
+  var btn = hidden.querySelector('div[role="button"]');
+  if(btn) { btn.click(); } else { google.accounts.id.prompt(); }
+}
+
+function gisLoaded() {
+  // OAuth2 token client - يُستخدم فقط لطلب صلاحية Google Drive (drive.file)، وليس لتسجيل الدخول
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: WEB_CLIENT_ID,
+    scope: DRIVE_SCOPE,
+    callback: '', // يُحدد عند كل طلب صلاحية
+  });
+  gisInited = true;
+}
+
+function fetchUserInfo(nativeResult) {
+  // ملاحظة: لا نتصل بأي endpoint من نوع userinfo.email/userinfo.profile هنا.
+  // بيانات الهوية (الاسم/الصورة/البريد) تأتي فقط من تسجيل الدخول نفسه (ID token / نتيجة GoogleSignIn.signIn()).
+  // هذه الدالة تُستخدم فقط لتفعيل حالة "صلاحية Drive ممنوحة" بعد الحصول على Access Token لـ drive.file.
+
+  // =====================================================
+  // Android APK - Google Sign-In الأصلي
+  // =====================================================
+  if (
+    window.Capacitor &&
+    typeof window.Capacitor.isNativePlatform === 'function' &&
+    window.Capacitor.isNativePlatform()
+  ) {
+
+    if (nativeResult) {
+
+      driveUser = {
+        email: nativeResult.email || (driveUser && driveUser.email) || '',
+        name: nativeResult.displayName || (driveUser && driveUser.name) || '',
+        picture: nativeResult.imageUrl || (driveUser && driveUser.picture) || ''
+      };
+
+      try {
+        localStorage.setItem(
+          'lab_google_user',
+          JSON.stringify(driveUser)
+        );
+      } catch (e) {}
+
+      if (nativeResult.accessToken) {
+        driveAuthorized = true;
+        updateDriveUI(true);
+        checkLastBackup();
+        scheduleAutoDriveBackup();
+      } else {
+        driveAuthorized = false;
+        updateDriveUI(false);
+      }
+
+      return;
+    }
+
+    updateDriveUI(driveAuthorized);
+    return;
+  }
+
+
+  // =====================================================
+  // المتصفح - أصبح لدينا Access Token لصلاحية Drive فقط
+  // =====================================================
+  if (!driveUser) {
+    // لا نفعّل واجهة Drive بدون تسجيل دخول هوية أولاً
+    updateDriveUI(false);
+    return;
+  }
+
+  driveAuthorized = true;
+  updateDriveUI(true);
+  checkLastBackup();
+  scheduleAutoDriveBackup();
+}
+
+function checkLastBackup() {
+  gapi.client.drive.files.list({ q: "name='lab_backup.json' and trashed=false", fields: 'files(id, name, modifiedTime)', pageSize: 1 })
+    .then(function(resp){
+      var files = resp.result.files || [];
+      if(files.length > 0) {
+        var date = new Date(files[0].modifiedTime);
+        var dateStr = date.toLocaleDateString('ar-EG') + ' ' + date.toLocaleTimeString('ar-EG');
+        document.getElementById('driveLastBackup').textContent = '📅 آخر نسخة: ' + dateStr;
+        try { localStorage.setItem('lab_last_drive_backup_ts', String(date.getTime())); } catch(e) {}
+      } else {
+        document.getElementById('driveLastBackup').textContent = '📅 لا توجد نسخة احتياطية سابقة';
+      }
+    }).catch(function(){
+      document.getElementById('driveLastBackup').textContent = '📅 تعذر التحقق من النسخة';
+    });
+}
+async function requestGoogleAccess(interactive, callback) {
+  try {
+
+    // =====================================================
+    // Android APK - طلب صلاحية Google Drive (drive.file) فقط
+    // =====================================================
+    if (
+      window.Capacitor &&
+      typeof window.Capacitor.isNativePlatform === 'function' &&
+      window.Capacitor.isNativePlatform()
+    ) {
+
+      if (!interactive) {
+        // لا يوجد تحديث صامت متاح لصلاحية Drive على Native عبر هذه الإضافة
+        if (callback) callback(false);
+        return;
+      }
+
+      const GoogleSignIn = window.Capacitor.Plugins.GoogleSignIn;
+
+      if (!GoogleSignIn) {
+        console.error('GoogleSignIn plugin is not available');
+
+        if (callback) callback(false);
+        return;
+      }
+
+      try {
+        // إعادة تهيئة الإضافة مع صلاحية drive.file (Scopes تُحدد فقط عند initialize في هذه الإضافة)
+        await initNativeGoogleSignInWithDriveScope();
+
+        const result = await GoogleSignIn.signIn();
+
+        console.log('Google Sign-In result:', result);
+
+        if (!result || !result.accessToken) {
+          console.error('No Google Drive access token received');
+
+          if (callback) callback(false);
+          return;
+        }
+
+        // حفظ Access Token الخاص بهذا المستخدم فقط (لا يوجد Token ثابت/مشترك)
+        try {
+          localStorage.setItem(
+            'lab_google_access_token',
+            result.accessToken
+          );
+        } catch (e) {}
+
+        // تحديث بيانات الهوية إن توفرت من نفس الاستدعاء
+        driveUser = {
+          email: result.email || (driveUser && driveUser.email) || '',
+          name: result.displayName || (driveUser && driveUser.name) || '',
+          picture: result.imageUrl || (driveUser && driveUser.picture) || ''
+        };
+        try {
+          localStorage.setItem(
+            'lab_google_user',
+            JSON.stringify(driveUser)
+          );
+        } catch (e) {}
+
+        // إعطاء GAPI نفس الـ token
+        if (
+          window.gapi &&
+          gapi.client &&
+          typeof gapi.client.setToken === 'function'
+        ) {
+          gapi.client.setToken({
+            access_token: result.accessToken
+          });
+        }
+
+        driveAuthorized = true;
+        updateDriveUI(true);
+        checkLastBackup();
+        scheduleAutoDriveBackup();
+
+        if (callback) callback(true);
+        return;
+
+      } catch (error) {
+        console.error(
+          'Native Google Drive authorization failed:',
+          error
+        );
+
+        if (callback) callback(false);
+        return;
+      }
+    }
+
+
+    // =====================================================
+    // Web Browser - طلب صلاحية Drive فقط (drive.file)
+    // =====================================================
+
+    if (!tokenClient) {
+      toast('جاري تحميل أدوات Google...');
+
+      setTimeout(function() {
+        requestGoogleAccess(
+          interactive,
+          callback
+        );
+      }, 500);
+
+      return;
+    }
+
+    tokenClient.callback = function(resp) {
+
+      if (resp && !resp.error) {
+
+        gapi.client.setToken(resp);
+
+        fetchUserInfo();
+
+        if (callback) {
+          callback(true);
+        }
+
+      } else {
+
+        if (callback) {
+          callback(false);
+        }
+
+      }
+    };
+
+    try {
+
+      tokenClient.requestAccessToken({
+        prompt: interactive ? 'consent' : ''
+      });
+
+    } catch (e) {
+
+      console.error(
+        'Google OAuth error:',
+        e
+      );
+
+      if (callback) {
+        callback(false);
+      }
+    }
+
+  } catch (error) {
+
+    console.error(
+      'requestGoogleAccess error:',
+      error
+    );
+
+    if (callback) {
+      callback(false);
+    }
+  }
+}
+function ensureDriveAuth(callback) {
+  try {
+
+    // يجب تسجيل الدخول بحساب Google (هوية) أولاً قبل منح صلاحية Drive
+    if (!driveUser) {
+      showDriveStatus('الرجاء تسجيل الدخول بحساب Google أولاً', true);
+      if (callback) callback(false);
+      return;
+    }
+
+    // =====================================================
+    // Android APK
+    // =====================================================
+    if (
+      window.Capacitor &&
+      typeof window.Capacitor.isNativePlatform === 'function' &&
+      window.Capacitor.isNativePlatform()
+    ) {
+
+      const savedToken = localStorage.getItem(
+        'lab_google_access_token'
+      );
+
+      if (savedToken && driveAuthorized) {
+
+        // إعادة وضع الـ token داخل GAPI
+        if (
+          window.gapi &&
+          gapi.client &&
+          typeof gapi.client.setToken === 'function'
+        ) {
+          gapi.client.setToken({
+            access_token: savedToken
+          });
+        }
+
+        if (callback) callback(true);
+        return;
+      }
+
+      // لا يوجد Token صالح لصلاحية Drive → اطلب صلاحية Drive الآن (drive.file)
+      requestGoogleAccess(true, function(ok) {
+        if (callback) callback(!!ok);
+      });
+
+      return;
+    }
+
+
+    // =====================================================
+    // Web Browser
+    // =====================================================
+
+    if (
+      typeof gapi !== 'undefined' &&
+      gapi.client &&
+      gapi.client.getToken &&
+      gapi.client.getToken() &&
+      driveAuthorized
+    ) {
+      if (callback) callback(true);
+      return;
+    }
+
+    requestGoogleAccess(false, function(ok) {
+
+      if (ok) {
+
+        if (callback) callback(true);
+
+      } else {
+
+        requestGoogleAccess(true, function(ok2) {
+
+          if (callback) callback(!!ok2);
+
+        });
+
+      }
+
+    });
+
+  } catch (error) {
+
+    console.error(
+      'ensureDriveAuth error:',
+      error
+    );
+
+    if (callback) callback(false);
+  }
+}
+function driveSignIn(callback) {
+  // ملاحظة: هذه الدالة هوية فقط (Sign-In) - لا تطلب أي صلاحية Google Drive إطلاقًا.
+  // "callback" هنا معامل اختياري حقيقي (وليس متغيرًا غير معرّف)؛ الدالة تُستخدم أيضًا
+  // مباشرة كمستمع أحداث addEventListener('click', driveSignIn) لذلك نتحقق من نوعها أولًا
+  // حتى لا تُمرَّر كائن الحدث (Event) على أنه دالة رد نداء.
+  var cb = (typeof callback === 'function') ? callback : null;
+  try {
+    // إذا كان التطبيق يعمل كـ APK - تسجيل دخول أصلي بالهوية فقط
+    if (
+      window.Capacitor &&
+      typeof window.Capacitor.isNativePlatform === 'function' &&
+      window.Capacitor.isNativePlatform()
+    ) {
+      const GoogleSignIn = window.Capacitor.Plugins.GoogleSignIn;
+
+      if (!GoogleSignIn) {
+        showDriveStatus('إضافة Google Sign-In غير محملة', true);
+        if (cb) cb(false);
+        return;
+      }
+
+      showDriveStatus('جاري تسجيل الدخول إلى Google...', false);
+
+      GoogleSignIn.signIn().then(function(result) {
+        console.log('Google Sign-In result:', result);
+
+        if (!result) {
+          showDriveStatus('تعذر تسجيل الدخول إلى Google', true);
+          if (cb) cb(false);
+          return;
+        }
+
+        driveUser = {
+          email: result.email || '',
+          name: result.displayName || '',
+          picture: result.imageUrl || ''
+        };
+        try { localStorage.setItem('lab_google_user', JSON.stringify(driveUser)); } catch (e) {}
+
+        driveAuthorized = false;
+        updateDriveUI(false);
+        showDriveStatus('✅ تم تسجيل الدخول بنجاح', false, true);
+        if (cb) cb(true);
+
+      }).catch(function(error) {
+        console.error('Google Sign-In error:', error);
+        showDriveStatus('تعذر تسجيل الدخول إلى Google', true);
+        if (cb) cb(false);
+      });
+
+      return;
+    }
+
+    // المتصفح - تسجيل دخول بالهوية فقط عبر Google Identity Services (بدون OAuth Drive)
+    if (typeof google === 'undefined' || !google.accounts || !google.accounts.id) {
+      showDriveStatus('جاري تحميل أدوات Google...', false);
+      setTimeout(function(){ driveSignIn(cb); }, 500);
+      return;
+    }
+    if (!gisIdInited) gisIdLoaded();
+
+    triggerGoogleIdentityPrompt();
+    // النتيجة (النجاح/الفشل) تصل بشكل غير متزامن عبر handleGoogleIdentityCredential أعلاه.
+
+  } catch (error) {
+    console.error('Google Sign-In error:', error);
+    showDriveStatus('تعذر تسجيل الدخول إلى Google', true);
+    if (cb) cb(false);
+  }
+}
+
+function restoreGoogleSessionSilently(){
+  if(!tokenClient || !gapiInited || !gisInited) return;
+  if(window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform()) return; // على Native نعتمد على Token المخزن محليًا فقط
+  if(!driveUser) return; // لا نطلب صلاحية Drive قبل تسجيل الدخول بالهوية
+  requestGoogleAccess(false, function(ok){ if(!ok) updateDriveUI(false, true); });
+}
+
+function driveSignOut() {
+  function finish() {
+    driveAuthorized = false;
+    driveUser = null;
+    try { localStorage.removeItem('lab_google_user'); } catch(e) {}
+    try { localStorage.removeItem('lab_google_access_token'); } catch(e) {}
+    addAudit('تسجيل الخروج من حساب Google','backup','تم تسجيل الخروج من الحساب');
+    updateDriveUI(false);
+    document.getElementById('driveLastBackup').textContent = '';
+    showDriveStatus('تم تسجيل الخروج', false);
+  }
+
+  var token = (typeof gapi !== 'undefined' && gapi.client && gapi.client.getToken) ? gapi.client.getToken() : null;
+  if(token && token.access_token && typeof google !== 'undefined' && google.accounts && google.accounts.oauth2) {
+    google.accounts.oauth2.revoke(token.access_token, function(){
+      gapi.client.setToken(null);
+      finish();
+    });
+  } else {
+    if(typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+      try { google.accounts.id.disableAutoSelect(); } catch(e) {}
+    }
+    if(window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform()) {
+      var GoogleSignIn = window.Capacitor.Plugins.GoogleSignIn;
+      if(GoogleSignIn && GoogleSignIn.signOut) { GoogleSignIn.signOut().catch(function(){}); }
+    }
+    finish();
+  }
+}
+
+function findBackupFile(callback) {
+  gapi.client.drive.files.list({
+    q: "name='lab_backup.json' and trashed=false",
+    fields: 'files(id, name, modifiedTime)',
+    pageSize: 1, orderBy: 'modifiedTime desc'
+  }).then(function(resp){
+    var files = resp.result.files || [];
+    callback(files.length > 0 ? files[0] : null);
+  }).catch(function(e){
+    showDriveStatus('خطأ في البحث: ' + e.message, true);
+    callback(null);
+  });
+}
+
+function uploadBackupToDrive(backupData, silent) {
+  var tokenObj=(typeof gapi!=='undefined'&&gapi.client&&gapi.client.getToken)?gapi.client.getToken():null;
+  if(!tokenObj){if(!silent)showDriveStatus('الرجاء تسجيل الدخول أولاً',true);return;}
+  var token=tokenObj.access_token;
+  findBackupFile(function(file){
+    var form=new FormData();
+    form.append('metadata',new Blob([JSON.stringify({name:'lab_backup.json',mimeType:'application/json'})],{type:'application/json'}));
+    form.append('file',new Blob([JSON.stringify(backupData,null,2)],{type:'application/json'}));
+    var url=file?'https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(file.id)+'?uploadType=multipart':'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';
+    fetch(url,{method:file?'PATCH':'POST',headers:{Authorization:'Bearer '+token},body:form}).then(function(r){if(!r.ok)return r.json().then(function(e){throw new Error((e.error&&e.error.message)||('HTTP '+r.status));});return r.json();}).then(function(){var now=Date.now();try{localStorage.setItem('lab_last_drive_backup_ts',String(now));}catch(e){} addAudit('رفع نسخة احتياطية إلى Google Drive','backup','تم حفظ نسخة سحابية بنجاح'); if(!silent)showDriveStatus('✅ تم حفظ النسخة الاحتياطية في Drive',false,true); checkLastBackup();}).catch(function(e){if(!silent)showDriveStatus('❌ فشل الرفع: '+e.message,true);});
+  });
+}
+
+function driveBackup(silent){ ensureDriveAuth(function(ok){ if(!ok){if(!silent)showDriveStatus('الرجاء تسجيل الدخول أولاً',true);return;} try{uploadBackupToDrive({app:'lab-app',version:2,exportedAt:new Date().toISOString(),patients:state.patients,settings:state.settings,auditLog:state.auditLog||[]},!!silent);}catch(e){if(!silent)showDriveStatus('خطأ: '+e.message,true);}}); }
+
+function driveRestore(){ ensureDriveAuth(function(ok){ if(!ok){showDriveStatus('الرجاء تسجيل الدخول أولاً',true);return;} findBackupFile(function(file){ if(!file){showDriveStatus('لا يوجد ملف نسخ في Drive',true);return;} gapi.client.drive.files.get({fileId:file.id,alt:'media'}).then(function(resp){var data=resp.result;if(!data.patients||!Array.isArray(data.patients)){showDriveStatus('ملف النسخة غير صالح',true);return;} if(!confirm('سيتم استبدال كل البيانات الحالية بالنسخة من Drive ('+data.patients.length+' مريض). متابعة؟'))return; state.patients=data.patients;if(data.settings)state.settings=Object.assign(state.settings,data.settings);if(data.auditLog&&Array.isArray(data.auditLog))state.auditLog=data.auditLog;saveData();saveSettingsData();try{localStorage.setItem(STORAGE_KEY_AUDIT,JSON.stringify(state.auditLog||[]));}catch(e){} restoreCustomTests();applyTheme();applyLogo();renderHeader();renderList();updateAuditBadge();addAudit('استيراد نسخة من Google Drive','backup','تم استعادة النسخة السحابية');showDriveStatus('✅ تم استيراد النسخة من Drive',false,true);}).catch(function(e){showDriveStatus('فشل تحميل الملف: '+e.message,true);}); }); }); }
+
+// تحميل مكتبات Google
+(function loadDriveLibs(){
+  if(typeof gapi === 'undefined'){
+    var s1 = document.createElement('script');
+    s1.src = 'https://apis.google.com/js/api.js';
+    s1.onload = gapiLoaded;
+    document.head.appendChild(s1);
+  } else {
+    gapiLoaded();
+  }
+  if(typeof google === 'undefined' || !google.accounts){
+    var s2 = document.createElement('script');
+    s2.src = 'https://accounts.google.com/gsi/client';
+    s2.onload = function(){ gisLoaded(); gisIdLoaded(); };
+    document.head.appendChild(s2);
+  } else {
+    gisLoaded();
+    gisIdLoaded();
+  }
+})();
+    // ربط الأحداث الرئيسية
+document.addEventListener('DOMContentLoaded', function(){
+  initNativeGoogleSignIn();
+  loadData();
+
+  // Drive buttons
+  document.getElementById('driveSignInBtn').addEventListener('click', driveSignIn);
+  document.getElementById('driveSignOutBtn').addEventListener('click', driveSignOut);
+  document.getElementById('driveBackupBtn').addEventListener('click', driveBackup);
+  document.getElementById('driveRestoreBtn').addEventListener('click', driveRestore);
+  document.getElementById('driveAccountBtn').addEventListener('click', function(){ if(driveUser){ ensureDriveAuth(function(ok){ if(ok) document.getElementById('settingsOverlay').classList.add('open'); }); } else driveSignIn(); });
+
+  document.getElementById('darkModeToggle').addEventListener('click', function(){
+    state.settings.darkMode = !state.settings.darkMode; saveSettingsData(); applyTheme();
+  });
+  document.getElementById('uiSettingsBtn').addEventListener('click', function(){ document.getElementById('uiSettingsOverlay').classList.add('open'); });
+  document.getElementById('closeUiSettingsSheet').addEventListener('click', function(){ document.getElementById('uiSettingsOverlay').classList.remove('open'); });
+  document.getElementById('closeUiSettingsBtn').addEventListener('click', function(){ document.getElementById('uiSettingsOverlay').classList.remove('open'); });
+
+  document.querySelectorAll('.color-dot').forEach(function(dot){
+    dot.addEventListener('click', function(){
+      document.querySelectorAll('.color-dot').forEach(function(d){ d.classList.remove('active'); });
+      dot.classList.add('active');
+      state.settings.theme = dot.getAttribute('data-theme');
+      state.settings.customAccent = null;
+      saveSettingsData(); applyTheme();
+    });
+  });
+
+  document.getElementById('customAccentColor').addEventListener('input', function(e){
+    state.settings.customAccent = e.target.value; saveSettingsData(); applyTheme();
+  });
+  document.getElementById('resetAccentBtn').addEventListener('click', function(){
+    state.settings.customAccent = null; saveSettingsData(); applyTheme(); toast('تم استعادة اللون الافتراضي');
+  });
+
+  document.getElementById('fontSizeSlider').addEventListener('input', function(){
+    state.settings.fontSizePx = parseInt(this.value, 10);
+    document.documentElement.style.setProperty('--app-font-size', state.settings.fontSizePx + 'px');
+    document.getElementById('fontSizeValueLabel').textContent = state.settings.fontSizePx + 'px';
+  });
+  document.getElementById('fontSizeSlider').addEventListener('change', function(){ saveSettingsData(); });
+
+  document.getElementById('fontFamilySelect').addEventListener('change', function(){
+    state.settings.fontFamily = this.value;
+    document.documentElement.style.setProperty('--app-font-family', "'" + this.value + "'");
+    saveSettingsData();
+  });
+
+  document.querySelectorAll('.density-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      state.settings.density = btn.getAttribute('data-density'); saveSettingsData(); applyTheme();
+    });
+  });
+
+  document.querySelectorAll('.icon-shape-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      state.settings.iconShape = btn.getAttribute('data-shape'); saveSettingsData(); applyTheme();
+    });
+  });
+
+  document.querySelectorAll('.logo-size-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      state.settings.logoSize = btn.getAttribute('data-size'); saveSettingsData(); applyTheme();
+    });
+  });
+  document.getElementById('toggleLogoBorder').addEventListener('click', function(){
+    state.settings.logoBorder = state.settings.logoBorder === false; saveSettingsData(); applyTheme();
+  });
+
+  document.getElementById('uiDarkModeToggle').addEventListener('click', function(){
+    state.settings.darkMode = !state.settings.darkMode; saveSettingsData(); applyTheme();
+  });
+
+  document.getElementById('resetAppearanceBtn').addEventListener('click', function(){
+    if(confirm('هل تريد إعادة تعيين كافة إعدادات المظهر؟')){
+      state.settings.theme = 'default'; state.settings.customAccent = null; state.settings.fontSizePx = 14;
+      state.settings.fontFamily = 'Tajawal'; state.settings.density = 'comfortable'; state.settings.iconShape = 'circle';
+      state.settings.logoSize = 'medium'; state.settings.logoBorder = true; state.settings.darkMode = false;
+      saveSettingsData(); applyTheme(); toast('تم إعادة تعيين المظهر');
+    }
+  });
+
+  document.getElementById('catalogBtn').addEventListener('click', function(){ renderCatalog(); document.getElementById('catalogOverlay').classList.add('open'); });
+  document.getElementById('closeCatalogSheet').addEventListener('click', function(){ document.getElementById('catalogOverlay').classList.remove('open'); });
+
+  document.getElementById('closeReportSheet').addEventListener('click', function(){ document.getElementById('reportOverlay').classList.remove('open'); });
+  document.getElementById('closeReportBtn').addEventListener('click', function(){ document.getElementById('reportOverlay').classList.remove('open'); });
+  document.getElementById('doPrintBtn').addEventListener('click', printReport);
+  document.getElementById('batchPrintBtn').addEventListener('click', function(){ batchSelectedIds=[]; renderBatchPatients(); document.getElementById('batchPrintPreview').style.display='none'; document.getElementById('batchPrintOverlay').classList.add('open'); });
+  document.getElementById('closeBatchPrintSheet').addEventListener('click', function(){document.getElementById('batchPrintOverlay').classList.remove('open');});
+  document.getElementById('closeBatchPrintBtn').addEventListener('click', function(){document.getElementById('batchPrintOverlay').classList.remove('open');});
+  document.getElementById('batchSelectAllBtn').addEventListener('click', function(){batchSelectedIds=filteredPatientsForBatch().map(function(p){return p.id;});renderBatchPatients();});
+  document.getElementById('batchClearBtn').addEventListener('click', function(){batchSelectedIds=[];renderBatchPatients();});
+  document.getElementById('batchSettingsBtn').addEventListener('click', openPrintSettings);
+  document.getElementById('batchRefreshPreviewBtn').addEventListener('click', renderBatchPreview);
+  document.getElementById('batchDoPrintBtn').addEventListener('click', printBatchReports);
+  document.getElementById('batchPdfBtn').addEventListener('click', exportBatchPdf);
+  document.getElementById('closePrintSettingsSheet').addEventListener('click', closePrintSettings);
+  document.getElementById('savePrintSettingsBtn').addEventListener('click', function(){savePrintSettingsFromUI(); closePrintSettings(); if(document.getElementById('batchPrintOverlay').classList.contains('open')) renderBatchPreview();});
+  document.getElementById('resetPrintSettingsBtn').addEventListener('click', resetPrintSettings);
+  ['psShowLogo','psShowCenter','psShowDirectorate','psShowDate','psShowSeq','psShowNotes','psShowFooter','psShowBorder'].forEach(function(id){document.getElementById(id).addEventListener('click',function(){this.classList.toggle('on');});});
+
+  document.getElementById('btnToolLang').addEventListener('click', function(){ setReportLanguage(reportLang === 'en' ? 'ar' : 'en'); });
+  document.getElementById('btnToolStyle').addEventListener('click', function(){
+    var panel = document.getElementById('tableStylePanel');
+    panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+  });
+  document.getElementById('btnToolPrintSettings').addEventListener('click', openPrintSettings);
+  document.getElementById('btnToolBatch').addEventListener('click', function(){ document.getElementById('reportOverlay').classList.remove('open'); batchSelectedIds=[]; renderBatchPatients(); document.getElementById('batchPrintOverlay').classList.add('open'); });
+  ['tblBorderColor','tblHeadBg','tblHeadText'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', applyTableStyle);
+  });
+  document.getElementById('tblStyleResetBtn').addEventListener('click', function(){
+    document.getElementById('tblBorderColor').value = '#111111';
+    document.getElementById('tblHeadBg').value = '#ededed';
+    document.getElementById('tblHeadText').value = '#000000';
+    applyTableStyle();
+  });
+
+  document.getElementById('savePdfBtn').addEventListener('click', function(){
+    var paper = document.getElementById('reportPaper');
+    if(!paper){ toast('لا يوجد تقرير مفتوح'); return; }
+    toast('جاري إنشاء ملف PDF...');
+    generateReportPdfBlob(paper).then(function(blob){
+      if(!blob) return;
+      var filename = 'تقرير_طبي_' + todayISO() + '.pdf';
+      saveOrShareFile(filename, blob, 'application/pdf');
+      if(!isNativePlatform()) toast('تم إنشاء وتنزيل ملف PDF');
+    });
+  });
+
+  document.getElementById('shareReportBtn').addEventListener('click', function(){
+    var paper = document.getElementById('reportPaper');
+    if(!paper){ toast('لا يوجد تقرير'); return; }
+    if(typeof html2pdf === 'undefined'){ toast('تعذر تحميل أداة PDF'); return; }
+    toast('جاري تجهيز الملف للمشاركة...');
+    generateReportPdfBlob(paper).then(function(pdfBlob){
+      if(!pdfBlob) return;
+      var file = new File([pdfBlob], 'تقرير_طبي.pdf', { type: 'application/pdf' });
+      if(navigator.canShare && navigator.canShare({ files: [file] })){ navigator.share({ files: [file], title: 'تقرير طبي' }).catch(function(e){ if(e && e.name !== 'AbortError') toast('تعذرت المشاركة: ' + (e.message || '')); }); }
+      else { toast('المشاركة غير مدعومة في هذا المتصفح'); }
+    });
+  });
+  if(navigator.share){ var sb0 = document.getElementById('shareReportBtn'); if(sb0) sb0.style.display = ''; }
+
+  document.getElementById('exportReportBtn').addEventListener('click', function(){
+    var html = document.getElementById('printArea').innerHTML;
+    var blob = new Blob(['<!DOCTYPE html><html><head><meta charset="UTF-8"><title>تقرير طبي</title><style>body{font-family:sans-serif; direction:rtl; padding:20px;}</style></head><body>' + html + '</body></html>'], {type:'text/html;charset=utf-8'});
+    saveOrShareFile('تقرير_طبي.html', blob, 'text/html');
+  });
+
+  document.querySelectorAll('.filter-btn[data-filter]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.filter-btn[data-filter]').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      state.activeFilter = btn.getAttribute('data-filter');
+      renderList();
+    });
+  });
+
+  TEST_SECTIONS.forEach(function(sec){
+    var tog = document.getElementById(sec.toggleId);
+    if(tog){
+      tog.addEventListener('click', function(){
+        var sw = document.getElementById(sec.switchId);
+        var isOn = sw.classList.contains('on');
+        setSwitch(sec, !isOn);
+      });
+    }
+  });
+
+  document.getElementById('fillNormalUrineBtn').addEventListener('click', function(){
+    document.getElementById('u_color').value = 'Yellow';
+    document.getElementById('u_appearance').value = 'Clear';
+    document.getElementById('u_ph').value = '6.0';
+    document.getElementById('u_protein').value = 'Negative';
+    document.getElementById('u_glucose').value = 'Negative';
+    document.getElementById('u_rbc').value = '0-2';
+    document.getElementById('u_pus').value = '1-2';
+    document.getElementById('u_epithelial').value = 'Few';
+    document.getElementById('u_crystals').value = 'Nill';
+    toast('تم تعبئة القيم الافتراضية للبول');
+  });
+
+  document.getElementById('addBtn').addEventListener('click', function(){ openPatientSheet(null); });
+  document.getElementById('fabAdd').addEventListener('click', function(){ openPatientSheet(null); });
+  document.getElementById('closePatientSheet').addEventListener('click', function(){ document.getElementById('patientOverlay').classList.remove('open'); });
+  document.getElementById('cancelPatientBtn').addEventListener('click', function(){ document.getElementById('patientOverlay').classList.remove('open'); });
+  document.getElementById('savePatientBtn').addEventListener('click', savePatient);
+  document.getElementById('searchInput').addEventListener('input', renderList);
+  document.getElementById('dateFrom').addEventListener('change', function(){ if(document.getElementById('dateTo').value && this.value > document.getElementById('dateTo').value){ document.getElementById('dateTo').value = this.value; } renderList(); });
+  document.getElementById('dateTo').addEventListener('change', function(){ if(document.getElementById('dateFrom').value && this.value < document.getElementById('dateFrom').value){ document.getElementById('dateFrom').value = this.value; } renderList(); });
+  document.getElementById('clearDateFilterBtn').addEventListener('click', function(){ document.getElementById('dateFrom').value=''; document.getElementById('dateTo').value=''; renderList(); });
+  document.getElementById('exportAllExcelBtn').addEventListener('click', exportAllPatientsExcel);
+  document.getElementById('auditBtn').addEventListener('click', function(){renderAuditLog();document.getElementById('auditOverlay').classList.add('open');});
+  document.getElementById('closeAuditSheet').addEventListener('click', function(){document.getElementById('auditOverlay').classList.remove('open');});
+  document.getElementById('clearAuditBtn').addEventListener('click', function(){if(!confirm('مسح سجل التعديلات بالكامل؟'))return;state.auditLog=[];localStorage.removeItem(STORAGE_KEY_AUDIT);updateAuditBadge();renderAuditLog();});
+  document.querySelectorAll('[data-audit-filter]').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('[data-audit-filter]').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');state.auditFilter=btn.getAttribute('data-audit-filter');renderAuditLog();});});
+  document.getElementById('statsBtn').addEventListener('click', function(){ renderStats(); document.getElementById('statsOverlay').classList.add('open'); });
+  document.getElementById('statsPeriodSelect').addEventListener('change', renderStats);
+  document.getElementById('statsSettingsBtn').addEventListener('click', function(){ document.getElementById('statsSettingsOverlay').classList.add('open'); });
+  document.getElementById('closeStatsSettingsSheet').addEventListener('click', function(){ document.getElementById('statsSettingsOverlay').classList.remove('open'); });
+  document.getElementById('closeStatsSettingsBtn').addEventListener('click', function(){ document.getElementById('statsSettingsOverlay').classList.remove('open'); });
+  document.getElementById('toggleStatsGender').addEventListener('click', function(){
+    state.settings.statsShowGender = state.settings.statsShowGender === false; saveSettingsData(); applyStatsSettings();
+  });
+  document.getElementById('toggleStatsChart').addEventListener('click', function(){
+    state.settings.statsShowChart = state.settings.statsShowChart === false; saveSettingsData(); applyStatsSettings();
+  });
+  document.getElementById('toggleStatsDetailsAuto').addEventListener('click', function(){
+    state.settings.statsAutoDetails = !state.settings.statsAutoDetails; saveSettingsData(); renderStats();
+  });
+  document.getElementById('exportStatsExcelBtn').addEventListener('click', exportStatsExcel);
+  document.getElementById('exportStatsPdfBtn').addEventListener('click', exportStatsPdf);
+  document.getElementById('closeStatsSheet').addEventListener('click', function(){ document.getElementById('statsOverlay').classList.remove('open'); });
+          document.getElementById('settingsBtn').addEventListener('click', function(){
+          document.getElementById('s_center').value = state.settings.center || '';
+          document.getElementById('s_directorate').value = state.settings.directorate || '';
+          if(state.settings.logo) {
+            var previewImg = document.querySelector('#settingsOverlay .logo-preview img');
+            var previewSpan = document.querySelector('#settingsOverlay .logo-preview span');
+            if(previewImg) { previewImg.src = state.settings.logo; previewImg.style.display = 'block'; }
+            if(previewSpan) previewSpan.style.display = 'none';
+          } else {
+            var previewImg2 = document.querySelector('#settingsOverlay .logo-preview img');
+            var previewSpan2 = document.querySelector('#settingsOverlay .logo-preview span');
+            if(previewImg2) previewImg2.style.display = 'none';
+            if(previewSpan2) previewSpan2.style.display = 'block';
+          }
+          // تحديث حالة Drive
+          if(gapi && gapi.client && gapi.client.getToken){
+            var token = gapi.client.getToken();
+            if(token) { fetchUserInfo(); } else if(driveUser) { updateDriveUI(false, true); restoreGoogleSessionSilently(); } else { updateDriveUI(false); }
+          }
+          document.getElementById('settingsOverlay').classList.add('open');
+        });
+        document.getElementById('closeSettingsSheet').addEventListener('click', function(){ document.getElementById('settingsOverlay').classList.remove('open'); });
+
+        document.getElementById('s_logo').addEventListener('change', function(e){
+          var file = e.target.files[0];
+          if(file) {
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+              state.settings.logo = ev.target.result;
+              var previewImg = document.querySelector('#settingsOverlay .logo-preview img');
+              var previewSpan = document.querySelector('#settingsOverlay .logo-preview span');
+              if(previewImg) { previewImg.src = ev.target.result; previewImg.style.display = 'block'; }
+              if(previewSpan) previewSpan.style.display = 'none';
+              toast('تم تحميل الشعار');
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+        document.getElementById('removeLogoBtn').addEventListener('click', function(){
+          state.settings.logo = null;
+          document.getElementById('s_logo').value = '';
+          var previewImg = document.querySelector('#settingsOverlay .logo-preview img');
+          var previewSpan = document.querySelector('#settingsOverlay .logo-preview span');
+          if(previewImg) previewImg.style.display = 'none';
+          if(previewSpan) previewSpan.style.display = 'block';
+          applyLogo();
+          toast('تم إزالة الشعار');
+        });
+
+        document.getElementById('saveSettingsBtn').addEventListener('click', function(){
+          state.settings.center = document.getElementById('s_center').value.trim();
+          state.settings.directorate = document.getElementById('s_directorate').value.trim();
+          saveSettingsData();
+          addAudit('تعديل إعدادات المختبر','settings','تم تحديث بيانات وإعدادات المختبر');
+          renderHeader();
+          applyLogo();
+          document.getElementById('settingsOverlay').classList.remove('open');
+          toast('تم حفظ إعدادات المختبر');
+        });
+
+        document.getElementById('backupExportBtn').addEventListener('click', function(){
+          try {
+            var backup = { app: 'lab-app', version: 1, exportedAt: new Date().toISOString(), patients: state.patients, settings: state.settings };
+            var blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'نسخة_احتياطية_المختبر_' + todayISO() + '.json';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            toast('تم تنزيل النسخة الاحتياطية');
+          } catch(e){ toast('تعذر إنشاء النسخة الاحتياطية'); }
+        });
+
+        document.getElementById('backupImportBtn').addEventListener('click', function(){
+          document.getElementById('backupImportInput').click();
+        });
+        document.getElementById('backupImportInput').addEventListener('change', function(e){
+          var file = e.target.files[0];
+          if(!file) return;
+          var reader = new FileReader();
+          reader.onload = function(evt){
+            try {
+              var data = JSON.parse(evt.target.result);
+              if(!data.patients || !Array.isArray(data.patients)){ toast('ملف النسخة الاحتياطية غير صالح'); return; }
+              if(!confirm('سيتم استبدال جميع بيانات المرضى والإعدادات الحالية بمحتوى هذا الملف (' + data.patients.length + ' مريض). متابعة؟')) return;
+              state.patients = data.patients;
+              if(data.auditLog && Array.isArray(data.auditLog)) state.auditLog = data.auditLog;
+              if(data.settings) state.settings = Object.assign(state.settings, data.settings);
+              saveData(); saveSettingsData(); restoreCustomTests(); applyTheme(); applyLogo(); renderHeader(); renderList();
+              toast('تم استيراد النسخة الاحتياطية بنجاح');
+              document.getElementById('settingsOverlay').classList.remove('open');
+            } catch(err){ toast('تعذرت قراءة الملف، تأكد أنه نسخة احتياطية صحيحة'); }
+            document.getElementById('backupImportInput').value = '';
+          };
+          reader.readAsText(file);
+        });
+
+        // محاولة استعادة حالة Drive إذا كان هناك توكن
+        if(gapi && gapi.client && gapi.client.getToken){
+          var token = gapi.client.getToken();
+          if(token) fetchUserInfo();
+        }
+      });
+    })();
+// ===== استعادة جلسة Google بعد إعادة تحميل الصفحة =====
+setTimeout(function(){ try { restoreGoogleSessionSilently(); } catch(e) {} }, 1200);
+</script>
+</body>
+</html>
