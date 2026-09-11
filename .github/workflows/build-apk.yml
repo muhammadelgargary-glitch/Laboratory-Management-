@@ -25,6 +25,13 @@ jobs:
       - name: Add Android
         run: npx cap add android
 
+      - name: Generate Android App Icons
+        run: |
+          npm install --no-save @capacitor/assets
+          mkdir -p resources
+          cp assets/icon.png resources/icon.png
+          npx capacitor-assets generate --android
+
       - name: Sync Capacitor
         run: npx cap sync android
 
@@ -63,6 +70,48 @@ jobs:
           '''
 
           if "signingConfigs {" not in text:
+              text = text.replace("android {\n", "android {\n" + signing, 1)
+          else:
+              raise SystemExit("Unexpected existing signingConfigs block; stopping to avoid modifying the wrong configuration.")
+
+          p.write_text(text)
+          PY
+
+      - name: Set Signing Environment
+        run: |
+          echo "ANDROID_KEYSTORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> "$GITHUB_ENV"
+          echo "ANDROID_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}" >> "$GITHUB_ENV"
+          echo "ANDROID_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}" >> "$GITHUB_ENV"
+
+      - name: Show Fixed SHA-1
+        run: |
+          echo "===== FIXED KEY SHA-1 ====="
+
+          keytool -list -v \
+            -keystore android/app/laboratory-management-release.keystore \
+            -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+            -alias "${{ secrets.ANDROID_KEY_ALIAS }}" | grep -E "Alias name:|SHA1:|SHA-1:"
+
+      - name: Show Android Signing Report
+        working-directory: android
+        run: |
+          ./gradlew signingReport
+
+      - name: Build Debug APK
+        working-directory: android
+        run: |
+          ./gradlew assembleDebug
+
+      - name: Verify APK
+        run: |
+          test -f android/app/build/outputs/apk/debug/app-debug.apk
+          echo "APK created successfully."
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: laboratory-management-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk          if "signingConfigs {" not in text:
               text = text.replace("android {\n", "android {\n" + signing, 1)
           else:
               raise SystemExit("Unexpected existing signingConfigs block; stopping to avoid modifying the wrong configuration.")
